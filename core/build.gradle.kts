@@ -1,3 +1,6 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
@@ -5,9 +8,19 @@ plugins {
     id("kotlin-parcelize")
 }
 
+fun getApiKey(): String {
+    val properties = Properties()
+    val file = File(rootProject.projectDir, "local.properties")
+    if (file.exists()) {
+        FileInputStream(file).use { properties.load(it) }
+    }
+    return properties.getProperty("TMDB_API_KEY", "")
+}
+
 android {
     namespace = "com.saefulrdevs.core"
     compileSdk = 35
+
 
     defaultConfig {
         minSdk = 24
@@ -15,8 +28,8 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
 
-        buildConfigField("String", "TMDB_API_KEY", "\"\"")
-        buildConfigField("String", "BASE_URL", "\"\"")
+        buildConfigField("String", "TMDB_API_KEY", "\"${getApiKey()}\"")
+        buildConfigField("String", "BASE_URL", "\"https://api.themoviedb.org/3/\"")
     }
 
     buildTypes {
@@ -91,4 +104,6 @@ dependencies {
     implementation(libs.androidx.sqlite)
 
     implementation(libs.materialsearchbar)
+
+    // env
 }

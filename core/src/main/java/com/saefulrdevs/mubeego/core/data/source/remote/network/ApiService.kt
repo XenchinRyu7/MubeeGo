@@ -12,35 +12,35 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("discover/movie")
     suspend fun getDiscoverMovie(
-        @Query("apiKey") apiKey: String,
+        @Query("api_key") api_key: String,
         @Query("language") language: String
     ): DiscoverMovieResponse
 
     @GET("discover/tv")
     suspend fun getDiscoverTvShow(
-        @Query("apiKey") apiKey: String,
+        @Query("api_key") api_key: String,
         @Query("language") language: String
     ): DiscoverTvShowResponse
 
     @GET("movie/{movieId}")
     suspend fun getMovieDetail(
         @Path("movieId") movieId: String,
-        @Query("apiKey") apiKey: String,
+        @Query("api_key") api_key: String,
         @Query("language") language: String,
-        @Query("appendToResponse") appendToResponse: String? = null
+        @Query("append_to_response") append_to_response: String? = null
     ): MovieDetailResponse
 
     @GET("tv/{tvShowId}")
     suspend fun getTvShowDetail(
         @Path("tvShowId") tvShowId: String,
-        @Query("apiKey") apiKey: String,
+        @Query("api_key") api_key: String,
         @Query("language") language: String,
-        @Query("appendToResponse") appendToResponse: String? = null
+        @Query("append_to_response") append_to_response: String? = null
     ): TvShowDetailResponse
 
     @GET("search/multi")
     suspend fun getSearchResult(
-        @Query("apiKey") apiKey: String?,
+        @Query("api_key") api_key: String?,
         @Query("language") language: String,
         @Query("query") query: String,
         @Query("page") page: String
@@ -48,6 +48,6 @@ interface ApiService {
 
     @GET("trending/all/week")
     suspend fun getTrendings(
-        @Query("apiKey") apiKey: String?
+        @Query("api_key") api_key: String?
     ): SearchResponse
 }

@@ -47,5 +47,8 @@ dependencies {
     implementation(libs.materialsearchbar)
     implementation(libs.koin.core)
     implementation(libs.koin.android)
-    testImplementation(libs.junit.junit)
+
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 }

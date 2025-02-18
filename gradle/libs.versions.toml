@@ -23,8 +23,8 @@ navigationFragmentKtx = "2.8.7"
 navigationUiKtx = "2.8.7"
 lifecycleExtensions = "2.2.0"
 espressoIdlingResource = "3.6.1"
+secretsGradlePlugin = "2.0.1"
 sqlite = "2.4.0"
-junitJunit = "4.12"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -56,8 +56,8 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 lifecycle-extensions = { group = "androidx.lifecycle", name = "lifecycle-extensions", version.ref = "lifecycleExtensions" }
 lifecycle-compiler = { group = "androidx.lifecycle", name = "lifecycle-compiler", version.ref = "lifecycleExtensions" }
 androidx-espresso-idling-resource = { group = "androidx.test.espresso", name = "espresso-idling-resource", version.ref = "espressoIdlingResource" }
+secrets-gradle-plugin = { module = "com.google.android.libraries.mapsplatform:secrets-gradle-plugin", version.ref = "secretsGradlePlugin" }
 zetetic-android-database-sqlcipher = { module = "net.zetetic:android-database-sqlcipher", version.ref = "androidDatabaseSqlcipherVersion" }
-junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
