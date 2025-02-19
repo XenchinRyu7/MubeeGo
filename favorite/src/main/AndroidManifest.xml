@@ -16,13 +16,14 @@
         android:theme="@style/Theme.MubeeGo">
         <activity
             android:name=".FavoriteActivity"
-            android:label="@string/title_activity_favorite"
-            android:exported="true">
+            android:exported="true"
+            android:label="@string/title_activity_favorite">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <data android:scheme="tmdbapp"
-                    android:host="favorite"/>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="favorite"
+                    android:scheme="tmdbapp" />
             </intent-filter>
         </activity>
     </application>

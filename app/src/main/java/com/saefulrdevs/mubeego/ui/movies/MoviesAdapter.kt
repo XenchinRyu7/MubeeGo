@@ -1,6 +1,7 @@
 package com.saefulrdevs.mubeego.ui.movies
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -14,21 +15,22 @@ import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.ItemMoviesTvshowsBinding
 
-class MoviesAdapter: ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
+class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val itemsMovieBinding = ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemsMovieBinding =
+            ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MovieViewHolder(itemsMovieBinding)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
         val movie = getItem(position)
-        if (movie != null) {
-            holder.bind(movie)
-        }
+        Log.d("MoviesAdapter", "Binding item at position $position: ${movie.title}")
+        holder.bind(movie)
     }
 
-    class MovieViewHolder(private val binding: ItemMoviesTvshowsBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MovieViewHolder(private val binding: ItemMoviesTvshowsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             with(binding) {
                 tvItemTitle.text = movie.title
@@ -44,10 +46,16 @@ class MoviesAdapter: ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALL
                     .load(movie.posterPath)
                     .apply(
                         RequestOptions.placeholderOf(R.drawable.ic_loading)
-                            .error(R.drawable.ic_error))
+                            .error(R.drawable.ic_error)
+                    )
                     .into(imgPoster)
             }
         }
+    }
+
+    override fun submitList(list: List<Movie>?) {
+        super.submitList(list)
+        Log.d("MoviesAdapter", "Received movie list: ${list?.size ?: 0} movies")
     }
 
     companion object {

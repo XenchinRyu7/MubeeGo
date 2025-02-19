@@ -2,22 +2,19 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation2"
-    app:startDestination="@+id/navigation_movies">
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/navigation_movies">
 
     <fragment
         android:id="@+id/navigation_movies"
         android:name="com.saefulrdevs.mubeego.ui.movies.MoviesFragment"
-        android:label="fragment_movies"
+        android:label="Movies"
         tools:layout="@layout/fragment_movies" />
+
     <fragment
         android:id="@+id/navigation_tvshows"
         android:name="com.saefulrdevs.mubeego.ui.tvshows.TvShowsFragment"
-        android:label="fragment_tv_shows"
+        android:label="TV Shows"
         tools:layout="@layout/fragment_tv_shows" />
-    <activity
-        android:id="@+id/menu_search"
-        android:name="com.saefulrdevs.mubeego.ui.search.SearchActivity"
-        android:label="activity_search"
-        tools:layout="@layout/activity_search" />
+
 </navigation>
