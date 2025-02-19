@@ -6,8 +6,7 @@ import androidx.lifecycle.asLiveData
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 
-//@HiltViewModel
-class FavoriteMoviesViewModel //@Inject constructor
+class FavoriteMoviesViewModel
     (private val tmdbUseCase: TmdbUseCase): ViewModel(){
     fun getMovieFav(): LiveData<List<Movie>> =
         tmdbUseCase.getFavoriteMovie().asLiveData()

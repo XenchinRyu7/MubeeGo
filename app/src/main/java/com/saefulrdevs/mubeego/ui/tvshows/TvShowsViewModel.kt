@@ -7,8 +7,7 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 
-//@HiltViewModel
-class TvShowsViewModel //@Inject constructor
+class TvShowsViewModel
     (private val tmdbUseCase: TmdbUseCase) :
     ViewModel() {
 

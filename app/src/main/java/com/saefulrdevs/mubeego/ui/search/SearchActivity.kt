@@ -14,7 +14,6 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.databinding.ActivitySearchBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//@AndroidEntryPoint
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding

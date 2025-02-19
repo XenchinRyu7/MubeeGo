@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.favorite.databinding.FragmentFavoriteTvShowsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//@AndroidEntryPoint
 class FavoriteTvShowsFragment : Fragment() {
 
     private var _binding: FragmentFavoriteTvShowsBinding? = null

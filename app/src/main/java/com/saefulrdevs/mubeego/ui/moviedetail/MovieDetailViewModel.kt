@@ -10,9 +10,8 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 
-//@HiltViewModel
 @Suppress("BooleanMethodIsAlwaysInverted")
-class MovieDetailViewModel //@Inject constructor
+class MovieDetailViewModel
     (private val tmdbUseCase: TmdbUseCase) :
     ViewModel() {
 

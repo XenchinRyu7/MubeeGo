@@ -13,7 +13,6 @@ import com.saefulrdevs.mubeego.databinding.FragmentMoviesBinding
 import com.saefulrdevs.mubeego.ui.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//@AndroidEntryPoint
 class MoviesFragment : Fragment() {
 
     private val moviesViewModel: MoviesViewModel by viewModel()
@@ -35,9 +34,6 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (activity != null) {
-
-            (activity as MainActivity).setToolbarTitle(getString(R.string.title_movie))
-
             val movieAdapter = MoviesAdapter()
 
             moviesViewModel.getDiscoverMovies().observe(viewLifecycleOwner) { movies ->

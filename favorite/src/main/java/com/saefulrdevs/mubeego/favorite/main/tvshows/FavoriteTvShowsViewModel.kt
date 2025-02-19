@@ -6,8 +6,7 @@ import androidx.lifecycle.asLiveData
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 
-//@HiltViewModel
-class FavoriteTvShowsViewModel //@Inject constructor
+class FavoriteTvShowsViewModel
     (private val tmdbUseCase: TmdbUseCase): ViewModel() {
     fun getTvShowFav(): LiveData<List<TvShow>> =
         tmdbUseCase.getFavoriteTvShow().asLiveData()

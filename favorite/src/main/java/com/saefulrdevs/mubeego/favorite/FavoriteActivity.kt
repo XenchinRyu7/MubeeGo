@@ -10,7 +10,6 @@ import com.saefulrdevs.mubeego.favorite.databinding.ActivityFavoriteBinding
 import org.koin.core.context.loadKoinModules
 import com.saefulrdevs.mubeego.R
 
-//@AndroidEntryPoint
 class FavoriteActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityFavoriteBinding

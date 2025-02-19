@@ -18,7 +18,6 @@ import com.saefulrdevs.mubeego.core.util.Utils.changeStringToDateFormat
 import com.saefulrdevs.mubeego.databinding.ActivityTvShowDetailBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//@AndroidEntryPoint
 class TvShowDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityTvShowDetailBinding
@@ -155,7 +154,6 @@ class TvShowDetailActivity : AppCompatActivity() {
             )
             .into(binding.tvShowBackdrop)
 
-        setYTPlayer(showDetails.youtubeTrailerId)
     }
 
     private fun setFabIcon(isFavorited: Boolean) {
@@ -164,17 +162,6 @@ class TvShowDetailActivity : AppCompatActivity() {
         } else {
             binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_border_24)
         }
-    }
-
-    private fun setYTPlayer(videoId: String) {
-//        val youTubePlayerView = binding.contentTvShowDetail.ytPlayerView
-//        lifecycle.addObserver(youTubePlayerView)
-//
-//        youTubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-//            override fun onReady(youTubePlayer: YouTubePlayer) {
-//                youTubePlayer.cueVideo(videoId, 0f)
-//            }
-//        })
     }
 
     companion object {

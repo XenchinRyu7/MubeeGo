@@ -7,12 +7,12 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 
-//@HiltViewModel
-class SearchViewModel //@Inject constructor
+class SearchViewModel
     (private val tmdbUseCase: TmdbUseCase) :
     ViewModel() {
 
-    fun getTrendings(): LiveData<Resource<List<SearchItem>>> = tmdbUseCase.getTrendings().asLiveData()
+    fun getTrendings(): LiveData<Resource<List<SearchItem>>> =
+        tmdbUseCase.getTrendings().asLiveData()
 
     fun getSearchResult(title: String): LiveData<Resource<List<SearchItem>>> =
         tmdbUseCase.getSearchResult(title).asLiveData()

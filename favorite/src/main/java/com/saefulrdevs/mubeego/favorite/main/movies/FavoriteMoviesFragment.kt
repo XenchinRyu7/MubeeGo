@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.favorite.databinding.FragmentFavoriteMovieBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//@AndroidEntryPoint
 class FavoriteMoviesFragment : Fragment() {
 
     private var _binding: FragmentFavoriteMovieBinding? = null

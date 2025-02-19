@@ -16,7 +16,6 @@ import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.ActivityMovieDetailBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//@AndroidEntryPoint
 class MovieDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMovieDetailBinding
@@ -107,7 +106,6 @@ class MovieDetailActivity : AppCompatActivity() {
             )
             .into(binding.movieBackdrop)
 
-        setYTPlayer(movieDetails.youtubeTrailerId)
     }
 
     private fun setFabIcon(isFavorited: Boolean) {
@@ -118,16 +116,6 @@ class MovieDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun setYTPlayer(videoId: String) {
-//        val youTubePlayerView = binding.contentMovieDetail.ytPlayerView
-//        lifecycle.addObserver(youTubePlayerView)
-//
-//        youTubePlayerView.addYouTubePlayerListener(object : AbstractYouTubePlayerListener() {
-//            override fun onReady(youTubePlayer: YouTubePlayer) {
-//                youTubePlayer.cueVideo(videoId, 0f)
-//            }
-//        })
-    }
 
     companion object {
         const val EXTRA_MOVIE = "extra_movie"

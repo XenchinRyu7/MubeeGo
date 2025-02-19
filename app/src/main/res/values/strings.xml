@@ -36,8 +36,8 @@
     <string name="search_hint">Search movie or tv show by title …</string>
     <string name="search_title">Search …</string>
     <string name="trending_this_week">Trending this Week!</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">MubeeGo</string>
+    <string name="nav_header_subtitle">support@mubeego.com</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="title_activity_favorite">FavoriteActivity</string>

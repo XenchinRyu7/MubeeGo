@@ -12,7 +12,6 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.databinding.FragmentTvShowsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-//@AndroidEntryPoint
 class TvShowsFragment : Fragment() {
 
     private val tvShowsViewModel: TvShowsViewModel by viewModel()
