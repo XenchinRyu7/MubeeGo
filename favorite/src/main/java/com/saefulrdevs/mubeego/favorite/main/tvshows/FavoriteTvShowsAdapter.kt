@@ -11,7 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.R
-import com.saefulrdevs.mubeego.favorite.databinding.ItemMoviesTvshowsBinding
+import com.saefulrdevs.mubeego.favorite.databinding.ItemMoviesFavoriteTvshowsBinding
 import com.saefulrdevs.mubeego.ui.tvshowdetail.TvShowDetailActivity
 
 class FavoriteTvShowsAdapter: ListAdapter<TvShow, FavoriteTvShowsAdapter.TvShowViewHolder>(
@@ -20,7 +20,7 @@ class FavoriteTvShowsAdapter: ListAdapter<TvShow, FavoriteTvShowsAdapter.TvShowV
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvShowViewHolder {
         val itemsTvShowBinding =
-            ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemMoviesFavoriteTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TvShowViewHolder(itemsTvShowBinding)
     }
 
@@ -31,7 +31,7 @@ class FavoriteTvShowsAdapter: ListAdapter<TvShow, FavoriteTvShowsAdapter.TvShowV
         }
     }
 
-    class TvShowViewHolder(private val binding: ItemMoviesTvshowsBinding) :
+    class TvShowViewHolder(private val binding: ItemMoviesFavoriteTvshowsBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(show: TvShow) {
             with(binding) {

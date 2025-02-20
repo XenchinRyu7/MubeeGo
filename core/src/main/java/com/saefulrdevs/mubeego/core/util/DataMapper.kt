@@ -19,10 +19,10 @@ import com.saefulrdevs.mubeego.core.domain.model.TvShowWithSeason
 import org.json.JSONArray
 
 object DataMapper {
-    private const val imageBaseUrl = "https://image.tmdb.org/t/p/w500"
+    private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
     private fun String.toImageUrl() : String {
-        return "$imageBaseUrl$this"
+        return "$IMAGE_BASE_URL$this"
     }
 
     fun ResultsItemMovie.toEntity(): MovieEntity {

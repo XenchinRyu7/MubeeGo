@@ -157,11 +157,10 @@ class TvShowDetailActivity : AppCompatActivity() {
     }
 
     private fun setFabIcon(isFavorited: Boolean) {
-        if (isFavorited) {
-            binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_24)
-        } else {
-            binding.fabFavorite.setImageResource(R.drawable.ic_baseline_favorite_border_24)
-        }
+        binding.fabFavorite.setImageResource(
+            if (isFavorited) R.drawable.ic_baseline_favorite_24
+            else R.drawable.ic_baseline_favorite_border_24
+        )
     }
 
     companion object {

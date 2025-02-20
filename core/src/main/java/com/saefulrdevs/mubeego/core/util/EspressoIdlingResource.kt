@@ -1,6 +1,5 @@
 package com.saefulrdevs.mubeego.core.util
 
-import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.idling.CountingIdlingResource
 
 object EspressoIdlingResource {
@@ -11,8 +10,5 @@ object EspressoIdlingResource {
     }
     fun decrement() {
         espressoTestIdlingResource.decrement()
-    }
-    fun getEspressoIdlingResource(): IdlingResource {
-        return espressoTestIdlingResource
     }
 }

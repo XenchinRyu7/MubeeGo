@@ -28,7 +28,6 @@
     <string name="title_activity_tv_show_detail">Tv Show Detail</string>
     <string name="dummy_duration">0 h 0 m</string>
     <string name="dummy_genre">Movie / Tv Shows Genres</string>
-    <string name="videos">Videos</string>
     <string name="error_while_getting_data">Error while getting data</string>
     <string name="addedToFavorite">Added to favorites</string>
     <string name="removedFromFavorite">Removed from favorites</string>
