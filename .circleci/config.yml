@@ -1,0 +1,54 @@
+version: 2.1
+
+orbs:
+  android: circleci/android@2.5.0  # Gunakan versi terbaru
+
+executors:
+  android-executor:
+    docker:
+      - image: cimg/android:2023.12  # Image terbaru dengan support AGP 8.x & Gradle 8.x
+    environment:
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+      JAVA_OPTS: "-Xmx4096m"
+
+jobs:
+  build:
+    executor: android-executor
+    steps:
+      - checkout
+      - restore_cache:
+          key: android-deps-v1-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+      - run:
+          name: Chmod permissions
+          command: chmod +x ./gradlew
+      - run:
+          name: Install Gradle 8.9
+          command: |
+            wget https://services.gradle.org/distributions/gradle-8.9-bin.zip -P /tmp
+            unzip -d /opt/gradle /tmp/gradle-8.9-bin.zip
+            echo 'export PATH=/opt/gradle/gradle-8.9/bin:$PATH' >> $BASH_ENV
+      - run:
+          name: Verify Gradle Version
+          command: gradle -v
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+      - save_cache:
+          key: android-deps-v1-{{ checksum "build.gradle" }}-{{ checksum "app/build.gradle" }}
+          paths:
+            - ~/.gradle/caches
+            - ~/.gradle/wrapper
+      - run:
+          name: Run Build
+          command: ./gradlew assembleDebug
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+      - run:
+          name: Run Tests
+          command: ./gradlew lint test
+      - store_test_results:
+          path: app/build/test-results
+      - store_artifacts:
+          path: app/build/outputs/apk/debug/
+          destination: debug-apks
