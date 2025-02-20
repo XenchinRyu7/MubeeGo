@@ -14,7 +14,8 @@ fun getApiKey(): String {
     if (file.exists()) {
         FileInputStream(file).use { properties.load(it) }
     }
-    return properties.getProperty("TMDB_API_KEY", "")
+
+    return properties.getProperty("TMDB_API_KEY", System.getenv("TMDB_API_KEY") ?: "")
 }
 
 android {
