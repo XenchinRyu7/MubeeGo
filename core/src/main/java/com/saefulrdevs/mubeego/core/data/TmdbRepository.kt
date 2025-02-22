@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -132,13 +133,16 @@ class TmdbRepository private constructor(
                 }
 
             override fun shouldFetch(data: TvShow?): Boolean =
-                (data?.runtime == null) || (data.runtime == 0)
+                data == null || data.runtime == 0 || data.overview.isEmpty()
 
             override suspend fun createCall(): Flow<ApiResponse<TvShowDetailResponse>> =
                 remoteDataSource.getTvShow(showId)
 
             override suspend fun saveCallResult(data: TvShowDetailResponse) {
-                val show = data.toEntity()
+                val existingShow = localDataSource.getTvShowById(data.id.toString()).firstOrNull()
+                val isFavorited = existingShow?.favorited ?: false
+
+                val show = data.toEntity().copy(favorited = isFavorited)
                 val seasons = data.getSeasonEntity()
 
                 appExecutors.diskIO().execute {
@@ -247,9 +251,11 @@ class TmdbRepository private constructor(
                         emit(Resource.Error("Not Found"))
                     }
                 }
+
                 is ApiResponse.Empty -> {
                     emit(Resource.Error("Not Found"))
                 }
+
                 is ApiResponse.Error -> {
                     emit(
                         Resource.Error(apiResponse.errorMessage)
@@ -298,9 +304,11 @@ class TmdbRepository private constructor(
                         emit(Resource.Error("Not Found"))
                     }
                 }
+
                 is ApiResponse.Empty -> {
                     emit(Resource.Error("Not Found"))
                 }
+
                 is ApiResponse.Error -> {
                     emit(
                         Resource.Error(apiResponse.errorMessage)

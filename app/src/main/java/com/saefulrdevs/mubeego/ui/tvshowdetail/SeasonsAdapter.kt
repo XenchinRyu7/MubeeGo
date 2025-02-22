@@ -32,9 +32,8 @@ class SeasonsAdapter : ListAdapter<Season, SeasonsAdapter.SeasonViewHolder>(DIFF
         fun bind(season: Season) {
             with(binding) {
                 "Season ${season.seasonNumber}".also { tvItemTitle.text = it }
-                "${changeStringDateToYear(season.airDate)} | ${season.episodeCount} Eps.".also {
-                    tvItemYear.text = it
-                }
+                val year = changeStringDateToYear(season.airDate)
+                tvItemYear.text = if (year == -1) "- | ${season.episodeCount} Eps." else "$year | ${season.episodeCount} Eps."
                 "Season ${season.seasonNumber} premiered on ${
                     changeStringToDateFormat(
                         season.airDate
