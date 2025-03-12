@@ -10,6 +10,7 @@
         </intent>
     </queries>
 
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -21,6 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MubeeGo"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
+        <activity
+            android:name=".ui.authentication.AuthActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"

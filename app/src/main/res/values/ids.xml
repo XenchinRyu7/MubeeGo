@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="google_login" type="id" />
+    <item name="tv_or" type="id" />
+    <item name="login_button" type="id" />
+    <item name="tf_password" type="id" />
+    <item name="ed_input_password" type="id" />
+</resources>

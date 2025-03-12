@@ -1,13 +1,19 @@
 package com.saefulrdevs.mubeego.core.di
 
 import android.util.Base64
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
 import com.saefulrdevs.core.BuildConfig
+import com.saefulrdevs.mubeego.core.data.AuthRepository
 import com.saefulrdevs.mubeego.core.data.TmdbRepository
+import com.saefulrdevs.mubeego.core.data.UserPreferencesRepository
 import com.saefulrdevs.mubeego.core.data.source.local.LocalDataSource
 import com.saefulrdevs.mubeego.core.data.source.local.room.TmdbDatabase
 import com.saefulrdevs.mubeego.core.data.source.remote.RemoteDataSource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiService
+import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
 import com.saefulrdevs.mubeego.core.domain.repository.ITmdbRepository
+import com.saefulrdevs.mubeego.core.domain.repository.IUserPreferencesRepository
 import com.saefulrdevs.mubeego.core.util.AppExecutors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -77,6 +83,12 @@ val repositoryModule = module {
             get()
         )
     }
+    single<FirebaseAuth> {
+        FirebaseApp.initializeApp(androidContext()) ?: throw IllegalStateException("FirebaseApp initialization failed")
+        FirebaseAuth.getInstance()
+    }
+    single<IAuthRepository> { AuthRepository(get()) }
+    single<IUserPreferencesRepository> { UserPreferencesRepository(get()) }
 }
 
 suspend fun getCertificatePins(hostname: String): List<String> {

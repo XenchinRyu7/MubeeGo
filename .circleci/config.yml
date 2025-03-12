@@ -10,9 +10,15 @@ jobs:
     environment:
       GRADLE_VERSION: 8.9
       GRADLE_HOME: ~/gradle
+      KEYSTORE_PATH: "/home/circleci/project/keystore_expert.jks"
 
     steps:
       - checkout
+
+      - run:
+          name: Decode Keystore
+          command: |
+            echo $KEYSTORE_BASE64 | base64 --decode > $KEYSTORE_PATH
 
       - run:
           name: Setup API Key
@@ -62,6 +68,6 @@ jobs:
           path: app/build/test-results
 
       - store_artifacts:
-          path: app/build/outputs/apk/debug/
+          path: app/build/outputs/apk/release/
           destination: artifact-file
     executor:

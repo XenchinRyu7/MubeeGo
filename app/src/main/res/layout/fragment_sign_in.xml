@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_sign_in"
+        style="@style/BaseTextTitle"
+        android:fontFamily="@font/inter"
+        android:text="@string/sign_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline1" />
+
+    <TextView
+        android:id="@+id/tv_sign_in_description"
+        style="@style/BaseTextDescription"
+        android:text="@string/sign_in_description"
+        app:layout_constraintStart_toStartOf="@id/tv_sign_in"
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_in" />
+
+    <TextView
+        android:id="@+id/tv_email"
+        style="@style/BaseTextView"
+        android:text="@string/email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_in_description" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tf_email"
+        style="@style/BaseTextInputLayout"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="@id/tv_email"
+        app:layout_constraintStart_toStartOf="@id/tv_email"
+        app:layout_constraintTop_toBottomOf="@id/tv_email">
+
+        <com.saefulrdevs.mubeego.ui.components.CustomEditTextEmail
+            android:id="@+id/ed_input_email"
+            style="@style/BaseInputText"
+            android:inputType="textEmailAddress"
+            tools:text="@string/email" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_password"
+        style="@style/BaseTextView"
+        android:text="@string/password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tf_email" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tf_password"
+        style="@style/BaseTextInputLayout"
+        app:endIconMode="password_toggle"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="@id/tv_password"
+        app:layout_constraintStart_toStartOf="@id/tv_password"
+        app:layout_constraintTop_toBottomOf="@id/tv_password">
+
+        <com.saefulrdevs.mubeego.ui.components.CustomEditTextPassword
+            android:id="@+id/ed_input_password"
+            style="@style/BaseInputText"
+            android:inputType="textPassword"
+            tools:text="@string/password" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_forgot_password"
+        style="@style/ClickableTextView"
+        android:layout_marginHorizontal="@dimen/margin_small"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="@string/forgot_password"
+        app:layout_constraintEnd_toEndOf="@id/tf_password"
+        app:layout_constraintTop_toBottomOf="@id/tf_password" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_button"
+        style="@style/BaseButton"
+        android:text="@string/login"
+        app:layout_constraintEnd_toEndOf="@id/tf_password"
+        app:layout_constraintStart_toStartOf="@id/tf_password"
+        app:layout_constraintTop_toBottomOf="@id/tv_forgot_password" />
+
+    <TextView
+        android:id="@+id/tv_or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_small"
+        android:text="@string/or"
+        app:layout_constraintEnd_toEndOf="@id/login_button"
+        app:layout_constraintStart_toStartOf="@id/login_button"
+        app:layout_constraintTop_toBottomOf="@id/login_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/google_login"
+        style="@style/BaseOutlinedButton"
+        android:text="@string/google_login"
+        app:icon="@drawable/ic_google"
+        app:layout_constraintEnd_toEndOf="@id/login_button"
+        app:layout_constraintStart_toStartOf="@id/login_button"
+        app:layout_constraintTop_toBottomOf="@id/tv_or" />
+
+    <TextView
+        android:id="@+id/tv_sign_up"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:layout_marginEnd="@dimen/margin_small"
+        android:text="@string/doesnt_have_account"
+        app:layout_constraintEnd_toStartOf="@id/tv_sign_up_click"
+        app:layout_constraintStart_toStartOf="@id/guideline2"
+        app:layout_constraintTop_toBottomOf="@id/google_login" />
+
+    <TextView
+        android:id="@+id/tv_sign_up_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_medium"
+        android:text="@string/sign_up"
+        android:textColor="@color/primary"
+        app:layout_constraintEnd_toEndOf="@id/guideline2"
+        app:layout_constraintStart_toEndOf="@id/tv_sign_up"
+        app:layout_constraintTop_toBottomOf="@id/google_login" />
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_sign_in"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sign_up_click"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="64dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

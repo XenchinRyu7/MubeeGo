@@ -1,6 +1,7 @@
 package com.saefulrdevs.mubeego
 
 import android.app.Application
+import com.google.firebase.FirebaseApp
 import com.saefulrdevs.mubeego.core.di.databaseModule
 import com.saefulrdevs.mubeego.core.di.networkModule
 import com.saefulrdevs.mubeego.core.di.repositoryModule
@@ -15,6 +16,7 @@ class MyApplication: Application()
 {
     override fun onCreate() {
         super.onCreate()
+        FirebaseApp.initializeApp(this)
         startKoin {
             androidLogger(Level.NONE)
             androidContext(this@MyApplication)

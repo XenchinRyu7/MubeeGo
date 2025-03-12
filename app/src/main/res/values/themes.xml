@@ -29,4 +29,81 @@
     <style name="Theme.MubeeGo.NoTranslucentStatus" >
         <item name="android:windowTranslucentStatus">false</item>
     </style>
+
+    <style name="BaseTextView" parent="TextAppearance.Material3.BodyMedium">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <style name="BaseInputText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+        <item name="android:ems">10</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="BaseTextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="boxCornerRadiusBottomEnd">10dp</item>
+        <item name="boxCornerRadiusBottomStart">10dp</item>
+        <item name="boxCornerRadiusTopEnd">10dp</item>
+        <item name="boxCornerRadiusTopStart">10dp</item>
+        <item name="boxStrokeErrorColor">@color/error</item>
+        <item name="helperTextTextColor">@color/tertiary</item>
+    </style>
+
+    <style name="BaseButton" parent="Widget.Material3.Button">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
+    </style>
+
+    <style name="BaseOutlinedButton" parent="Widget.Material3.Button.OutlinedButton.Icon">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:padding">@dimen/padding_medium</item>
+        <item name="cornerRadius">10dp</item>
+        <item name="strokeColor">@color/onSecondary</item>
+        <item name="iconTint">@null</item>
+    </style>
+
+    <style name="BaseTextTitle" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_margin">@dimen/margin_medium</item>
+        <item name="fontFamily">@font/inter</item>
+        <item name="fontWeight">700</item>
+    </style>
+
+    <style name="BaseTextDescription" parent="TextAppearance.Material3.LabelSmall">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textColor">@color/secondary</item>
+    </style>
+
+    <style name="ClickableTextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/primary</item>
+    </style>
+
+    <style name="BaseCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="cardElevation">4dp</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
 </resources>

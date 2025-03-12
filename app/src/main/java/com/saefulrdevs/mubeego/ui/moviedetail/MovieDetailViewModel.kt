@@ -11,9 +11,7 @@ import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 
 @Suppress("BooleanMethodIsAlwaysInverted")
-class MovieDetailViewModel
-    (private val tmdbUseCase: TmdbUseCase) :
-    ViewModel() {
+class MovieDetailViewModel(private val tmdbUseCase: TmdbUseCase) : ViewModel() {
 
     private val movie = MutableLiveData<Movie>()
 

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/back_button"
+        style="?attr/materialIconButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/back_button"
+        app:icon="@drawable/ic_back"
+        app:iconSize="32dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_sign_up"
+        style="@style/BaseTextTitle"
+        android:text="@string/sign_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/back_button" />
+
+    <TextView
+        android:id="@+id/tv_sign_up_description"
+        style="@style/BaseTextDescription"
+        android:text="@string/sign_up_description"
+        app:layout_constraintStart_toStartOf="@id/tv_sign_up"
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_up" />
+
+    <TextView
+        android:id="@+id/tv_full_name"
+        style="@style/BaseTextView"
+        android:text="@string/full_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_sign_up_description" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tf_full_name"
+        style="@style/BaseTextInputLayout"
+        app:layout_constraintEnd_toEndOf="@id/tv_full_name"
+        app:layout_constraintStart_toStartOf="@id/tv_full_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_full_name">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/ed_input_full_name"
+            style="@style/BaseInputText"
+            android:inputType="text"
+            tools:text="@string/full_name" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_email"
+        style="@style/BaseTextView"
+        android:text="@string/email"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tf_full_name" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tf_email"
+        style="@style/BaseTextInputLayout"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="@id/tv_email"
+        app:layout_constraintStart_toStartOf="@id/tv_email"
+        app:layout_constraintTop_toBottomOf="@id/tv_email">
+
+        <com.saefulrdevs.mubeego.ui.components.CustomEditTextEmail
+            android:id="@+id/ed_input_email"
+            style="@style/BaseInputText"
+            android:inputType="textEmailAddress"
+            tools:text="@string/email" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/tv_set_password"
+        style="@style/BaseTextView"
+        android:text="@string/set_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tf_email" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/tf_set_password"
+        style="@style/BaseTextInputLayout"
+        app:endIconMode="password_toggle"
+        app:helperTextEnabled="true"
+        app:layout_constraintEnd_toEndOf="@id/tv_set_password"
+        app:layout_constraintStart_toStartOf="@id/tv_set_password"
+        app:layout_constraintTop_toBottomOf="@id/tv_set_password">
+
+        <com.saefulrdevs.mubeego.ui.components.CustomEditTextPassword
+            android:id="@+id/ed_input_set_password"
+            style="@style/BaseInputText"
+            android:inputType="textPassword"
+            tools:text="@string/set_password" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/register_button"
+        style="@style/BaseButton"
+        android:text="@string/register"
+        app:layout_constraintEnd_toEndOf="@id/tf_set_password"
+        app:layout_constraintStart_toStartOf="@id/tf_set_password"
+        app:layout_constraintTop_toBottomOf="@id/tf_set_password" />
+
+    <TextView
+        android:id="@+id/tv_or"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/or"
+        app:layout_constraintBottom_toTopOf="@+id/google_login"
+        app:layout_constraintEnd_toEndOf="@+id/register_button"
+        app:layout_constraintHorizontal_bias="0.521"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/register_button" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/google_login"
+        style="@style/BaseOutlinedButton"
+        android:layout_marginTop="4dp"
+        android:text="@string/google_login"
+        app:icon="@drawable/ic_google"
+        app:layout_constraintEnd_toEndOf="@+id/register_button"
+        app:layout_constraintStart_toStartOf="@+id/register_button"
+        app:layout_constraintTop_toBottomOf="@+id/tv_or" />
+
+    <TextView
+        android:id="@+id/tv_sign_in"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="13dp"
+        android:text="@string/already_have_account"
+        app:layout_constraintEnd_toStartOf="@+id/tv_sign_in_click"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/google_login" />
+
+    <TextView
+        android:id="@+id/tv_sign_in_click"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="52dp"
+        android:text="@string/login"
+        android:textColor="@color/primary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/google_login"
+        app:layout_constraintVertical_bias="0.23" />
+
+    <ProgressBar
+        android:id="@+id/loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/tv_sign_up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/tv_sign_in_click"
+        app:layout_constraintStart_toStartOf="parent"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

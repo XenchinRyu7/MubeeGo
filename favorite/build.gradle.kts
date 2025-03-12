@@ -38,6 +38,7 @@ dependencies {
     implementation(project(":app"))
     implementation(project(":core"))
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
