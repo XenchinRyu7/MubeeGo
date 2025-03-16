@@ -18,7 +18,15 @@ jobs:
       - run:
           name: Decode Keystore
           command: |
-            echo $KEYSTORE_BASE64 | base64 --decode > $KEYSTORE_PATH
+            if [ -z "$KEYSTORE_BASE64" ]; then
+              echo "ERROR: KEYSTORE_BASE64 is empty!"
+              exit 1
+            fi
+            echo $KEYSTORE_BASE64 | base64 --decode > $KEYSTORE_PATH || { echo "ERROR: Failed to decode keystore"; exit 1; }
+
+      - run:
+          name: Decode google-services.json
+          command: echo $GOOGLE_SERVICES_BASE64 | base64 -d > app/google-services.json
 
       - run:
           name: Setup API Key
