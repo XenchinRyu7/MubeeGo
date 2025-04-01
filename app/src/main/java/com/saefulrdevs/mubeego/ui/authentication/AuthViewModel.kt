@@ -21,9 +21,19 @@ class AuthViewModel(
 
     fun signUpWithEmail(fullname: String, email: String, password: String) {
         authUseCase.signUpWithEmail(
-            fullname, email, password
+            fullname = fullname, email = email, password = password
         ).onEach { resource ->
             _authState.value = resource
+
+            if (resource is Resource.Success) {
+                val user = authUseCase.getCurrentUser()
+                Log.d("AuthViewModel", "User setelah login: $user")
+
+                user?.let {
+                    Log.d("AuthViewModel", "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}")
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
+                }
+            }
         }.launchIn(viewModelScope)
     }
 

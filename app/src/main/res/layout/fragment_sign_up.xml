@@ -127,8 +127,10 @@
         android:id="@+id/google_login"
         style="@style/BaseOutlinedButton"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="24dp"
         android:text="@string/google_login"
         app:icon="@drawable/ic_google"
+        app:layout_constraintBottom_toTopOf="@+id/tv_sign_in"
         app:layout_constraintEnd_toEndOf="@+id/register_button"
         app:layout_constraintStart_toStartOf="@+id/register_button"
         app:layout_constraintTop_toBottomOf="@+id/tv_or" />
@@ -139,7 +141,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="100dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="13dp"
+        android:layout_marginEnd="4dp"
         android:text="@string/already_have_account"
         app:layout_constraintEnd_toStartOf="@+id/tv_sign_in_click"
         app:layout_constraintStart_toStartOf="parent"
@@ -149,13 +151,13 @@
         android:id="@+id/tv_sign_in_click"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="52dp"
         android:text="@string/login"
         android:textColor="@color/primary"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/google_login"
-        app:layout_constraintVertical_bias="0.23" />
+        app:layout_constraintStart_toEndOf="@+id/tv_sign_in"
+        app:layout_constraintTop_toBottomOf="@+id/google_login" />
 
     <ProgressBar
         android:id="@+id/loading"

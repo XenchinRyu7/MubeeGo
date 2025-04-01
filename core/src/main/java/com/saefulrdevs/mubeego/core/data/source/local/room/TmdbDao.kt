@@ -37,7 +37,7 @@ interface TmdbDao {
     fun getTvShowById(tvShowId: String): Flow<TvShowEntity>
 
     @Transaction
-    @Query("SELECT * FROM seasons LEFT JOIN tvShows ON tvShows.tvShowId = seasons.tvShowId WHERE seasons.tvShowId = :tvShowId")
+    @Query("SELECT * FROM tvShows WHERE tvShowId = :tvShowId")
     fun getSeasonByTvShowId(tvShowId: String): Flow<TvShowWithSeasonEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -96,4 +96,5 @@ dependencies {
     debugImplementation(libs.leakcanary.android)
     implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
     implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation("com.google.android.gms:play-services-ads:22.0.0")
 }

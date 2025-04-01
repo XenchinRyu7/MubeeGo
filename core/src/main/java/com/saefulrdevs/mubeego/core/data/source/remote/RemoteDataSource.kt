@@ -1,7 +1,7 @@
 package com.saefulrdevs.mubeego.core.data.source.remote
 
 import android.util.Log
-import com.saefulrdevs.core.BuildConfig
+import com.saefulrdevs.mubeego.core.BuildConfig
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiService
 import com.saefulrdevs.mubeego.core.util.EspressoIdlingResource

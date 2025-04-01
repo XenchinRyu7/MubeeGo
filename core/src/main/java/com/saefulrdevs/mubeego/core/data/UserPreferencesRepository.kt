@@ -2,6 +2,8 @@ package com.saefulrdevs.mubeego.core.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.saefulrdevs.mubeego.core.domain.model.UserData
 import com.saefulrdevs.mubeego.core.domain.repository.IUserPreferencesRepository
 
@@ -27,6 +29,7 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
     }
 
     override fun clearUser() {
+        Firebase.auth.signOut()
         prefs.edit().clear().apply()
     }
 }

@@ -3,7 +3,7 @@ package com.saefulrdevs.mubeego.core.di
 import android.util.Base64
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.saefulrdevs.core.BuildConfig
+import com.saefulrdevs.mubeego.core.BuildConfig
 import com.saefulrdevs.mubeego.core.data.AuthRepository
 import com.saefulrdevs.mubeego.core.data.TmdbRepository
 import com.saefulrdevs.mubeego.core.data.UserPreferencesRepository

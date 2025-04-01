@@ -19,7 +19,7 @@ fun getApiKey(): String {
 }
 
 android {
-    namespace = "com.saefulrdevs.core"
+    namespace = "com.saefulrdevs.mubeego.core"
     compileSdk = 35
 
 

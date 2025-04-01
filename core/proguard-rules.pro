@@ -37,3 +37,5 @@
 
 # Menjaga utility class
 -keep class com.saefulrdevs.mubeego.core.util.** { *; }
+
+-keep class com.saefulrdevs.mubeego.favorite.** { *; }
