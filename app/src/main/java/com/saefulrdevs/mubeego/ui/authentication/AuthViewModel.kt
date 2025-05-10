@@ -24,16 +24,6 @@ class AuthViewModel(
             fullname = fullname, email = email, password = password
         ).onEach { resource ->
             _authState.value = resource
-
-            if (resource is Resource.Success) {
-                val user = authUseCase.getCurrentUser()
-                Log.d("AuthViewModel", "User setelah login: $user")
-
-                user?.let {
-                    Log.d("AuthViewModel", "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}")
-                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
-                }
-            }
         }.launchIn(viewModelScope)
     }
 
@@ -49,7 +39,10 @@ class AuthViewModel(
                 Log.d("AuthViewModel", "User setelah login: $user")
 
                 user?.let {
-                    Log.d("AuthViewModel", "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}")
+                    Log.d(
+                        "AuthViewModel",
+                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}"
+                    )
                     userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
                 }
             }
@@ -59,6 +52,19 @@ class AuthViewModel(
     fun signInWithEmail(email: String, password: String) {
         authUseCase.signInWithEmail(email, password).onEach { resource ->
             _authState.value = resource
+
+            if (resource is Resource.Success) {
+                val user = authUseCase.getCurrentUser()
+                Log.d("AuthViewModel", "User setelah login: $user")
+
+                user?.let {
+                    Log.d(
+                        "AuthViewModel",
+                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}"
+                    )
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
+                }
+            }
         }.launchIn(viewModelScope)
     }
 

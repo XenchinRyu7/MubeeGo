@@ -63,4 +63,6 @@
     <string name="full_name">Full Name</string>
     <string name="set_password">Set Password</string>
     <string name="logout">Logout</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

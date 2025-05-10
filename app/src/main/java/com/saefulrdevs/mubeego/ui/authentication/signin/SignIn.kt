@@ -19,7 +19,7 @@ import com.google.android.gms.common.api.ApiException
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.databinding.FragmentSignInBinding
-import com.saefulrdevs.mubeego.ui.MainActivity
+import com.saefulrdevs.mubeego.ui.main.MainNavigation
 import com.saefulrdevs.mubeego.ui.authentication.AuthViewModel
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -98,7 +98,7 @@ class SignIn : Fragment() {
                         Toast.makeText(requireContext(), "Login Berhasil!", Toast.LENGTH_SHORT)
                             .show()
 
-                        val intent = Intent(requireActivity(), MainActivity::class.java)
+                        val intent = Intent(requireActivity(), MainNavigation::class.java)
                         startActivity(intent)
                         requireActivity().finish()
                     }

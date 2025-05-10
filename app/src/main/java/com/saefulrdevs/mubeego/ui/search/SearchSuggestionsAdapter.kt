@@ -45,8 +45,8 @@ class SearchSuggestionsAdapter(inflater: LayoutInflater?) :
                 Glide.with(itemView.context)
                     .load(suggestion.posterPath)
                     .apply(
-                        RequestOptions.placeholderOf(R.drawable.ic_loading)
-                            .error(R.drawable.ic_error)
+                        RequestOptions.placeholderOf(R.drawable.placholder)
+                            .error(R.drawable.placholder)
                     )
                     .into(imgPoster)
 

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.Handler
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import com.saefulrdevs.mubeego.ui.authentication.AuthActivity
+import com.saefulrdevs.mubeego.ui.main.MainNavigation
 import org.koin.android.ext.android.inject
 
 @SuppressLint("CustomSplashScreen")
@@ -21,7 +22,7 @@ class SplashActivity : AppCompatActivity() {
 
         Handler(mainLooper).postDelayed({
             val intent = if (isUserLoggedIn) {
-                Intent(this@SplashActivity, MainActivity::class.java)
+                Intent(this@SplashActivity, MainNavigation::class.java)
             } else {
                 Intent(this@SplashActivity, AuthActivity::class.java)
             }

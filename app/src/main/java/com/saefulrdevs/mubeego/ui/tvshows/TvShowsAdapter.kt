@@ -36,8 +36,8 @@ class TvShowsAdapter :
             with(binding) {
                 tvItemTitle.text = show.name
                 tvItemDate.text = changeStringToDateFormat(show.firstAirDate)
-                tvItemRating.rating = show.voteAverage.toFloat() / 2
-                tvItemSynopsis.text = show.overview
+//                tvItemRating.rating = show.voteAverage.toFloat() / 2
+//                tvItemSynopsis.text = show.overview
                 itemView.setOnClickListener {
                     val intent = Intent(itemView.context, TvShowDetailActivity::class.java)
                     intent.putExtra(TvShowDetailActivity.EXTRA_TV_SHOW, show.tvShowId)
@@ -46,8 +46,8 @@ class TvShowsAdapter :
                 Glide.with(itemView.context)
                     .load(show.posterPath)
                     .apply(
-                        RequestOptions.placeholderOf(R.drawable.ic_loading)
-                            .error(R.drawable.ic_error)
+                        RequestOptions.placeholderOf(R.drawable.placholder)
+                            .error(R.drawable.placholder)
                     )
                     .into(imgPoster)
             }

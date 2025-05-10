@@ -35,8 +35,8 @@ class TrendingsAdapter :
             with(binding) {
                 tvItemTitle.text = trending.name
                 tvItemDate.text = Utils.changeStringToDateFormat(trending.releaseOrAirDate)
-                tvItemRating.rating = trending.voteAverage.toFloat() / 2
-                tvItemSynopsis.text = trending.overview
+//                tvItemRating.rating = trending.voteAverage.toFloat() / 2
+//                tvItemSynopsis.text = trending.overview
                 itemView.setOnClickListener {
                     //show detail page
                     if (trending.mediaType == "tv") {
@@ -52,8 +52,8 @@ class TrendingsAdapter :
                 Glide.with(itemView.context)
                     .load(trending.posterPath)
                     .apply(
-                        RequestOptions.placeholderOf(R.drawable.ic_loading)
-                            .error(R.drawable.ic_error))
+                        RequestOptions.placeholderOf(R.drawable.placholder)
+                            .error(R.drawable.placholder))
                     .into(imgPoster)
             }
         }

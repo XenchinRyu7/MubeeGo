@@ -10,7 +10,6 @@
         </intent>
     </queries>
 
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -22,12 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MubeeGo"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.main.MainNavigation"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-3940256099942544~3347511713" />
+
         <activity
             android:name=".ui.authentication.AuthActivity"
             android:exported="false" />

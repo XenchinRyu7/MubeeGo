@@ -94,7 +94,7 @@ class MovieDetailActivity : AppCompatActivity() {
             .transform(RoundedCorners(16))
             .apply(
                 RequestOptions.placeholderOf(R.drawable.ic_loading)
-                    .error(R.drawable.ic_error)
+                    .error(R.drawable.placholder)
             )
             .into(binding.contentMovieDetail.moviePoster)
 
@@ -102,7 +102,7 @@ class MovieDetailActivity : AppCompatActivity() {
             .load(movieDetails.backdropPath)
             .apply(
                 RequestOptions.placeholderOf(R.drawable.ic_loading)
-                    .error(R.drawable.ic_error)
+                    .error(R.drawable.placholder)
             )
             .into(binding.movieBackdrop)
 

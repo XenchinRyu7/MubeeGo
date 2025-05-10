@@ -142,7 +142,7 @@ class TvShowDetailActivity : AppCompatActivity() {
             .transform(RoundedCorners(16))
             .apply(
                 RequestOptions.placeholderOf(R.drawable.ic_loading)
-                    .error(R.drawable.ic_error)
+                    .error(R.drawable.placholder)
             )
             .into(binding.contentTvShowDetail.tvShowPoster)
 
@@ -150,7 +150,7 @@ class TvShowDetailActivity : AppCompatActivity() {
             .load(showDetails.backdropPath)
             .apply(
                 RequestOptions.placeholderOf(R.drawable.ic_loading)
-                    .error(R.drawable.ic_error)
+                    .error(R.drawable.placholder)
             )
             .into(binding.tvShowBackdrop)
 

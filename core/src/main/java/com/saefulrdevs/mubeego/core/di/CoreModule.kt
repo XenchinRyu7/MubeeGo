@@ -88,7 +88,7 @@ val repositoryModule = module {
         FirebaseAuth.getInstance()
     }
     single<IAuthRepository> { AuthRepository(get()) }
-    single<IUserPreferencesRepository> { UserPreferencesRepository(get()) }
+    single<IUserPreferencesRepository> { UserPreferencesRepository(androidContext()) }
 }
 
 suspend fun getCertificatePins(hostname: String): List<String> {

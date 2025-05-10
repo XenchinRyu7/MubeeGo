@@ -46,7 +46,7 @@ class SeasonsAdapter : ListAdapter<Season, SeasonsAdapter.SeasonViewHolder>(DIFF
                     .transform(RoundedCorners(16))
                     .apply(
                         RequestOptions.placeholderOf(R.drawable.ic_loading)
-                            .error(R.drawable.ic_error)
+                            .error(R.drawable.placholder)
                     )
                     .into(imgPoster)
             }

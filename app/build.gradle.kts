@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    alias(libs.plugins.ksp)
 }
 
 fun getSigningProperty(propertyName: String): String {
@@ -72,9 +73,9 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
         buildConfig = true
     }
-    dynamicFeatures += setOf(":favorite")
 }
 
 dependencies {

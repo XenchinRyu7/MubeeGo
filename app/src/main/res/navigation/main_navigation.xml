@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/navigation_home">
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.saefulrdevs.mubeego.ui.main.home.HomeFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_sign_in" />
+
+    <fragment
+        android:id="@+id/navigation_playlist"
+        android:name="com.saefulrdevs.mubeego.ui.main.playlist.PlaylistFragment"
+        android:label="Sign In"
+        tools:layout="@layout/fragment_sign_in" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.saefulrdevs.mubeego.ui.main.profile.ProfileFragment"
+        android:label="Sign Up"
+        tools:layout="@layout/fragment_sign_up" />
+
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.saefulrdevs.mubeego.ui.main.favorite.FavoriteFragment"
+        android:label="Favorite"
+        tools:layout="@layout/fragment_favorite" />
+
+</navigation>
