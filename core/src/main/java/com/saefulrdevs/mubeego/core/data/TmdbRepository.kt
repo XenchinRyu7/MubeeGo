@@ -317,4 +317,44 @@ class TmdbRepository private constructor(
             }
         }.flowOn(Dispatchers.IO)
     }
+
+    override fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>> =
+        flow<Resource<List<Movie>>> {
+            val response = remoteDataSource.getUpcomingMoviesByDate(minDate, maxDate)
+            response.collect { apiResponse ->
+                when (apiResponse) {
+                    is ApiResponse.Success -> {
+                        val movies = apiResponse.data.map {
+                            val posterPath = it.posterPath?.let { path ->
+                                if (path.startsWith("http")) path else "https://image.tmdb.org/t/p/w500$path"
+                            } ?: ""
+                            val backdropPath = it.backdropPath?.let { path ->
+                                if (path.startsWith("http")) path else "https://image.tmdb.org/t/p/w500$path"
+                            } ?: ""
+                            Movie(
+                                movieId = it.id,
+                                title = it.title,
+                                overview = it.overview,
+                                posterPath = posterPath,
+                                backdropPath = backdropPath,
+                                releaseDate = it.releaseDate,
+                                voteCount = it.voteCount,
+                                voteAverage = it.voteAverage,
+                                runtime = 0,
+                                genres = "",
+                                youtubeTrailerId = "",
+                                favorited = false
+                            )
+                        }
+                        emit(Resource.Success(movies))
+                    }
+                    is ApiResponse.Empty -> {
+                        emit(Resource.Success(emptyList()))
+                    }
+                    is ApiResponse.Error -> {
+                        emit(Resource.Error<List<Movie>>(apiResponse.errorMessage))
+                    }
+                }
+            }
+        }.flowOn(Dispatchers.IO)
 }

@@ -50,4 +50,16 @@ interface ApiService {
     suspend fun getTrendings(
         @Query("api_key") api_key: String?
     ): SearchResponse
+
+    @GET("discover/movie")
+    suspend fun getUpcomingMoviesByDate(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String,
+        @Query("primary_release_date.gte") minDate: String,
+        @Query("primary_release_date.lte") maxDate: String,
+        @Query("sort_by") sortBy: String = "popularity.desc",
+        @Query("include_adult") includeAdult: Boolean = false,
+        @Query("include_video") includeVideo: Boolean = false,
+        @Query("with_release_type") releaseType: String = "2|3"
+    ): DiscoverMovieResponse
 }

@@ -16,4 +16,7 @@ class SearchViewModel
 
     fun getSearchResult(title: String): LiveData<Resource<List<SearchItem>>> =
         tmdbUseCase.getSearchResult(title).asLiveData()
+
+    fun getUpcomingMoviesByDate(minDate: String, maxDate: String) =
+        tmdbUseCase.getUpcomingMoviesByDate(minDate, maxDate).asLiveData()
 }

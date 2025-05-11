@@ -53,4 +53,7 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
         return tmdbRepository.getTrendings()
     }
 
+    override fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>> {
+        return tmdbRepository.getUpcomingMoviesByDate(minDate, maxDate)
+    }
 }

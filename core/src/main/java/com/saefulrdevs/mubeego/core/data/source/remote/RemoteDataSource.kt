@@ -121,6 +121,26 @@ class RemoteDataSource(private val apiService: ApiService) {
         return f
     }
 
+    fun getUpcomingMoviesByDate(minDate: String, maxDate: String) = flow {
+        EspressoIdlingResource.increment()
+        try {
+            android.util.Log.d("API_REQUEST", "getUpcomingMoviesByDate: minDate=$minDate, maxDate=$maxDate")
+            val response = apiService.getUpcomingMoviesByDate(
+                API_KEY, LANGUAGE, minDate, maxDate
+            )
+            val results = response.results
+            android.util.Log.d("API_RESPONSE", "getUpcomingMoviesByDate: results=${results.map { it.title + ", " + it.releaseDate }}")
+            if (results.isNotEmpty()) {
+                emit(ApiResponse.Success(results))
+            } else {
+                emit(ApiResponse.Empty)
+            }
+        } catch (e: IOException) {
+            emit(ApiResponse.Error(e.toString()))
+        }
+        EspressoIdlingResource.decrement()
+    }.flowOn(Dispatchers.IO)
+
     companion object {
         private const val API_KEY = BuildConfig.TMDB_API_KEY
         private const val LANGUAGE = "en-US"
