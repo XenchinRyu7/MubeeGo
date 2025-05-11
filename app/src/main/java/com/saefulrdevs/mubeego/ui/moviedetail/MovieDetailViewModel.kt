@@ -22,6 +22,8 @@ class MovieDetailViewModel(private val tmdbUseCase: TmdbUseCase) : ViewModel() {
     fun getMovieDetail(movieId: Int): LiveData<Resource<Movie>> =
         tmdbUseCase.getMovieDetail(movieId.toString()).asLiveData()
 
+    fun getMovieWatchProviders(movieId: Int) = tmdbUseCase.getMovieWatchProviders(movieId.toString())
+
     fun setFavorite(): Boolean {
         val movie = movie.value
         if (movie != null) {

@@ -92,7 +92,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:padding="16dp">
 
             <!-- My Account Row -->
             <ImageView
@@ -206,36 +206,47 @@
 
             <!-- Theme (Dark Mode) Row -->
             <ImageView
-                android:id="@+id/icTheme"
+                android:id="@+id/icSettings"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:src="@drawable/ic_dark_mode_24dp"
+                android:src="@drawable/ic_settings_24dp"
                 app:tint="@color/primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider2"
                 android:layout_marginTop="12dp" />
 
             <TextView
-                android:id="@+id/tvTheme"
+                android:id="@+id/tvSettings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Theme"
+                android:text="Settings"
                 android:textColor="@color/onBackground"
                 android:textStyle="bold"
                 android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/icTheme"
-                app:layout_constraintTop_toTopOf="@id/icTheme"
+                app:layout_constraintStart_toEndOf="@id/icSettings"
+                app:layout_constraintTop_toTopOf="@id/icSettings"
                 android:layout_marginStart="16dp" />
 
-            <Spinner
-                android:id="@+id/spinnerTheme"
+            <TextView
+                android:id="@+id/tvThemeDesc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Change app theme and preferences"
+                android:textColor="@color/onSurfaceVariant"
+                android:textSize="13sp"
+                app:layout_constraintStart_toStartOf="@id/tvSettings"
+                app:layout_constraintTop_toBottomOf="@id/icSettings"
+                android:layout_marginTop="2dp" />
+
+            <ImageView
+                android:id="@+id/icSettingsArrow"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:src="@drawable/ic_arrow_right_24dp"
+                app:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icTheme"
-                app:layout_constraintBottom_toBottomOf="@id/icTheme"
-                android:layout_marginEnd="16dp"
-                android:entries="@array/theme_options" />
+                app:layout_constraintTop_toTopOf="@id/icSettings"
+                app:layout_constraintBottom_toBottomOf="@id/icSettings" />
 
             <!-- Divider after Theme -->
             <View
@@ -243,7 +254,7 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:background="#F0F0F0"
-                app:layout_constraintTop_toBottomOf="@id/icTheme"
+                app:layout_constraintTop_toBottomOf="@id/icSettings"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="12dp" />
@@ -326,7 +337,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:padding="16dp">
 
             <!-- Help & Support Row -->
             <ImageView

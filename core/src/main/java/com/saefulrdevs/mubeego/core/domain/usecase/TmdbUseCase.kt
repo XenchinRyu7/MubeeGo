@@ -20,4 +20,5 @@ interface TmdbUseCase {
     fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>>
     fun getTrendings(): Flow<Resource<List<SearchItem>>>
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>>
+    fun getMovieWatchProviders(movieId: String): kotlinx.coroutines.flow.Flow<com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse<com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse>>
 }

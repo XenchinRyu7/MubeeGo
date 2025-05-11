@@ -23,4 +23,12 @@ class UserPreferencesInteractor(private val userPreferencesRepository: IUserPref
     override fun getThemeMode(): Int {
         return userPreferencesRepository.getThemeMode()
     }
+
+    override fun setNotificationEnabled(enabled: Boolean) {
+        userPreferencesRepository.setNotificationEnabled(enabled)
+    }
+
+    override fun isNotificationEnabled(): Boolean {
+        return userPreferencesRepository.isNotificationEnabled()
+    }
 }

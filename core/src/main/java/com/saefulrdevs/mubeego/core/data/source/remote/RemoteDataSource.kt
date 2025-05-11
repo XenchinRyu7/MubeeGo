@@ -141,6 +141,21 @@ class RemoteDataSource(private val apiService: ApiService) {
         EspressoIdlingResource.decrement()
     }.flowOn(Dispatchers.IO)
 
+    fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse>> {
+        EspressoIdlingResource.increment()
+        val f = flow {
+            try {
+                val response = apiService.getMovieWatchProviders(movieId, API_KEY)
+                emit(ApiResponse.Success(response))
+            } catch (e: IOException) {
+                emit(ApiResponse.Error(e.toString()))
+                Log.e("RemoteDataSource", e.toString())
+            }
+        }.flowOn(Dispatchers.IO)
+        EspressoIdlingResource.decrement()
+        return f
+    }
+
     companion object {
         private const val API_KEY = BuildConfig.TMDB_API_KEY
         private const val LANGUAGE = "en-US"

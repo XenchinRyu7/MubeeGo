@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <queries>
         <intent>
@@ -64,6 +66,9 @@
             android:exported="false"
             android:label="@string/title_activity_movie_detail"
             android:parentActivityName=".ui.MainActivity" />
+
+        <receiver android:name=".ui.moviedetail.ReminderReceiver" />
+        <service android:name="androidx.core.app.JobIntentService" />
     </application>
 
 </manifest>

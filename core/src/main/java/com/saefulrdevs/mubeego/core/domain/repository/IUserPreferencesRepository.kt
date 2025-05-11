@@ -8,4 +8,6 @@ interface IUserPreferencesRepository {
     fun clearUser()
     fun setThemeMode(mode: Int)
     fun getThemeMode(): Int
+    fun setNotificationEnabled(enabled: Boolean)
+    fun isNotificationEnabled(): Boolean
 }

@@ -40,4 +40,12 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
     override fun getThemeMode(): Int {
         return prefs.getInt("THEME_MODE", 0)
     }
+
+    override fun setNotificationEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean("NOTIFICATION_ENABLED", enabled).apply()
+    }
+
+    override fun isNotificationEnabled(): Boolean {
+        return prefs.getBoolean("NOTIFICATION_ENABLED", true)
+    }
 }

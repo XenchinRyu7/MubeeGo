@@ -5,6 +5,7 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.DiscoverTvShowRe
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.SearchResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -29,6 +30,12 @@ interface ApiService {
         @Query("language") language: String,
         @Query("append_to_response") append_to_response: String? = null
     ): MovieDetailResponse
+
+    @GET("movie/{movieId}/watch/providers")
+    suspend fun getMovieWatchProviders(
+        @Path("movieId") movieId: String,
+        @Query("api_key") api_key: String
+    ): WatchProvidersResponse
 
     @GET("tv/{tvShowId}")
     suspend fun getTvShowDetail(

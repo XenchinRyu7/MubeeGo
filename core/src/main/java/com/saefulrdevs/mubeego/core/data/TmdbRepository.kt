@@ -357,4 +357,8 @@ class TmdbRepository private constructor(
                 }
             }
         }.flowOn(Dispatchers.IO)
+
+    fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse>> {
+        return remoteDataSource.getMovieWatchProviders(movieId)
+    }
 }

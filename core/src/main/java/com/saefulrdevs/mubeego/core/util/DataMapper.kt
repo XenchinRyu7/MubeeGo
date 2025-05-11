@@ -51,7 +51,8 @@ object DataMapper {
             runtime = runtime,
             genres = genres,
             youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            favorited = favorited,
+            originalLanguage = originalLanguage
         )
     }
 
@@ -68,7 +69,8 @@ object DataMapper {
             runtime = runtime,
             genres = genres,
             youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            favorited = favorited,
+            originalLanguage = originalLanguage
         )
     }
 
@@ -93,7 +95,9 @@ object DataMapper {
             voteCount = voteCount ?: 0,
             runtime = runtime ?: 0,
             genres = JSONArray(listOfGenre).toString(),
-            youtubeTrailerId = videos?.getYoutubeTrailerId() ?: ""
+            youtubeTrailerId = videos?.getYoutubeTrailerId() ?: "",
+            favorited = false,
+            originalLanguage = originalLanguage ?: ""
         )
     }
 

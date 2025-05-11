@@ -56,4 +56,8 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
     override fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>> {
         return tmdbRepository.getUpcomingMoviesByDate(minDate, maxDate)
     }
+
+    override fun getMovieWatchProviders(movieId: String) =
+        (tmdbRepository as? com.saefulrdevs.mubeego.core.data.TmdbRepository)?.getMovieWatchProviders(movieId)
+            ?: throw NotImplementedError("getMovieWatchProviders not implemented in repository")
 }
