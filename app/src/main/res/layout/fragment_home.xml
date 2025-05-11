@@ -35,7 +35,7 @@
                     android:text="Now Showing"
                     android:textStyle="bold"
                     android:textSize="18sp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/onBackground"/>
                 <TextView
                     android:id="@+id/btn_see_more_now_showing"
                     android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                     android:text="Popular"
                     android:textStyle="bold"
                     android:textSize="18sp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/onBackground"/>
                 <TextView
                     android:id="@+id/btn_see_more_popular"
                     android:layout_width="wrap_content"
@@ -122,7 +122,7 @@
                     android:text="Tv Series"
                     android:textStyle="bold"
                     android:textSize="18sp"
-                    android:textColor="@color/black"/>
+                    android:textColor="@color/onBackground"/>
                 <TextView
                     android:id="@+id/btn_see_more_tv"
                     android:layout_width="wrap_content"

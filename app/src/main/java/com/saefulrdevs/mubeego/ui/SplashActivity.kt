@@ -3,6 +3,7 @@ package com.saefulrdevs.mubeego.ui
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import android.os.Bundle
 import android.os.Handler
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
@@ -17,6 +18,13 @@ class SplashActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Terapkan theme mode dari preferences
+        when (userPreferencesUseCase.getThemeMode()) {
+            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
 
         val isUserLoggedIn = userPreferencesUseCase.getUser() != null
 

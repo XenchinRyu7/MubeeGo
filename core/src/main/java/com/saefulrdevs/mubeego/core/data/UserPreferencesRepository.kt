@@ -32,4 +32,12 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
         Firebase.auth.signOut()
         prefs.edit().clear().apply()
     }
+
+    override fun setThemeMode(mode: Int) {
+        prefs.edit().putInt("THEME_MODE", mode).apply()
+    }
+
+    override fun getThemeMode(): Int {
+        return prefs.getInt("THEME_MODE", 0)
+    }
 }

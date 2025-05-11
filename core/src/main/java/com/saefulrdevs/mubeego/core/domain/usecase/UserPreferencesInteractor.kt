@@ -15,4 +15,12 @@ class UserPreferencesInteractor(private val userPreferencesRepository: IUserPref
     override fun clearUser() {
         userPreferencesRepository.clearUser()
     }
+
+    override fun setThemeMode(mode: Int) {
+        userPreferencesRepository.setThemeMode(mode)
+    }
+
+    override fun getThemeMode(): Int {
+        return userPreferencesRepository.getThemeMode()
+    }
 }

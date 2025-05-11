@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.FragmentProfileBinding
+import org.koin.android.ext.android.inject
 
 class ProfileFragment : Fragment() {
 
     private var _binding : FragmentProfileBinding? = null
     private val binding get() = _binding!!
+    private val userPreferencesUseCase: com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,18 +38,13 @@ class ProfileFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
 
-        // Set spinner to current mode
-        val currentNightMode = resources.configuration.uiMode and android.content.res.Configuration.UI_MODE_NIGHT_MASK
-        spinner.setSelection(
-            when (currentNightMode) {
-                android.content.res.Configuration.UI_MODE_NIGHT_NO -> 1 // Light
-                android.content.res.Configuration.UI_MODE_NIGHT_YES -> 2 // Dark
-                else -> 0 // System Default
-            }
-        )
+        // Set spinner to current mode dari preferences
+        val savedThemeMode = userPreferencesUseCase.getThemeMode()
+        spinner.setSelection(savedThemeMode)
 
         spinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+                userPreferencesUseCase.setThemeMode(position)
                 when (position) {
                     0 -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
                     1 -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
@@ -55,7 +52,7 @@ class ProfileFragment : Fragment() {
                 }
             }
 
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
         }
     }
 }

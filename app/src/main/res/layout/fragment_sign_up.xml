@@ -20,6 +20,7 @@
         android:id="@+id/tv_sign_up"
         style="@style/BaseTextTitle"
         android:text="@string/sign_up"
+        android:textColor="@color/onBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/back_button" />
@@ -28,6 +29,7 @@
         android:id="@+id/tv_sign_up_description"
         style="@style/BaseTextDescription"
         android:text="@string/sign_up_description"
+        android:textColor="@color/onSurfaceVariant"
         app:layout_constraintStart_toStartOf="@id/tv_sign_up"
         app:layout_constraintTop_toBottomOf="@id/tv_sign_up" />
 
@@ -35,6 +37,7 @@
         android:id="@+id/tv_full_name"
         style="@style/BaseTextView"
         android:text="@string/full_name"
+        android:textColor="@color/onBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_sign_up_description" />
@@ -58,6 +61,7 @@
         android:id="@+id/tv_email"
         style="@style/BaseTextView"
         android:text="@string/email"
+        android:textColor="@color/onBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tf_full_name" />
@@ -82,6 +86,7 @@
         android:id="@+id/tv_set_password"
         style="@style/BaseTextView"
         android:text="@string/set_password"
+        android:textColor="@color/onBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tf_email" />
@@ -117,6 +122,7 @@
         android:layout_height="wrap_content"
         android:padding="8dp"
         android:text="@string/or"
+        android:textColor="@color/onSurfaceVariant"
         app:layout_constraintBottom_toTopOf="@+id/google_login"
         app:layout_constraintEnd_toEndOf="@+id/register_button"
         app:layout_constraintHorizontal_bias="0.521"
@@ -143,6 +149,7 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="4dp"
         android:text="@string/already_have_account"
+        android:textColor="@color/onSurfaceVariant"
         app:layout_constraintEnd_toStartOf="@+id/tv_sign_in_click"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/google_login" />

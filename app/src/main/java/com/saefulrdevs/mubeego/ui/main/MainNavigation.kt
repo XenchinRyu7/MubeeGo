@@ -1,6 +1,9 @@
 package com.saefulrdevs.mubeego.ui.main
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -11,6 +14,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.ActivityMainNavigationBinding
+import com.saefulrdevs.mubeego.ui.search.SearchActivity
 
 class MainNavigation : AppCompatActivity() {
 
@@ -30,7 +34,6 @@ class MainNavigation : AppCompatActivity() {
             insets
         }
 
-
         // Setup Toolbar
         val toolbar: Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
@@ -45,6 +48,22 @@ class MainNavigation : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             navController.navigate(item.itemId)
             true
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_search -> {
+                val intent = Intent(this, SearchActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }
