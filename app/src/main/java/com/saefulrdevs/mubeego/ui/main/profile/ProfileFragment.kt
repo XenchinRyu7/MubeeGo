@@ -12,7 +12,7 @@ import org.koin.android.ext.android.inject
 
 class ProfileFragment : Fragment() {
 
-    private var _binding : FragmentProfileBinding? = null
+    private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private val userPreferencesUseCase: com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase by inject()
 
@@ -37,5 +37,10 @@ class ProfileFragment : Fragment() {
             findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
         }
         binding.icSettingsArrow.setOnClickListener(goToSettings)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

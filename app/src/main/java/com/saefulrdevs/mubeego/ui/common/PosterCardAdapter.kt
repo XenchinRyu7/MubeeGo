@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.saefulrdevs.mubeego.core.domain.model.Movie
-import com.saefulrdevs.mubeego.databinding.ItemPosterCardBinding
+import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
 // Replace Movie type with your actual data model
 class PosterCardAdapter : RecyclerView.Adapter<PosterCardAdapter.PosterViewHolder>() {
@@ -17,7 +17,8 @@ class PosterCardAdapter : RecyclerView.Adapter<PosterCardAdapter.PosterViewHolde
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PosterViewHolder {
-        val binding = ItemPosterCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemVerticalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return PosterViewHolder(binding)
     }
 
@@ -27,7 +28,8 @@ class PosterCardAdapter : RecyclerView.Adapter<PosterCardAdapter.PosterViewHolde
 
     override fun getItemCount(): Int = items.size
 
-    inner class PosterViewHolder(private val binding: ItemPosterCardBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class PosterViewHolder(private val binding: ItemVerticalCardBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             // Load image with Glide/Picasso/Coil if needed
             binding.tvItemTitle.text = movie.title

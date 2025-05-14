@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.FragmentHomeBinding
 import com.saefulrdevs.mubeego.ui.common.PosterCardAdapter
 import com.saefulrdevs.mubeego.ui.movies.MoviesAdapter
@@ -19,8 +18,9 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private val moviesViewModel: MoviesViewModel by viewModel()
     private lateinit var nowShowingAdapter: PosterCardAdapter
-    private lateinit var tvSeriesAdapter: PosterCardAdapter
     private lateinit var popularAdapter: MoviesAdapter
+    private lateinit var moviesAdapter: PosterCardAdapter
+    private lateinit var tvSeriesAdapter: PosterCardAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,8 +42,9 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         nowShowingAdapter = PosterCardAdapter()
-        tvSeriesAdapter = PosterCardAdapter()
         popularAdapter = MoviesAdapter()
+        moviesAdapter = PosterCardAdapter()
+        tvSeriesAdapter = PosterCardAdapter()
 
         // Setup Now Showing RecyclerView (Horizontal)
         binding.rvNowShowing.apply {
@@ -59,6 +60,13 @@ class HomeFragment : Fragment() {
             setHasFixedSize(true)
         }
 
+        // Setup Movies RecyclerView (Horizontal)
+        binding.rvMovies.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = moviesAdapter
+            setHasFixedSize(true)
+        }
+
         // Setup TV Series RecyclerView (Horizontal)
         binding.rvTvSeries.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -71,6 +79,7 @@ class HomeFragment : Fragment() {
             resource.data?.let { movies ->
                 nowShowingAdapter.submitList(movies.take(5))
                 popularAdapter.submitList(movies.drop(5).take(5))
+                moviesAdapter.submitList(movies.drop(5).take(5))
                 tvSeriesAdapter.submitList(movies.takeLast(5)) // Replace with real TV series data if available
             }
         }

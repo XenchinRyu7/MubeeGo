@@ -11,7 +11,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.R
-import com.saefulrdevs.mubeego.databinding.ItemMoviesTvshowsBinding
+import com.saefulrdevs.mubeego.databinding.ItemHorizontalCardBinding
 import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailActivity
 
 class FavoriteMoviesAdapter: ListAdapter<Movie, FavoriteMoviesAdapter.MoviesViewHolder>(
@@ -19,7 +19,7 @@ class FavoriteMoviesAdapter: ListAdapter<Movie, FavoriteMoviesAdapter.MoviesView
 )  {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesViewHolder {
-        val itemsSeasonDetailBinding = ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemsSeasonDetailBinding = ItemHorizontalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MoviesViewHolder(itemsSeasonDetailBinding)
     }
 
@@ -28,7 +28,7 @@ class FavoriteMoviesAdapter: ListAdapter<Movie, FavoriteMoviesAdapter.MoviesView
         holder.bind(movie)
     }
 
-    class MoviesViewHolder(private val binding: ItemMoviesTvshowsBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MoviesViewHolder(private val binding: ItemHorizontalCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             with(binding) {
                 tvItemTitle.text = movie.title

@@ -12,12 +12,12 @@ import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.util.Utils
-import com.saefulrdevs.mubeego.databinding.ItemMoviesTvshowsBinding
+import com.saefulrdevs.mubeego.databinding.ItemHorizontalCardBinding
 
 class MoviesAdapter: ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val itemsMovieBinding = ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemsMovieBinding = ItemHorizontalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MovieViewHolder(itemsMovieBinding)
     }
 
@@ -28,7 +28,7 @@ class MoviesAdapter: ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALL
         }
     }
 
-    class MovieViewHolder(private val binding: ItemMoviesTvshowsBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MovieViewHolder(private val binding: ItemHorizontalCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             with(binding) {
                 tvItemTitle.text = movie.title
