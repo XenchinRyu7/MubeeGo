@@ -2,7 +2,6 @@ package com.saefulrdevs.mubeego.ui.search
 
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
@@ -14,12 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.databinding.ActivitySearchBinding
+import com.saefulrdevs.mubeego.ui.common.PopularAdapter
+import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
-    private val searchViewModel: SearchViewModel by viewModel()
+    private val homeViewModel: HomeViewModel by viewModel()
     private var startDate: String? = null
     private var endDate: String? = null
     private lateinit var upcomingAdapter: UpcomingMoviesAdapter
@@ -35,12 +36,12 @@ class SearchActivity : AppCompatActivity() {
             insets
         }
         setupAutoComplete()
-        val trendingsAdapter = TrendingsAdapter()
-        trendingsAdapter.submitList(emptyList())
+        val popularAdapter = PopularAdapter()
+        popularAdapter.submitList(emptyList())
         with(binding.rvTrending) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = trendingsAdapter
+            adapter = popularAdapter
         }
         // Setup Upcoming Movies Adapter
         upcomingAdapter = UpcomingMoviesAdapter()
@@ -76,7 +77,7 @@ class SearchActivity : AppCompatActivity() {
             binding.rvTrending.adapter = upcomingAdapter
             binding.progressCircular.visibility = View.VISIBLE
             isShowingUpcoming = true
-            searchViewModel.getUpcomingMoviesByDate(min, max).observe(this) { result ->
+            homeViewModel.getUpcomingMoviesByDate(min, max).observe(this) { result ->
                 when (result) {
                     is Resource.Success -> {
                         binding.progressCircular.visibility = View.GONE
@@ -98,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
         val autoComplete = binding.autoCompleteSearch
         val btnBack = binding.btnBack
         val btnSearch = binding.btnSearch
-        val trendingsAdapter = TrendingsAdapter()
+        val popularAdapter = PopularAdapter()
         btnBack.setOnClickListener { finish() }
         btnSearch.setOnClickListener {
             val query = autoComplete.text.toString()
@@ -107,17 +108,17 @@ class SearchActivity : AppCompatActivity() {
                 isShowingUpcoming = false
                 // Clear and set trending adapter
                 (binding.rvTrending.adapter as? UpcomingMoviesAdapter)?.submitList(emptyList())
-                binding.rvTrending.adapter = trendingsAdapter
-                searchViewModel.getSearchResult(query).observe(this@SearchActivity) { items ->
+                binding.rvTrending.adapter = popularAdapter
+                homeViewModel.getSearchResult(query).observe(this@SearchActivity) { items ->
                     when (items) {
                         is Resource.Success -> {
                             binding.progressCircular.visibility = View.GONE
                             val results = items.data ?: emptyList()
-                            trendingsAdapter.submitList(results)
+                            popularAdapter.submitList(results)
                         }
                         is Resource.Error -> {
                             binding.progressCircular.visibility = View.GONE
-                            trendingsAdapter.submitList(emptyList())
+                            popularAdapter.submitList(emptyList())
                             Toast.makeText(this@SearchActivity, getString(R.string.error_while_getting_data), Toast.LENGTH_SHORT).show()
                         }
                         else -> if (items is Resource.Loading) binding.progressCircular.visibility = View.VISIBLE
@@ -133,17 +134,17 @@ class SearchActivity : AppCompatActivity() {
                     binding.progressCircular.visibility = View.VISIBLE
                     isShowingUpcoming = false
                     (binding.rvTrending.adapter as? UpcomingMoviesAdapter)?.submitList(emptyList())
-                    binding.rvTrending.adapter = trendingsAdapter
-                    searchViewModel.getSearchResult(query).observe(this@SearchActivity) { items ->
+                    binding.rvTrending.adapter = popularAdapter
+                    homeViewModel.getSearchResult(query).observe(this@SearchActivity) { items ->
                         when (items) {
                             is Resource.Success -> {
                                 binding.progressCircular.visibility = View.GONE
                                 val results = items.data ?: emptyList()
-                                trendingsAdapter.submitList(results)
+                                popularAdapter.submitList(results)
                             }
                             is Resource.Error -> {
                                 binding.progressCircular.visibility = View.GONE
-                                trendingsAdapter.submitList(emptyList())
+                                popularAdapter.submitList(emptyList())
                                 Toast.makeText(this@SearchActivity, getString(R.string.error_while_getting_data), Toast.LENGTH_SHORT).show()
                             }
                             else -> if (items is Resource.Loading) binding.progressCircular.visibility = View.VISIBLE
@@ -161,18 +162,18 @@ class SearchActivity : AppCompatActivity() {
                 if (!s.isNullOrEmpty()) {
                     isShowingUpcoming = false
                     (binding.rvTrending.adapter as? UpcomingMoviesAdapter)?.submitList(emptyList())
-                    binding.rvTrending.adapter = trendingsAdapter
-                    searchViewModel.getSearchResult(s.toString()).observe(this@SearchActivity) { items ->
+                    binding.rvTrending.adapter = popularAdapter
+                    homeViewModel.getSearchResult(s.toString()).observe(this@SearchActivity) { items ->
                         when (items) {
                             is Resource.Success -> {
                                 val suggestions = items.data?.map { it.name } ?: emptyList()
                                 val adapter = ArrayAdapter(this@SearchActivity, android.R.layout.simple_dropdown_item_1line, suggestions)
                                 autoComplete.setAdapter(adapter)
                                 autoComplete.showDropDown()
-                                trendingsAdapter.submitList(items.data ?: emptyList())
+                                popularAdapter.submitList(items.data ?: emptyList())
                             }
                             is Resource.Error -> {
-                                trendingsAdapter.submitList(emptyList())
+                                popularAdapter.submitList(emptyList())
                             }
                             else -> {}
                         }

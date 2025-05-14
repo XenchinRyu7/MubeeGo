@@ -11,13 +11,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.Movie
-import com.saefulrdevs.mubeego.core.util.Utils
-import com.saefulrdevs.mubeego.databinding.ItemHorizontalCardBinding
+import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
-class MoviesAdapter: ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
+class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val itemsMovieBinding = ItemHorizontalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val itemsMovieBinding =
+            ItemVerticalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MovieViewHolder(itemsMovieBinding)
     }
 
@@ -28,13 +28,15 @@ class MoviesAdapter: ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALL
         }
     }
 
-    class MovieViewHolder(private val binding: ItemHorizontalCardBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MovieViewHolder(private val binding: ItemVerticalCardBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             with(binding) {
                 tvItemTitle.text = movie.title
-                tvItemDate.text = Utils.changeStringToDateFormat(movie.releaseDate)
-//                tvItemRating.rating = movie.voteAverage.toFloat() / 2
-//                tvItemSynopsis.text = movie.overview
+                tvItemRating.text = buildString {
+                    append((movie.voteAverage.toFloat() / 2).toString())
+                    append(" Imdb")
+                }
                 itemView.setOnClickListener {
                     val intent = Intent(itemView.context, MovieDetailActivity::class.java)
                     intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie.movieId)
@@ -44,7 +46,8 @@ class MoviesAdapter: ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALL
                     .load(movie.posterPath)
                     .apply(
                         RequestOptions.placeholderOf(R.drawable.placholder)
-                            .error(R.drawable.placholder))
+                            .error(R.drawable.placholder)
+                    )
                     .into(imgPoster)
             }
         }

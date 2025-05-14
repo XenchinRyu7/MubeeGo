@@ -9,6 +9,10 @@ import com.saefulrdevs.mubeego.core.domain.repository.ITmdbRepository
 import kotlinx.coroutines.flow.Flow
 
 class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase {
+    override fun getNowPlayingMovies(): Flow<Resource<List<Movie>>> {
+        return tmdbRepository.getNowPlayingMovies()
+    }
+
     override fun getDiscoverMovies(): Flow<Resource<List<Movie>>> {
         return tmdbRepository.getDiscoverMovies()
     }
@@ -49,7 +53,7 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
         return tmdbRepository.getSearchResult(title)
     }
 
-    override fun getTrendings(): Flow<Resource<List<SearchItem>>> {
+    override fun getPopular(): Flow<Resource<List<SearchItem>>> {
         return tmdbRepository.getTrendings()
     }
 

@@ -9,11 +9,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.Movie
-import com.saefulrdevs.mubeego.databinding.ItemMoviesTvshowsBinding
+import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
 class UpcomingMoviesAdapter : ListAdapter<Movie, UpcomingMoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
-        val binding = ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = ItemVerticalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return MovieViewHolder(binding)
     }
 
@@ -21,11 +21,11 @@ class UpcomingMoviesAdapter : ListAdapter<Movie, UpcomingMoviesAdapter.MovieView
         holder.bind(getItem(position))
     }
 
-    class MovieViewHolder(private val binding: ItemMoviesTvshowsBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MovieViewHolder(private val binding: ItemVerticalCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             with(binding) {
                 tvItemTitle.text = movie.title
-                tvItemDate.text = movie.releaseDate
+                tvItemRating.text = movie.releaseDate
                 tvItemRating.text = "${movie.voteAverage}/10 IMDb"
                 Glide.with(itemView.context)
                     .load(if (movie.posterPath.isNotEmpty()) movie.posterPath else R.drawable.placholder)

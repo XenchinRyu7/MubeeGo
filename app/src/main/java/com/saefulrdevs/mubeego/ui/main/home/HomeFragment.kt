@@ -6,10 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.databinding.FragmentHomeBinding
 import com.saefulrdevs.mubeego.ui.common.PosterCardAdapter
 import com.saefulrdevs.mubeego.ui.movies.MoviesAdapter
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
+import com.saefulrdevs.mubeego.ui.common.PopularAdapter
+import com.saefulrdevs.mubeego.ui.tvshows.TvShowsAdapter
+import com.saefulrdevs.mubeego.ui.tvshows.TvShowsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -17,10 +21,12 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val moviesViewModel: MoviesViewModel by viewModel()
-    private lateinit var nowShowingAdapter: PosterCardAdapter
-    private lateinit var popularAdapter: MoviesAdapter
-    private lateinit var moviesAdapter: PosterCardAdapter
-    private lateinit var tvSeriesAdapter: PosterCardAdapter
+    private val tvShowsViewModel: TvShowsViewModel by viewModel()
+    private val homeViewModel: HomeViewModel by viewModel()
+    private lateinit var nowShowingAdapter: MoviesAdapter
+    private lateinit var popularAdapter: PopularAdapter
+    private lateinit var moviesAdapter: MoviesAdapter
+    private lateinit var tvSeriesAdapter: TvShowsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,10 +47,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        nowShowingAdapter = PosterCardAdapter()
-        popularAdapter = MoviesAdapter()
-        moviesAdapter = PosterCardAdapter()
-        tvSeriesAdapter = PosterCardAdapter()
+        nowShowingAdapter = MoviesAdapter()
+        popularAdapter = PopularAdapter()
+        moviesAdapter = MoviesAdapter()
+        tvSeriesAdapter = TvShowsAdapter()
 
         // Setup Now Showing RecyclerView (Horizontal)
         binding.rvNowShowing.apply {
@@ -74,13 +80,28 @@ class HomeFragment : Fragment() {
             setHasFixedSize(true)
         }
 
+        homeViewModel.getNowPlaying().observe(viewLifecycleOwner) { resource ->
+            resource.data?.let { nowPlaying ->
+                nowShowingAdapter.submitList(nowPlaying.take(5))
+            }
+        }
+
+        homeViewModel.getPopular().observe(viewLifecycleOwner) { resource ->
+            resource.data?.let { popular ->
+                popularAdapter.submitList(popular.take(5))
+            }
+        }
+
         // Observe movies and split for all sections
         moviesViewModel.getDiscoverMovies().observe(viewLifecycleOwner) { resource ->
             resource.data?.let { movies ->
-                nowShowingAdapter.submitList(movies.take(5))
-                popularAdapter.submitList(movies.drop(5).take(5))
                 moviesAdapter.submitList(movies.drop(5).take(5))
-                tvSeriesAdapter.submitList(movies.takeLast(5)) // Replace with real TV series data if available
+            }
+        }
+
+        tvShowsViewModel.getDiscoverTvShow().observe(viewLifecycleOwner) { resource ->
+            resource.data?.let { tvShows ->
+                tvSeriesAdapter.submitList(tvShows.take(5))
             }
         }
 

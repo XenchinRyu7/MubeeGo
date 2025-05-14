@@ -10,7 +10,7 @@ import com.saefulrdevs.mubeego.ui.authentication.AuthViewModel
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.tvshows.TvShowsViewModel
 import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
-import com.saefulrdevs.mubeego.ui.search.SearchViewModel
+import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import com.saefulrdevs.mubeego.ui.tvshowdetail.TvShowDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteMoviesViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -27,7 +27,7 @@ val viewModelModule = module {
     viewModel { TvShowsViewModel(get()) }
     viewModel { MovieDetailViewModel(get()) }
     viewModel { TvShowDetailViewModel(get()) }
-    viewModel { SearchViewModel(get()) }
+    viewModel { HomeViewModel(get()) }
     viewModel { AuthViewModel(get(), get()) }
     viewModel { FavoriteMoviesViewModel(get()) }
 }

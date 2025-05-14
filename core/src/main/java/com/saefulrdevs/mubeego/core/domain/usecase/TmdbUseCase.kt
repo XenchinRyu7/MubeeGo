@@ -8,6 +8,7 @@ import com.saefulrdevs.mubeego.core.domain.model.TvShowWithSeason
 import kotlinx.coroutines.flow.Flow
 
 interface TmdbUseCase {
+    fun getNowPlayingMovies(): Flow<Resource<List<Movie>>>
     fun getDiscoverMovies(): Flow<Resource<List<Movie>>>
     fun getDiscoverTvShow(): Flow<Resource<List<TvShow>>>
     fun getMovieDetail(movieId: String): Flow<Resource<Movie>>
@@ -18,7 +19,7 @@ interface TmdbUseCase {
     fun setFavoriteMovie(movie: Movie, newState: Boolean)
     fun setFavoriteTvShow(tvShow: TvShow, newState: Boolean)
     fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>>
-    fun getTrendings(): Flow<Resource<List<SearchItem>>>
+    fun getPopular(): Flow<Resource<List<SearchItem>>>
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>>
     fun getMovieWatchProviders(movieId: String): kotlinx.coroutines.flow.Flow<com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse<com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse>>
 }

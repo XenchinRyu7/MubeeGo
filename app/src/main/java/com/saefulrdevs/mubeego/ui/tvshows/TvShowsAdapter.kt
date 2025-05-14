@@ -12,14 +12,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.util.Utils.changeStringToDateFormat
-import com.saefulrdevs.mubeego.databinding.ItemMoviesTvshowsBinding
+import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
 class TvShowsAdapter :
     ListAdapter<TvShow, TvShowsAdapter.TvShowViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvShowViewHolder {
         val itemsTvShowBinding =
-            ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemVerticalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TvShowViewHolder(itemsTvShowBinding)
     }
 
@@ -30,14 +30,15 @@ class TvShowsAdapter :
         }
     }
 
-    class TvShowViewHolder(private val binding: ItemMoviesTvshowsBinding) :
+    class TvShowViewHolder(private val binding: ItemVerticalCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(show: TvShow) {
             with(binding) {
                 tvItemTitle.text = show.name
-                tvItemDate.text = changeStringToDateFormat(show.firstAirDate)
-//                tvItemRating.rating = show.voteAverage.toFloat() / 2
-//                tvItemSynopsis.text = show.overview
+                tvItemRating.text = buildString {
+                    append((show.voteAverage.toFloat() / 2).toString())
+                    append(" Imdb")
+                }
                 itemView.setOnClickListener {
                     val intent = Intent(itemView.context, TvShowDetailActivity::class.java)
                     intent.putExtra(TvShowDetailActivity.EXTRA_TV_SHOW, show.tvShowId)

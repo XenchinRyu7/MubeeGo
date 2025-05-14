@@ -18,6 +18,26 @@ import java.io.IOException
 
 class RemoteDataSource(private val apiService: ApiService) {
 
+    fun getNowPlayingMovies(): Flow<ApiResponse<List<ResultsItemMovie>>> {
+        EspressoIdlingResource.increment()
+        val f = flow {
+            try {
+                val response = apiService.getNowPlayingMovies(API_KEY)
+                val results = response.results
+                if (results.isNotEmpty()) {
+                    emit(ApiResponse.Success(results))
+                } else {
+                    emit(ApiResponse.Empty)
+                }
+            } catch (e: IOException) {
+                emit(ApiResponse.Error(e.toString()))
+                Log.e("RemoteDataSource", e.toString())
+            }
+        }.flowOn(Dispatchers.IO)
+        EspressoIdlingResource.decrement()
+        return f
+    }
+
     fun getDiscoverMovie(): Flow<ApiResponse<List<ResultsItemMovie>>> {
         EspressoIdlingResource.increment()
         val f = flow {
@@ -124,12 +144,18 @@ class RemoteDataSource(private val apiService: ApiService) {
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String) = flow {
         EspressoIdlingResource.increment()
         try {
-            android.util.Log.d("API_REQUEST", "getUpcomingMoviesByDate: minDate=$minDate, maxDate=$maxDate")
+            android.util.Log.d(
+                "API_REQUEST",
+                "getUpcomingMoviesByDate: minDate=$minDate, maxDate=$maxDate"
+            )
             val response = apiService.getUpcomingMoviesByDate(
                 API_KEY, LANGUAGE, minDate, maxDate
             )
             val results = response.results
-            android.util.Log.d("API_RESPONSE", "getUpcomingMoviesByDate: results=${results.map { it.title + ", " + it.releaseDate }}")
+            android.util.Log.d(
+                "API_RESPONSE",
+                "getUpcomingMoviesByDate: results=${results.map { it.title + ", " + it.releaseDate }}"
+            )
             if (results.isNotEmpty()) {
                 emit(ApiResponse.Success(results))
             } else {

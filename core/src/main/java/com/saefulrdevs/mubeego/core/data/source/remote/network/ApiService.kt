@@ -11,6 +11,12 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
+
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovies(
+        @Query("api_key") api_key: String,
+    ): DiscoverMovieResponse
+
     @GET("discover/movie")
     suspend fun getDiscoverMovie(
         @Query("api_key") api_key: String,
@@ -69,4 +75,11 @@ interface ApiService {
         @Query("include_video") includeVideo: Boolean = false,
         @Query("with_release_type") releaseType: String = "2|3"
     ): DiscoverMovieResponse
+
+//    @GET("movie/{movieId}/watch/providers")
+//    suspend fun getProviders(
+//        @Path("movieId") movieId: String,
+//        @Query("api_key") api_key: String,
+//        @Query("language") language: String,
+//    ):
 }

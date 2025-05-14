@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.search
+package com.saefulrdevs.mubeego.ui.common
 
 import android.content.Intent
 import android.view.LayoutInflater
@@ -13,14 +13,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.util.Utils
-import com.saefulrdevs.mubeego.databinding.ItemMoviesTvshowsBinding
+import com.saefulrdevs.mubeego.databinding.ItemHorizontalCardBinding
 
-class TrendingsAdapter :
-    ListAdapter<SearchItem, TrendingsAdapter.TrendingViewHolder>(DIFF_CALLBACK) {
+class PopularAdapter :
+    ListAdapter<SearchItem, PopularAdapter.TrendingViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrendingViewHolder {
         val itemsTrendingDetailBinding =
-            ItemMoviesTvshowsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            ItemHorizontalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TrendingViewHolder(itemsTrendingDetailBinding)
     }
 
@@ -29,7 +29,7 @@ class TrendingsAdapter :
         holder.bind(trending)
     }
 
-    class TrendingViewHolder(private val binding: ItemMoviesTvshowsBinding) :
+    class TrendingViewHolder(private val binding: ItemHorizontalCardBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(trending: SearchItem) {
             with(binding) {

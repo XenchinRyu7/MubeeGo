@@ -49,6 +49,32 @@ class TmdbRepository private constructor(
             }
     }
 
+    override fun getNowPlayingMovies(): Flow<Resource<List<Movie>>> {
+        return object : NetworkBoundResource<List<Movie>, List<ResultsItemMovie>>() {
+            public override fun loadFromDB(): Flow<List<Movie>> {
+                return localDataSource.getAllMovies().map { list ->
+                    list.map {
+                        it.toDomain()
+                    }
+                }
+            }
+
+            override fun shouldFetch(data: List<Movie>?): Boolean = data.isNullOrEmpty()
+
+            override suspend fun createCall(): Flow<ApiResponse<List<ResultsItemMovie>>> =
+                remoteDataSource.getNowPlayingMovies()
+
+            override suspend fun saveCallResult(data: List<ResultsItemMovie>) {
+                val movies = data.map {
+                    it.toEntity()
+                }
+                appExecutors.diskIO().execute {
+                    localDataSource.insertMovies(movies)
+                }
+            }
+        }.asFlow()
+    }
+
     override fun getDiscoverMovies(): Flow<Resource<List<Movie>>> {
         return object : NetworkBoundResource<List<Movie>, List<ResultsItemMovie>>() {
             public override fun loadFromDB(): Flow<List<Movie>> {
@@ -318,7 +344,10 @@ class TmdbRepository private constructor(
         }.flowOn(Dispatchers.IO)
     }
 
-    override fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>> =
+    override fun getUpcomingMoviesByDate(
+        minDate: String,
+        maxDate: String
+    ): Flow<Resource<List<Movie>>> =
         flow<Resource<List<Movie>>> {
             val response = remoteDataSource.getUpcomingMoviesByDate(minDate, maxDate)
             response.collect { apiResponse ->
@@ -348,9 +377,11 @@ class TmdbRepository private constructor(
                         }
                         emit(Resource.Success(movies))
                     }
+
                     is ApiResponse.Empty -> {
                         emit(Resource.Success(emptyList()))
                     }
+
                     is ApiResponse.Error -> {
                         emit(Resource.Error<List<Movie>>(apiResponse.errorMessage))
                     }

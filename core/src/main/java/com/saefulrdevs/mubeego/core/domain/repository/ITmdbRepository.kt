@@ -8,6 +8,7 @@ import com.saefulrdevs.mubeego.core.domain.model.TvShowWithSeason
 import kotlinx.coroutines.flow.Flow
 
 interface ITmdbRepository {
+    fun getNowPlayingMovies(): Flow<Resource<List<Movie>>>
     fun getDiscoverMovies(): Flow<Resource<List<Movie>>>
     fun getDiscoverTvShow(): Flow<Resource<List<TvShow>>>
     fun getMovieDetail(movieId: String): Flow<Resource<Movie>>
