@@ -5,13 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.databinding.FragmentHomeBinding
 import com.saefulrdevs.mubeego.ui.common.PosterCardAdapter
 import com.saefulrdevs.mubeego.ui.movies.MoviesAdapter
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.common.PopularAdapter
+import com.saefulrdevs.mubeego.ui.seemore.SeeMoreFragment
 import com.saefulrdevs.mubeego.ui.tvshows.TvShowsAdapter
 import com.saefulrdevs.mubeego.ui.tvshows.TvShowsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -107,13 +110,28 @@ class HomeFragment : Fragment() {
 
         // See more click listeners (implement navigation as needed)
         binding.btnSeeMoreNowShowing.setOnClickListener {
-            // TODO: Navigate to full now showing list
+            val bundle = Bundle().apply {
+                putString(SeeMoreFragment.EXTRA_TYPE, SeeMoreFragment.TYPE_NOW_SHOWING)
+            }
+            findNavController().navigate(R.id.action_navigation_home_to_seeMoreFragment, bundle)
         }
         binding.btnSeeMorePopular.setOnClickListener {
-            // TODO: Navigate to full popular list
+            val bundle = Bundle().apply {
+                putString(SeeMoreFragment.EXTRA_TYPE, SeeMoreFragment.TYPE_POPULAR)
+            }
+            findNavController().navigate(R.id.action_navigation_home_to_seeMoreFragment, bundle)
+        }
+        binding.btnSeeMoreMovie.setOnClickListener {
+            val bundle = Bundle().apply {
+                putString(SeeMoreFragment.EXTRA_TYPE, SeeMoreFragment.TYPE_MOVIE)
+            }
+            findNavController().navigate(R.id.action_navigation_home_to_seeMoreFragment, bundle)
         }
         binding.btnSeeMoreTv.setOnClickListener {
-            // TODO: Navigate to full TV series list
+            val bundle = Bundle().apply {
+                putString(SeeMoreFragment.EXTRA_TYPE, SeeMoreFragment.TYPE_TV_SERIES)
+            }
+            findNavController().navigate(R.id.action_navigation_home_to_seeMoreFragment, bundle)
         }
     }
 
