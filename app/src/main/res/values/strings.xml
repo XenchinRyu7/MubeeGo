@@ -65,4 +65,14 @@
     <string name="logout">Logout</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Playlist -->
+    <string name="no_playlists_found">No Playlists Found</string>
+    <string name="create_playlist_message">Create your first playlist to start organizing your favorite movies and TV shows</string>
+    <string name="add_playlist">Add Playlist</string>
+    <string name="create_new_playlist">Create New Playlist</string>
+    <string name="playlist_name">Playlist Name</string>
+    <string name="make_playlist_public">Make this playlist public</string>
+    <string name="playlist_visibility_description">Public playlists can be viewed by all users. Private playlists are only visible to you.</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
 </resources>

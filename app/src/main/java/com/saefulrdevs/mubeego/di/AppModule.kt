@@ -2,6 +2,8 @@ package com.saefulrdevs.mubeego.di
 
 import com.saefulrdevs.mubeego.core.domain.usecase.AuthInteractor
 import com.saefulrdevs.mubeego.core.domain.usecase.AuthUseCase
+import com.saefulrdevs.mubeego.core.domain.usecase.PlaylistInteractor
+import com.saefulrdevs.mubeego.core.domain.usecase.PlaylistUseCase
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbInteractor
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesInteractor
@@ -13,6 +15,7 @@ import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import com.saefulrdevs.mubeego.ui.tvshowdetail.TvShowDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteMoviesViewModel
+import com.saefulrdevs.mubeego.ui.main.playlist.PlaylistViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
@@ -20,6 +23,7 @@ val useCaseModule = module {
     factory<TmdbUseCase> { TmdbInteractor(get()) }
     factory<AuthUseCase> { AuthInteractor(get()) }
     factory<UserPreferencesUseCase> { UserPreferencesInteractor(get()) }
+    factory<PlaylistUseCase> { PlaylistInteractor(get()) }
 }
 
 val viewModelModule = module {
@@ -30,4 +34,5 @@ val viewModelModule = module {
     viewModel { HomeViewModel(get()) }
     viewModel { AuthViewModel(get(), get()) }
     viewModel { FavoriteMoviesViewModel(get()) }
+    viewModel { PlaylistViewModel(get()) }
 }
