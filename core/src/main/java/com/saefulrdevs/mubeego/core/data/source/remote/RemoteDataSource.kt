@@ -110,6 +110,24 @@ class RemoteDataSource(private val apiService: ApiService) {
         return f
     }
 
+    suspend fun getMovieDetail(movieId: String): MovieDetailResponse? {
+        return try {
+            apiService.getMovieDetail(movieId, API_KEY, LANGUAGE, "videos")
+        } catch (e: IOException) {
+            Log.e("RemoteDataSource", "getMovieDetailOnce error: ${e.message}")
+            null
+        }
+    }
+
+    suspend fun getTvShowDetail(showId: String): TvShowDetailResponse? {
+        return try {
+            apiService.getTvShowDetail(showId, API_KEY, LANGUAGE, "videos")
+        } catch (e: IOException) {
+            Log.e("RemoteDataSource", "getTvShowDetailOnce error: ${e.message}")
+            null
+        }
+    }
+
     fun getSearchResult(title: String): Flow<ApiResponse<SearchResponse>> {
         EspressoIdlingResource.increment()
         val f = flow {

@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
 import com.saefulrdevs.mubeego.core.domain.model.UserData
 import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -15,9 +17,14 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class AuthRepository(private val auth: FirebaseAuth) : IAuthRepository {
+class AuthRepository(private val auth: FirebaseAuth, private val firestore: FirebaseFirestore) :
+    IAuthRepository {
 
-    override fun signUpWithEmail(fullname: String, email: String, password: String): Flow<Resource<Boolean>> = flow {
+    override fun signUpWithEmail(
+        fullname: String,
+        email: String,
+        password: String
+    ): Flow<Resource<Boolean>> = flow {
         emit(Resource.Loading())
         try {
             val result = auth.createUserWithEmailAndPassword(email, password).await()
@@ -26,6 +33,15 @@ class AuthRepository(private val auth: FirebaseAuth) : IAuthRepository {
                     displayName = fullname
                 }
                 user.updateProfile(profileUpdates).await()
+
+                val userData = hashMapOf(
+                    "fullname" to fullname,
+                    "email" to email,
+                    "isPremium" to false,
+                    "createdAt" to FieldValue.serverTimestamp()
+                )
+
+                firestore.collection("users").document(user.uid).set(userData).await()
                 emit(Resource.Success(true))
             } ?: emit(Resource.Error("User creation failed"))
         } catch (e: FirebaseAuthInvalidCredentialsException) {
@@ -45,9 +61,26 @@ class AuthRepository(private val auth: FirebaseAuth) : IAuthRepository {
         try {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(credential).await()
-            result.user?.let {
+            val user = result.user
+
+            if (user != null) {
+                // Cek apakah data user sudah ada di Firestore
+                val userDoc = firestore.collection("users").document(user.uid).get().await()
+                if (!userDoc.exists()) {
+                    // Kalau belum ada, tambahin data baru
+                    val userData = hashMapOf(
+                        "fullname" to (user.displayName ?: "No Name"),
+                        "email" to (user.email ?: ""),
+                        "isPremium" to false,
+                        "createdAt" to FieldValue.serverTimestamp()
+                    )
+                    firestore.collection("users").document(user.uid).set(userData).await()
+                }
+
                 emit(Resource.Success(true))
-            } ?: emit(Resource.Error("Sign-in dengan Google gagal"))
+            } else {
+                emit(Resource.Error("Sign-in dengan Google gagal"))
+            }
         } catch (e: FirebaseAuthInvalidCredentialsException) {
             Log.e("FirebaseAuth", "Invalid Google credential: ${e.message}")
             emit(Resource.Error("Token Google tidak valid!"))
@@ -67,9 +100,26 @@ class AuthRepository(private val auth: FirebaseAuth) : IAuthRepository {
         emit(Resource.Loading())
         try {
             val result = auth.signInWithEmailAndPassword(email, password).await()
-            result.user?.let {
+            val user = result.user
+
+            if (user != null) {
+                // Cek apakah user sudah punya dokumen di Firestore
+                val userDoc = firestore.collection("users").document(user.uid).get().await()
+                if (!userDoc.exists()) {
+                    // Kalau belum ada, simpan data default
+                    val userData = hashMapOf(
+                        "fullname" to (user.displayName ?: "No Name"),
+                        "email" to (user.email ?: email),
+                        "isPremium" to false,
+                        "createdAt" to FieldValue.serverTimestamp()
+                    )
+                    firestore.collection("users").document(user.uid).set(userData).await()
+                }
+
                 emit(Resource.Success(true))
-            } ?: emit(Resource.Error("Sign-in gagal, user tidak ditemukan"))
+            } else {
+                emit(Resource.Error("Sign-in gagal, user tidak ditemukan"))
+            }
         } catch (e: FirebaseAuthInvalidCredentialsException) {
             Log.e("FirebaseAuth", "Invalid credentials: ${e.message}")
             emit(Resource.Error("Email atau password salah!"))
@@ -81,6 +131,7 @@ class AuthRepository(private val auth: FirebaseAuth) : IAuthRepository {
             emit(Resource.Error(e.localizedMessage ?: "Unknown error"))
         }
     }
+
 
     override fun signOut(): Flow<Resource<Boolean>> = flow {
         emit(Resource.Loading())

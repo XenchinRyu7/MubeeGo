@@ -1,5 +1,9 @@
 package com.saefulrdevs.mubeego.core.data
 
+import android.util.Log
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.saefulrdevs.mubeego.core.data.source.local.LocalDataSource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.RemoteDataSource
@@ -18,6 +22,7 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailRespo
 import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemMovie
 import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemTvShow
 import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
@@ -26,12 +31,18 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 class TmdbRepository private constructor(
     private val remoteDataSource: RemoteDataSource,
     private val localDataSource: LocalDataSource,
-    private val appExecutors: AppExecutors
+    private val appExecutors: AppExecutors,
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) : ITmdbRepository {
+
+    private var favoriteMovieListener: ListenerRegistration? = null
+    private var favoriteTvListener: ListenerRegistration? = null
 
     companion object {
         @Volatile
@@ -40,10 +51,12 @@ class TmdbRepository private constructor(
         fun getInstance(
             remoteData: RemoteDataSource,
             localData: LocalDataSource,
-            appExecutors: AppExecutors
+            appExecutors: AppExecutors,
+            auth: FirebaseAuth,
+            firestore: FirebaseFirestore
         ): TmdbRepository =
             instance ?: synchronized(this) {
-                instance ?: TmdbRepository(remoteData, localData, appExecutors).apply {
+                instance ?: TmdbRepository(remoteData, localData, appExecutors, auth, firestore).apply {
                     instance = this
                 }
             }
@@ -209,32 +222,107 @@ class TmdbRepository private constructor(
     }
 
     override fun getFavoriteMovie(): Flow<List<Movie>> {
-        return localDataSource.getFavoriteMovie().map { list ->
-            list.map {
-                it.toDomain()
-            }
-        }
+        return localDataSource.getFavoriteMovie().map { it.map { it.toDomain() } }
     }
 
     override fun getFavoriteTvShow(): Flow<List<TvShow>> {
-        return localDataSource.getFavoriteTvShow().map { list ->
-            list.map {
-                it.toDomain()
-            }
-        }
+        return localDataSource.getFavoriteTvShow().map { it.map { it.toDomain() } }
     }
 
     override fun setFavoriteMovie(movie: Movie, newState: Boolean) {
+        Log.d("DEBUG_TMDB", "setFavoriteMovie called: ${movie.title}, favorited: $newState")
         val movieEntity = movie.toEntity()
         appExecutors.diskIO().execute {
             localDataSource.setMovieFavorite(movieEntity, newState)
+
+            val userId = auth.currentUser?.uid
+            if (userId == null) {
+                Log.e("DEBUG_TMDB", "User not logged in, skipping Firestore save")
+                return@execute
+            }
+            val movieRef = firestore.collection("users").document(userId).collection("favorites_movies").document(movie.movieId.toString())
+
+            if (newState) {
+                Log.d("DEBUG_TMDB", "Saving to Firestore for movieId: ${movie.movieId}")
+                movieRef.set(hashMapOf("favorited" to true))
+                    .addOnSuccessListener {
+                        Log.d("DEBUG_TMDB", "Successfully saved to Firestore")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("DEBUG_TMDB", "Error saving to Firestore", e)
+                    }
+            } else {
+                Log.d("DEBUG_TMDB", "Deleting from Firestore for movieId: ${movie.movieId}")
+                movieRef.delete()
+                    .addOnSuccessListener {
+                        Log.d("DEBUG_TMDB", "Successfully deleted from Firestore")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("DEBUG_TMDB", "Error deleting from Firestore", e)
+                    }
+            }
         }
     }
 
     override fun setFavoriteTvShow(tvShow: TvShow, newState: Boolean) {
-        val tvShowEntity = tvShow.toEntity()
+        val tvEntity = tvShow.toEntity()
         appExecutors.diskIO().execute {
-            localDataSource.setTvShowFavorite(tvShowEntity, newState)
+            localDataSource.setTvShowFavorite(tvEntity, newState)
+
+            val userId = auth.currentUser?.uid ?: return@execute
+            val tvRef = firestore.collection("users").document(userId).collection("favorites_tv").document(tvShow.tvShowId.toString())
+
+            if (newState) {
+                tvRef.set(hashMapOf("favorited" to true))
+            } else {
+                tvRef.delete()
+            }
+        }
+    }
+
+    override fun observeFavoriteMoviesRealtime() {
+        val userId = auth.currentUser?.uid ?: return
+
+        favoriteMovieListener = firestore.collection("users")
+            .document(userId)
+            .collection("favorites_movies")
+            .addSnapshotListener { snapshot, _ ->
+                snapshot?.documents?.mapNotNull { it.id.toIntOrNull() }?.forEach { movieId ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        fetchAndSaveMovie(movieId)
+                    }
+                }
+            }
+    }
+
+    override fun observeFavoriteTvShowsRealtime() {
+        val userId = auth.currentUser?.uid ?: return
+
+        favoriteTvListener = firestore.collection("users")
+            .document(userId)
+            .collection("favorites_tv")
+            .addSnapshotListener { snapshot, _ ->
+                snapshot?.documents?.mapNotNull { it.id.toIntOrNull() }?.forEach { tvId ->
+                    CoroutineScope(Dispatchers.IO).launch {
+                        fetchAndSaveTvShow(tvId)
+                    }
+                }
+            }
+    }
+
+    private suspend fun fetchAndSaveMovie(id: Int) {
+        val response = remoteDataSource.getMovieDetail(id.toString())
+        response?.let {
+            val entity = it.toEntity().apply { favorited = true }
+            localDataSource.insertMovies(listOf(entity))
+        }
+    }
+
+    private suspend fun fetchAndSaveTvShow(id: Int) {
+        val response = remoteDataSource.getTvShowDetail(id.toString())
+        response?.let {
+            val entity = it.toEntity().apply { favorited = true }
+            localDataSource.insertTvShow(listOf(entity))
         }
     }
 

@@ -49,6 +49,14 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
         return tmdbRepository.setFavoriteTvShow(tvShow, newState)
     }
 
+    override fun observeFavoriteMoviesRealtime() {
+        return tmdbRepository.observeFavoriteMoviesRealtime()
+    }
+
+    override fun observeFavoriteTvShowsRealtime() {
+        return tmdbRepository.observeFavoriteTvShowsRealtime()
+    }
+
     override fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>> {
         return tmdbRepository.getSearchResult(title)
     }

@@ -1,6 +1,8 @@
 package com.saefulrdevs.mubeego.core.domain.usecase
 
 import com.saefulrdevs.mubeego.core.data.Resource
+import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
@@ -18,8 +20,10 @@ interface TmdbUseCase {
     fun getFavoriteTvShow(): Flow<List<TvShow>>
     fun setFavoriteMovie(movie: Movie, newState: Boolean)
     fun setFavoriteTvShow(tvShow: TvShow, newState: Boolean)
+    fun observeFavoriteMoviesRealtime()
+    fun observeFavoriteTvShowsRealtime()
     fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>>
     fun getPopular(): Flow<Resource<List<SearchItem>>>
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>>
-    fun getMovieWatchProviders(movieId: String): kotlinx.coroutines.flow.Flow<com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse<com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse>>
+    fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<WatchProvidersResponse>>
 }

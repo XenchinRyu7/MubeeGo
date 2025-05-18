@@ -102,6 +102,10 @@ dependencies {
     implementation(libs.materialsearchbar)
 
     // firebase
-    implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.play.services.auth)
+    implementation(libs.play.services.ads)
 }

@@ -12,6 +12,11 @@ class HomeViewModel
     (private val tmdbUseCase: TmdbUseCase) :
     ViewModel() {
 
+    init {
+        tmdbUseCase.observeFavoriteMoviesRealtime()
+        tmdbUseCase.observeFavoriteTvShowsRealtime()
+    }
+
     fun getNowPlaying(): LiveData<Resource<List<Movie>>> =
         tmdbUseCase.getNowPlayingMovies().asLiveData()
 
@@ -23,4 +28,6 @@ class HomeViewModel
 
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String) =
         tmdbUseCase.getUpcomingMoviesByDate(minDate, maxDate).asLiveData()
+
+
 }

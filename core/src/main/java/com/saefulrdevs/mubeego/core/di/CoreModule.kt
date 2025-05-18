@@ -3,6 +3,7 @@ package com.saefulrdevs.mubeego.core.di
 import android.util.Base64
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.saefulrdevs.mubeego.core.BuildConfig
 import com.saefulrdevs.mubeego.core.data.AuthRepository
 import com.saefulrdevs.mubeego.core.data.TmdbRepository
@@ -38,15 +39,15 @@ val databaseModule = module {
 
 val networkModule = module {
     single {
-//        val hostname = "api.themoviedb.org"
+        val hostname = "api.themoviedb.org"
 
-//        val certificatePinner = runBlocking {
-//            CertificatePinner.Builder().apply {
-//                getCertificatePins(hostname).forEach { pin ->
-//                    add(hostname, pin)
-//                }
-//            }.build()
-//        }
+        val certificatePinner = runBlocking {
+            CertificatePinner.Builder().apply {
+                getCertificatePins(hostname).forEach { pin ->
+                    add(hostname, pin)
+                }
+            }.build()
+        }
 
         val loggingInterceptor = if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -58,6 +59,7 @@ val networkModule = module {
             .addInterceptor(loggingInterceptor)
             .connectTimeout(120, TimeUnit.SECONDS)
             .readTimeout(120, TimeUnit.SECONDS)
+            .certificatePinner(certificatePinner)
             .build()
     }
 
@@ -79,6 +81,8 @@ val repositoryModule = module {
         TmdbRepository.getInstance(
             get(),
             get(),
+            get(),
+            get(),
             get()
         )
     }
@@ -86,32 +90,37 @@ val repositoryModule = module {
         FirebaseApp.initializeApp(androidContext()) ?: throw IllegalStateException("FirebaseApp initialization failed")
         FirebaseAuth.getInstance()
     }
-    single<IAuthRepository> { AuthRepository(get()) }
+    single<FirebaseAuth> {
+        FirebaseApp.initializeApp(androidContext()) ?: throw IllegalStateException("FirebaseApp initialization failed")
+        FirebaseAuth.getInstance()
+    }
+    single<FirebaseFirestore> { FirebaseFirestore.getInstance() }
+    single<IAuthRepository> { AuthRepository(get(), get()) }
     single<IUserPreferencesRepository> { UserPreferencesRepository(androidContext()) }
 }
 
-//suspend fun getCertificatePins(hostname: String): List<String> {
-//    return withContext(Dispatchers.IO) {
-//        try {
-//            val url = URL("https://$hostname")
-//            val connection = url.openConnection() as HttpsURLConnection
-//            connection.connect()
-//
-//            val certs = connection.serverCertificates
-//            val hashList = mutableListOf<String>()
-//
-//            for (cert in certs) {
-//                if (cert is X509Certificate) {
-//                    val publicKey = cert.publicKey.encoded
-//                    val sha256 = MessageDigest.getInstance("SHA-256").digest(publicKey)
-//                    val pin = "sha256/${Base64.encodeToString(sha256, Base64.NO_WRAP)}"
-//                    hashList.add(pin)
-//                }
-//            }
-//            hashList
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//            emptyList()
-//        }
-//    }
-//}
+suspend fun getCertificatePins(hostname: String): List<String> {
+    return withContext(Dispatchers.IO) {
+        try {
+            val url = URL("https://$hostname")
+            val connection = url.openConnection() as HttpsURLConnection
+            connection.connect()
+
+            val certs = connection.serverCertificates
+            val hashList = mutableListOf<String>()
+
+            for (cert in certs) {
+                if (cert is X509Certificate) {
+                    val publicKey = cert.publicKey.encoded
+                    val sha256 = MessageDigest.getInstance("SHA-256").digest(publicKey)
+                    val pin = "sha256/${Base64.encodeToString(sha256, Base64.NO_WRAP)}"
+                    hashList.add(pin)
+                }
+            }
+            hashList
+        } catch (e: Exception) {
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+}

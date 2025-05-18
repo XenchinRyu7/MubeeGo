@@ -18,6 +18,8 @@ interface ITmdbRepository {
     fun getFavoriteTvShow(): Flow<List<TvShow>>
     fun setFavoriteMovie(movie: Movie, newState: Boolean)
     fun setFavoriteTvShow(tvShow: TvShow, newState: Boolean)
+    fun observeFavoriteMoviesRealtime()
+    fun observeFavoriteTvShowsRealtime()
     fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>>
     fun getTrendings(): Flow<Resource<List<SearchItem>>>
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>>
