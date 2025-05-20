@@ -6,16 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.FragmentSeeMoreBinding
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
-import com.saefulrdevs.mubeego.ui.tvshows.TvShowsViewModel
+import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SeeMoreFragment : Fragment() {
@@ -25,9 +23,8 @@ class SeeMoreFragment : Fragment() {
     private lateinit var seeMoreAdapter: SeeMoreAdapter
     private val homeViewModel: HomeViewModel by viewModel()
     private val moviesViewModel: MoviesViewModel by viewModel()
-    private val tvShowsViewModel: TvShowsViewModel by viewModel()
+    private val tvSeriesViewModel: TvSeriesViewModel by viewModel()
 
-    // Type constants
     companion object {
         const val EXTRA_TYPE = "extra_type"
         const val TYPE_NOW_SHOWING = "type_now_showing"
@@ -58,7 +55,6 @@ class SeeMoreFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Atur judul dan tombol back di toolbar activity
         (activity as? AppCompatActivity)?.supportActionBar?.apply {
             title = when (type) {
                 TYPE_NOW_SHOWING -> "Now Showing"
@@ -118,7 +114,7 @@ class SeeMoreFragment : Fragment() {
             }
 
             TYPE_TV_SERIES -> {
-                tvShowsViewModel.getDiscoverTvShow()
+                tvSeriesViewModel.getDiscoverTvShow()
                     .observe(viewLifecycleOwner, Observer { resource ->
                         resource.data?.let { tvShows ->
                             seeMoreAdapter.submitTvShowList(tvShows)
@@ -130,10 +126,6 @@ class SeeMoreFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        (activity as? AppCompatActivity)?.supportActionBar?.apply {
-            title = getString(R.string.app_name)
-            setDisplayHomeAsUpEnabled(false)
-        }
         _binding = null
     }
 

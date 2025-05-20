@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
-import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.databinding.FragmentHomeBinding
-import com.saefulrdevs.mubeego.ui.common.PosterCardAdapter
 import com.saefulrdevs.mubeego.ui.movies.MoviesAdapter
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.common.PopularAdapter
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.seemore.SeeMoreFragment
 import com.saefulrdevs.mubeego.ui.tvshows.TvShowsAdapter
-import com.saefulrdevs.mubeego.ui.tvshows.TvShowsViewModel
+import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class HomeFragment : Fragment() {
@@ -24,7 +24,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val moviesViewModel: MoviesViewModel by viewModel()
-    private val tvShowsViewModel: TvShowsViewModel by viewModel()
+    private val tvSeriesViewModel: TvSeriesViewModel by viewModel()
     private val homeViewModel: HomeViewModel by viewModel()
     private lateinit var nowShowingAdapter: MoviesAdapter
     private lateinit var popularAdapter: PopularAdapter
@@ -50,10 +50,34 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        nowShowingAdapter = MoviesAdapter()
-        popularAdapter = PopularAdapter()
-        moviesAdapter = MoviesAdapter()
-        tvSeriesAdapter = TvShowsAdapter()
+        nowShowingAdapter = MoviesAdapter { movieId ->
+            val bundle = Bundle().apply {
+                putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, movieId)
+            }
+            findNavController().navigate(R.id.navigation_detail_movie, bundle)
+        }
+        popularAdapter = PopularAdapter { id, type ->
+            val bundle = Bundle()
+            if (type == "movie") {
+                bundle.putInt(MovieDetailFragment.EXTRA_MOVIE, id)
+                findNavController().navigate(R.id.navigation_detail_movie, bundle)
+            } else if (type == "tv") {
+                bundle.putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, id)
+                findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
+            }
+        }
+        moviesAdapter = MoviesAdapter { movieId ->
+            val bundle = Bundle().apply {
+                putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, movieId)
+            }
+            findNavController().navigate(R.id.navigation_detail_movie, bundle)
+        }
+        tvSeriesAdapter = TvShowsAdapter { showId ->
+            val bundle = Bundle().apply {
+                putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, showId)
+            }
+            findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
+        }
 
         // Setup Now Showing RecyclerView (Horizontal)
         binding.rvNowShowing.apply {
@@ -102,7 +126,7 @@ class HomeFragment : Fragment() {
             }
         }
 
-        tvShowsViewModel.getDiscoverTvShow().observe(viewLifecycleOwner) { resource ->
+        tvSeriesViewModel.getDiscoverTvShow().observe(viewLifecycleOwner) { resource ->
             resource.data?.let { tvShows ->
                 tvSeriesAdapter.submitList(tvShows.take(5))
             }

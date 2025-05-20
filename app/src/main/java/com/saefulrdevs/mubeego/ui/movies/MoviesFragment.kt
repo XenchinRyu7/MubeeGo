@@ -6,10 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.databinding.FragmentMoviesBinding
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MoviesFragment : Fragment() {
@@ -33,7 +35,12 @@ class MoviesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (activity != null) {
-            val movieAdapter = MoviesAdapter()
+            val movieAdapter = MoviesAdapter { movieId ->
+                val bundle = Bundle().apply {
+                    putInt(MovieDetailFragment.EXTRA_MOVIE, movieId)
+                }
+                findNavController().navigate(R.id.navigation_detail_movie, bundle)
+            }
 
             moviesViewModel.getDiscoverMovies().observe(viewLifecycleOwner) { movies ->
                 if (movies != null) {

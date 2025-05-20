@@ -1,6 +1,5 @@
 package com.saefulrdevs.mubeego.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,11 +10,11 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.ActivityMainNavigationBinding
-import com.saefulrdevs.mubeego.ui.search.SearchActivity
 
 class MainNavigation : AppCompatActivity() {
 
@@ -39,16 +38,33 @@ class MainNavigation : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         // Setup Navigation
-        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        setupActionBarWithNavController(navController, appBarConfiguration)
         val bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navController)
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.seeMoreFragment) {
+            if (
+                destination.id == R.id.seeMoreFragment ||
+                destination.id == R.id.navigation_detail_movie ||
+                destination.id == R.id.navigation_detail_tv_series
+            ) {
                 bottomNavigationView.visibility = View.GONE
             } else {
                 bottomNavigationView.visibility = View.VISIBLE
+            }
+
+            if (destination.id == R.id.navigation_search) {
+                supportActionBar?.hide()
+            } else {
+                supportActionBar?.show()
+            }
+
+            if (destination.id == R.id.seeMoreFragment) {
+                supportActionBar?.title = ""
             }
         }
 
@@ -67,8 +83,9 @@ class MainNavigation : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_search -> {
-                val intent = Intent(this, SearchActivity::class.java)
-                startActivity(intent)
+                val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                val navController = navHostFragment.navController
+                navController.navigate(R.id.navigation_search)
                 true
             }
             else -> super.onOptionsItemSelected(item)

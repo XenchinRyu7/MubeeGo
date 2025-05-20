@@ -1,25 +1,32 @@
-package com.saefulrdevs.mubeego.ui.search
+package com.saefulrdevs.mubeego.ui.main.search
 
 import android.os.Bundle
 import android.text.Editable
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.fragment.findNavController
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
-import com.saefulrdevs.mubeego.databinding.ActivitySearchBinding
+import com.saefulrdevs.mubeego.databinding.FragmentSearchBinding
 import com.saefulrdevs.mubeego.ui.common.PopularAdapter
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
+import com.saefulrdevs.mubeego.ui.search.UpcomingMoviesAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import kotlin.getValue
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
 
-    private lateinit var binding: ActivitySearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
+
     private val homeViewModel: HomeViewModel by viewModel()
     private var startDate: String? = null
     private var endDate: String? = null
@@ -28,15 +35,27 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        arguments?.let {
         }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+
         setupAutoComplete()
-        val popularAdapter = PopularAdapter()
+        val popularAdapter = PopularAdapter { id, type ->
+            val bundle = Bundle()
+            if (type == "movie") {
+                bundle.putInt(MovieDetailFragment.EXTRA_MOVIE, id)
+                requireParentFragment().findNavController().navigate(R.id.navigation_detail_movie, bundle)
+            } else if (type == "tv") {
+                bundle.putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, id)
+                requireParentFragment().findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
+            }
+        }
         popularAdapter.submitList(emptyList())
         with(binding.rvTrending) {
             layoutManager = LinearLayoutManager(context)
@@ -46,7 +65,7 @@ class SearchActivity : AppCompatActivity() {
         // Setup Upcoming Movies Adapter
         upcomingAdapter = UpcomingMoviesAdapter()
         binding.btnStartDate.setOnClickListener {
-            val datePicker = android.app.DatePickerDialog(this)
+            val datePicker = android.app.DatePickerDialog(requireContext())
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                 val m = (month + 1).toString().padStart(2, '0')
                 val d = dayOfMonth.toString().padStart(2, '0')
@@ -56,7 +75,7 @@ class SearchActivity : AppCompatActivity() {
             datePicker.show()
         }
         binding.btnEndDate.setOnClickListener {
-            val datePicker = android.app.DatePickerDialog(this)
+            val datePicker = android.app.DatePickerDialog(requireContext())
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                 val m = (month + 1).toString().padStart(2, '0')
                 val d = dayOfMonth.toString().padStart(2, '0')
@@ -69,7 +88,7 @@ class SearchActivity : AppCompatActivity() {
             val min = startDate
             val max = endDate
             if (min.isNullOrEmpty() || max.isNullOrEmpty()) {
-                Toast.makeText(this, "Please select first and last date", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Please select first and last date", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             // Clear list before loading
@@ -77,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
             binding.rvTrending.adapter = upcomingAdapter
             binding.progressCircular.visibility = View.VISIBLE
             isShowingUpcoming = true
-            homeViewModel.getUpcomingMoviesByDate(min, max).observe(this) { result ->
+            homeViewModel.getUpcomingMoviesByDate(min, max).observe(viewLifecycleOwner) { result ->
                 when (result) {
                     is Resource.Success -> {
                         binding.progressCircular.visibility = View.GONE
@@ -86,21 +105,33 @@ class SearchActivity : AppCompatActivity() {
                     }
                     is Resource.Error -> {
                         binding.progressCircular.visibility = View.GONE
-                        Toast.makeText(this, "Failed to load upcoming movies", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Failed to load upcoming movies", Toast.LENGTH_SHORT).show()
                     }
                     else -> if (result is Resource.Loading) binding.progressCircular.visibility = View.VISIBLE
                 }
             }
         }
         binding.progressCircular.visibility = View.GONE
+
+        return binding.root
     }
 
     private fun setupAutoComplete() {
         val autoComplete = binding.autoCompleteSearch
         val btnBack = binding.btnBack
         val btnSearch = binding.btnSearch
-        val popularAdapter = PopularAdapter()
-        btnBack.setOnClickListener { finish() }
+        val popularAdapter = PopularAdapter {
+            id, type ->
+            val bundle = Bundle()
+            if (type == "movie") {
+                bundle.putInt(MovieDetailFragment.EXTRA_MOVIE, id)
+                requireParentFragment().findNavController().navigate(R.id.navigation_detail_movie, bundle)
+            } else if (type == "tv") {
+                bundle.putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, id)
+                requireParentFragment().findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
+            }
+        }
+        btnBack.setOnClickListener { requireActivity().onBackPressedDispatcher.onBackPressed() }
         btnSearch.setOnClickListener {
             val query = autoComplete.text.toString()
             if (query.isNotEmpty()) {
@@ -109,7 +140,7 @@ class SearchActivity : AppCompatActivity() {
                 // Clear and set trending adapter
                 (binding.rvTrending.adapter as? UpcomingMoviesAdapter)?.submitList(emptyList())
                 binding.rvTrending.adapter = popularAdapter
-                homeViewModel.getSearchResult(query).observe(this@SearchActivity) { items ->
+                homeViewModel.getSearchResult(query).observe(viewLifecycleOwner) { items ->
                     when (items) {
                         is Resource.Success -> {
                             binding.progressCircular.visibility = View.GONE
@@ -119,7 +150,7 @@ class SearchActivity : AppCompatActivity() {
                         is Resource.Error -> {
                             binding.progressCircular.visibility = View.GONE
                             popularAdapter.submitList(emptyList())
-                            Toast.makeText(this@SearchActivity, getString(R.string.error_while_getting_data), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), getString(R.string.error_while_getting_data), Toast.LENGTH_SHORT).show()
                         }
                         else -> if (items is Resource.Loading) binding.progressCircular.visibility = View.VISIBLE
                     }
@@ -135,7 +166,7 @@ class SearchActivity : AppCompatActivity() {
                     isShowingUpcoming = false
                     (binding.rvTrending.adapter as? UpcomingMoviesAdapter)?.submitList(emptyList())
                     binding.rvTrending.adapter = popularAdapter
-                    homeViewModel.getSearchResult(query).observe(this@SearchActivity) { items ->
+                    homeViewModel.getSearchResult(query).observe(viewLifecycleOwner) { items ->
                         when (items) {
                             is Resource.Success -> {
                                 binding.progressCircular.visibility = View.GONE
@@ -145,7 +176,7 @@ class SearchActivity : AppCompatActivity() {
                             is Resource.Error -> {
                                 binding.progressCircular.visibility = View.GONE
                                 popularAdapter.submitList(emptyList())
-                                Toast.makeText(this@SearchActivity, getString(R.string.error_while_getting_data), Toast.LENGTH_SHORT).show()
+                                Toast.makeText(requireContext(), getString(R.string.error_while_getting_data), Toast.LENGTH_SHORT).show()
                             }
                             else -> if (items is Resource.Loading) binding.progressCircular.visibility = View.VISIBLE
                         }
@@ -163,11 +194,11 @@ class SearchActivity : AppCompatActivity() {
                     isShowingUpcoming = false
                     (binding.rvTrending.adapter as? UpcomingMoviesAdapter)?.submitList(emptyList())
                     binding.rvTrending.adapter = popularAdapter
-                    homeViewModel.getSearchResult(s.toString()).observe(this@SearchActivity) { items ->
+                    homeViewModel.getSearchResult(s.toString()).observe(viewLifecycleOwner) { items ->
                         when (items) {
                             is Resource.Success -> {
                                 val suggestions = items.data?.map { it.name } ?: emptyList()
-                                val adapter = ArrayAdapter(this@SearchActivity, android.R.layout.simple_dropdown_item_1line, suggestions)
+                                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, suggestions)
                                 autoComplete.setAdapter(adapter)
                                 autoComplete.showDropDown()
                                 popularAdapter.submitList(items.data ?: emptyList())
@@ -183,4 +214,10 @@ class SearchActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {}
         })
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

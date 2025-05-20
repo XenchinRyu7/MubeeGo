@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/navigation_home">    <fragment
+    app:startDestination="@id/navigation_home">
+    <fragment
         android:id="@+id/navigation_home"
         android:name="com.saefulrdevs.mubeego.ui.main.home.HomeFragment"
         android:label="Home"
@@ -15,7 +16,8 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
-    </fragment>      <fragment
+    </fragment>
+    <fragment
         android:id="@+id/seeMoreFragment"
         android:name="com.saefulrdevs.mubeego.ui.seemore.SeeMoreFragment"
         android:label="See More"
@@ -26,21 +28,21 @@
         <action
             android:id="@+id/action_seeMoreFragment_to_navigation_home"
             app:destination="@id/navigation_home"
-            app:popUpTo="@id/navigation_home"
             app:enterAnim="@anim/slide_in_left"
-            app:exitAnim="@anim/slide_out_right" />
+            app:exitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/navigation_home" />
     </fragment>
 
     <fragment
         android:id="@+id/navigation_playlist"
         android:name="com.saefulrdevs.mubeego.ui.main.playlist.PlaylistFragment"
-        android:label="Sign In"
+        android:label="Playlist"
         tools:layout="@layout/fragment_playlist" />
 
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.saefulrdevs.mubeego.ui.main.profile.ProfileFragment"
-        android:label="Sign Up"
+        android:label="Profile"
         tools:layout="@layout/fragment_profile">
         <action
             android:id="@+id/action_profileFragment_to_settingsFragment"
@@ -55,8 +57,27 @@
 
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="com.saefulrdevs.mubeego.ui.settings.SettingsFragment"
+        android:name="com.saefulrdevs.mubeego.ui.main.settings.SettingsFragment"
         android:label="Settings"
         tools:layout="@layout/fragment_settings" />
+
+    <fragment
+        android:id="@+id/navigation_detail_movie"
+        android:name="com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment"
+        android:label="Movie Detail"
+        tools:layout="@layout/fragment_movie_detail" />
+
+    <fragment
+        android:id="@+id/navigation_detail_tv_series"
+        android:name="com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment"
+        android:label="TV Series Detail"
+        tools:layout="@layout/fragment_tv_series_detail">
+    </fragment>
+
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.saefulrdevs.mubeego.ui.main.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" />
 
 </navigation>

@@ -6,15 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.databinding.FragmentTvShowsBinding
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TvShowsFragment : Fragment() {
 
-    private val tvShowsViewModel: TvShowsViewModel by viewModel()
+    private val tvSeriesViewModel: TvSeriesViewModel by viewModel()
 
     private var _binding: FragmentTvShowsBinding? = null
     private val binding get() = _binding!!
@@ -32,9 +34,14 @@ class TvShowsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val tvShowAdapter = TvShowsAdapter()
+        val tvShowAdapter = TvShowsAdapter { showId ->
+            val bundle = Bundle().apply {
+                putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, showId)
+            }
+            findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
+        }
 
-        tvShowsViewModel.getDiscoverTvShow().observe(viewLifecycleOwner) { tvShows ->
+        tvSeriesViewModel.getDiscoverTvShow().observe(viewLifecycleOwner) { tvShows ->
             if (tvShows != null) {
                 when (tvShows) {
                     is Resource.Loading -> binding.progressCircular.visibility = View.VISIBLE

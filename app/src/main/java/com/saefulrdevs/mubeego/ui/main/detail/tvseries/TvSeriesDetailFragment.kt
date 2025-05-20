@@ -1,10 +1,14 @@
-package com.saefulrdevs.mubeego.ui.tvshowdetail
+package com.saefulrdevs.mubeego.ui.main.detail.tvseries
 
+import android.R.attr.visibility
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -15,66 +19,77 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.core.util.Utils.changeStringToDateFormat
-import com.saefulrdevs.mubeego.databinding.ActivityTvShowDetailBinding
+import com.saefulrdevs.mubeego.databinding.FragmentTvSeriesDetailBinding
+import com.saefulrdevs.mubeego.ui.tvshowdetail.SeasonsAdapter
+import com.saefulrdevs.mubeego.ui.tvshowdetail.TvSeriesDetailViewModel
+import com.saefulrdevs.mubeego.ui.tvshowdetail.TvShowDetailActivity
+import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class TvShowDetailActivity : AppCompatActivity() {
+class TvSeriesDetailFragment : Fragment() {
 
-    private lateinit var binding: ActivityTvShowDetailBinding
-    private val tvSeriesDetailViewModel: TvSeriesDetailViewModel by viewModel()
+    private var _binding : FragmentTvSeriesDetailBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var seasonAdapter: SeasonsAdapter
+
+    private val tvSeriesDetailViewModel: TvSeriesDetailViewModel by viewModel()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        arguments?.let {
 
-        binding = ActivityTvShowDetailBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        }
+    }
 
-        setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = FragmentTvSeriesDetailBinding.inflate(inflater, container, false)
 
         seasonAdapter = SeasonsAdapter()
 
-        with(binding.contentTvShowDetail.rvSeasons) {
+        with(binding.rvSeasons) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             addItemDecoration(
                 DividerItemDecoration(
-                    this@TvShowDetailActivity,
+                    requireContext(),
                     DividerItemDecoration.VERTICAL
                 )
             )
             adapter = seasonAdapter
         }
 
-        val extras = intent.extras
-        if (extras != null) {
-            val showId = extras.getInt(EXTRA_TV_SHOW)
-            if (showId != 0) {
-                getTvShow(showId)
-            }
+        val showId = arguments?.getInt(EXTRA_TV_SHOW) ?: 0
+        if (showId != 0) {
+            getTvShow(showId)
         }
 
         binding.fabFavorite.setOnClickListener {
             val newState = tvSeriesDetailViewModel.setFavorite()
             if (newState) {
-                Toast.makeText(this, R.string.addedToFavorite, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.addedToFavorite, Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, R.string.removedFromFavorite, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.removedFromFavorite, Toast.LENGTH_SHORT).show()
             }
         }
+
+        return binding.root
     }
 
     private fun getTvShow(showId: Int) {
         val tvShow = tvSeriesDetailViewModel.getTvShowDetail(showId)
-        tvShow.observe(this) { show ->
+        tvShow.observe(viewLifecycleOwner) { show ->
             when (show) {
-                is Resource.Loading -> binding.contentTvShowDetail.progressCircular.visibility =
+                is Resource.Loading -> binding.progressBar.visibility =
                     View.VISIBLE
 
                 is Resource.Success -> {
                     Log.i("result", show.data.toString())
-                    binding.contentTvShowDetail.progressCircular.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                     show.data?.let {
                         tvSeriesDetailViewModel.setSelectedTvShow(it)
                         showDetailTvShow(it)
@@ -83,9 +98,9 @@ class TvShowDetailActivity : AppCompatActivity() {
                 }
 
                 is Resource.Error -> {
-                    binding.contentTvShowDetail.progressCircular.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                     Toast.makeText(
-                        this,
+                        requireContext(),
                         getString(R.string.error_while_getting_data),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -96,23 +111,23 @@ class TvShowDetailActivity : AppCompatActivity() {
 
     private fun getSeasons(tvShow: TvShow) {
         val tvShowWithSeason = tvSeriesDetailViewModel.getTvShowSeasons(tvShow.tvShowId)
-        tvShowWithSeason.observe(this) { seasons ->
+        tvShowWithSeason.observe(viewLifecycleOwner) { seasons ->
             when (seasons) {
-                is Resource.Loading -> binding.contentTvShowDetail.progressCircular.visibility =
+                is Resource.Loading -> binding.progressBar.visibility =
                     View.VISIBLE
 
                 is Resource.Success -> {
                     Log.i("result", seasons.data.toString())
-                    binding.contentTvShowDetail.progressCircular.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                     seasons.data?.seasons?.let {
                         seasonAdapter.submitList(it)
                     }
                 }
 
                 is Resource.Error -> {
-                    binding.contentTvShowDetail.progressCircular.visibility = View.GONE
+                    binding.progressBar.visibility = View.GONE
                     Toast.makeText(
-                        this,
+                        requireContext(),
                         getString(R.string.error_while_getting_data),
                         Toast.LENGTH_SHORT
                     ).show()
@@ -124,35 +139,33 @@ class TvShowDetailActivity : AppCompatActivity() {
     private fun showDetailTvShow(showDetails: TvShow) {
         with(binding) {
             setFabIcon(showDetails.favorited)
-            toolbarLayout.title = showDetails.name
-            tvShowBackdrop.alpha = 0.75F
-            contentTvShowDetail.tvShowTitle.text = showDetails.name
-            contentTvShowDetail.tvShowSinopsis.text = showDetails.overview
-            contentTvShowDetail.tvShowReleaseDate.text =
+            tvShowPoster.alpha = 0.75F
+            tvShowTitle.text = showDetails.name
+            tvShowSinopsis.text = showDetails.overview
+            tvFirstAirDate.text =
                 changeStringToDateFormat(showDetails.firstAirDate)
-            contentTvShowDetail.tvShowRating.rating =
-                showDetails.voteAverage.toFloat() / 2
-            contentTvShowDetail.tvShowDuration.text =
+           tvShowRating.text =
+               showDetails.voteAverage.toString()
+            tvLength.text =
                 showDetails.runtime.let { Utils.changeMinuteToDurationFormat(it) }
-            contentTvShowDetail.tvShowGenres.text = showDetails.genres
         }
 
-        Glide.with(this)
-            .load(showDetails.posterPath)
-            .transform(RoundedCorners(16))
-            .apply(
-                RequestOptions.placeholderOf(R.drawable.ic_loading)
-                    .error(R.drawable.placholder)
-            )
-            .into(binding.contentTvShowDetail.tvShowPoster)
+        // Glide.with(this)
+        //     .load(showDetails.posterPath)
+        //     .transform(RoundedCorners(16))
+        //     .apply(
+        //         RequestOptions.placeholderOf(R.drawable.ic_loading)
+        //             .error(R.drawable.placholder)
+        //     )
+        //     .into(binding.tvShowPoster)
 
-        Glide.with(this)
-            .load(showDetails.backdropPath)
-            .apply(
-                RequestOptions.placeholderOf(R.drawable.ic_loading)
-                    .error(R.drawable.placholder)
-            )
-            .into(binding.tvShowBackdrop)
+       Glide.with(this)
+           .load(showDetails.backdropPath)
+           .apply(
+               RequestOptions.placeholderOf(R.drawable.ic_loading)
+                   .error(R.drawable.placholder)
+           )
+           .into(binding.tvShowPoster)
 
     }
 
@@ -163,7 +176,22 @@ class TvShowDetailActivity : AppCompatActivity() {
         )
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     companion object {
         const val EXTRA_TV_SHOW = "extra_tv_show"
     }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
 }

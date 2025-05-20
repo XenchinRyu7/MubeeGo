@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.settings
+package com.saefulrdevs.mubeego.ui.main.settings
 
 import android.Manifest
 import android.app.NotificationManager
@@ -12,19 +12,23 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.Spinner
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.saefulrdevs.mubeego.R
+import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import com.saefulrdevs.mubeego.databinding.FragmentSettingsBinding
 import org.koin.android.ext.android.inject
 
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
-    private val userPreferencesUseCase: com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase by inject()
+    private val userPreferencesUseCase: UserPreferencesUseCase by inject()
 
     private val requestNotificationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
@@ -50,21 +54,22 @@ class SettingsFragment : Fragment() {
         // Setup theme spinner
         val spinner = binding.spinnerTheme
         val themeOptions = resources.getStringArray(R.array.theme_options)
-        val adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, themeOptions)
+        val adapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, themeOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
         val savedThemeMode = userPreferencesUseCase.getThemeMode()
         spinner.setSelection(savedThemeMode)
-        spinner.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>?, view: View?, position: Int, id: Long) {
+        spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 userPreferencesUseCase.setThemeMode(position)
                 when (position) {
-                    0 -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    1 -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
-                    2 -> androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
+                    0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 }
             }
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>?) {}
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
         // Enable notification switch
         binding.switchNotification.isChecked = userPreferencesUseCase.isNotificationEnabled()

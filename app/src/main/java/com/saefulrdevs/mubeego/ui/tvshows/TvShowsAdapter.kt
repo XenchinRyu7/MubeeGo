@@ -1,12 +1,10 @@
 package com.saefulrdevs.mubeego.ui.tvshows
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.saefulrdevs.mubeego.ui.tvshowdetail.TvShowDetailActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
@@ -14,13 +12,15 @@ import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.util.Utils.changeStringToDateFormat
 import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
-class TvShowsAdapter :
+class TvShowsAdapter(
+    private val onTvShowClick: (Int) -> Unit
+) :
     ListAdapter<TvShow, TvShowsAdapter.TvShowViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TvShowViewHolder {
         val itemsTvShowBinding =
             ItemVerticalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return TvShowViewHolder(itemsTvShowBinding)
+        return TvShowViewHolder(itemsTvShowBinding, onTvShowClick)
     }
 
     override fun onBindViewHolder(holder: TvShowViewHolder, position: Int) {
@@ -30,7 +30,7 @@ class TvShowsAdapter :
         }
     }
 
-    class TvShowViewHolder(private val binding: ItemVerticalCardBinding) :
+    class TvShowViewHolder(private val binding: ItemVerticalCardBinding, private val onTvShowClick: (Int) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(show: TvShow) {
             with(binding) {
@@ -40,9 +40,7 @@ class TvShowsAdapter :
                     append(" Imdb")
                 }
                 itemView.setOnClickListener {
-                    val intent = Intent(itemView.context, TvShowDetailActivity::class.java)
-                    intent.putExtra(TvShowDetailActivity.EXTRA_TV_SHOW, show.tvShowId)
-                    itemView.context.startActivity(intent)
+                    onTvShowClick(show.tvShowId)
                 }
                 Glide.with(itemView.context)
                     .load(show.posterPath)

@@ -15,9 +15,4 @@
         android:name="com.saefulrdevs.mubeego.ui.tvshows.TvShowsFragment"
         android:label="Tv Shows"
         tools:layout="@layout/fragment_tv_shows" />
-    <activity
-        android:id="@+id/menu_search"
-        android:name="com.saefulrdevs.mubeego.ui.search.SearchActivity"
-        android:label="activity_search"
-        tools:layout="@layout/activity_search" />
 </navigation>

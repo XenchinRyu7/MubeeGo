@@ -47,25 +47,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.MainActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.search.SearchActivity"
-            android:exported="false"
-            android:label="@string/title_activity_search"
-            android:parentActivityName=".ui.MainActivity"
-            android:theme="@style/Theme.MubeeGo.NoTranslucentStatus" />
-        <activity
-            android:name=".ui.tvshowdetail.TvShowDetailActivity"
-            android:exported="false"
-            android:label="@string/title_activity_tv_show_detail"
-            android:parentActivityName=".ui.MainActivity" />
-        <activity
-            android:name=".ui.moviedetail.MovieDetailActivity"
-            android:exported="false"
-            android:label="@string/title_activity_movie_detail"
-            android:parentActivityName=".ui.MainActivity" />
 
         <receiver android:name=".ui.moviedetail.ReminderReceiver" />
         <service android:name="androidx.core.app.JobIntentService" />

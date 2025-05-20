@@ -13,12 +13,14 @@ import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
-class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
+class MoviesAdapter(
+    private val onMovieClick: (Int) -> Unit
+) : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
         val itemsMovieBinding =
             ItemVerticalCardBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return MovieViewHolder(itemsMovieBinding)
+        return MovieViewHolder(itemsMovieBinding, onMovieClick)
     }
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
@@ -28,7 +30,7 @@ class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CAL
         }
     }
 
-    class MovieViewHolder(private val binding: ItemVerticalCardBinding) :
+    class MovieViewHolder(private val binding: ItemVerticalCardBinding, private val onMovieClick: (Int) -> Unit) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(movie: Movie) {
             with(binding) {
@@ -38,9 +40,7 @@ class MoviesAdapter : ListAdapter<Movie, MoviesAdapter.MovieViewHolder>(DIFF_CAL
                     append(" Imdb")
                 }
                 itemView.setOnClickListener {
-                    val intent = Intent(itemView.context, MovieDetailActivity::class.java)
-                    intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, movie.movieId)
-                    itemView.context.startActivity(intent)
+                    onMovieClick(movie.movieId)
                 }
                 Glide.with(itemView.context)
                     .load(movie.posterPath)

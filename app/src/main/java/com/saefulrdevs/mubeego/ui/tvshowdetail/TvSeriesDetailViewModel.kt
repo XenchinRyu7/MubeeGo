@@ -11,7 +11,7 @@ import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.domain.model.TvShowWithSeason
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 
-class TvShowDetailViewModel
+class TvSeriesDetailViewModel
     (private val tmdbUseCase: TmdbUseCase) :
     ViewModel() {
 
