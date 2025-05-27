@@ -10,7 +10,6 @@
         style="@style/BaseTextTitle"
         android:fontFamily="@font/inter"
         android:text="@string/sign_in"
-        android:textColor="@color/onBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/guideline1" />
@@ -19,7 +18,6 @@
         android:id="@+id/tv_sign_in_description"
         style="@style/BaseTextDescription"
         android:text="@string/sign_in_description"
-        android:textColor="@color/onSurfaceVariant"
         app:layout_constraintStart_toStartOf="@id/tv_sign_in"
         app:layout_constraintTop_toBottomOf="@id/tv_sign_in" />
 
@@ -27,7 +25,6 @@
         android:id="@+id/tv_email"
         style="@style/BaseTextView"
         android:text="@string/email"
-        android:textColor="@color/onBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_sign_in_description" />
@@ -52,7 +49,6 @@
         android:id="@+id/tv_password"
         style="@style/BaseTextView"
         android:text="@string/password"
-        android:textColor="@color/onBackground"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tf_email" />
@@ -80,7 +76,6 @@
         android:layout_marginHorizontal="@dimen/margin_small"
         android:layout_marginTop="@dimen/margin_small"
         android:text="@string/forgot_password"
-        android:textColor="@color/primary"
         app:layout_constraintEnd_toEndOf="@id/tf_password"
         app:layout_constraintTop_toBottomOf="@id/tf_password" />
 
@@ -98,7 +93,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_small"
         android:text="@string/or"
-        android:textColor="@color/onSurfaceVariant"
         app:layout_constraintEnd_toEndOf="@id/login_button"
         app:layout_constraintStart_toStartOf="@id/login_button"
         app:layout_constraintTop_toBottomOf="@id/login_button" />
@@ -119,7 +113,6 @@
         android:layout_marginTop="@dimen/margin_medium"
         android:layout_marginEnd="@dimen/margin_small"
         android:text="@string/doesnt_have_account"
-        android:textColor="@color/onSurfaceVariant"
         app:layout_constraintEnd_toStartOf="@id/tv_sign_up_click"
         app:layout_constraintStart_toStartOf="@id/guideline2"
         app:layout_constraintTop_toBottomOf="@id/google_login" />
@@ -130,7 +123,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_medium"
         android:text="@string/sign_up"
-        android:textColor="@color/primary"
         app:layout_constraintEnd_toEndOf="@id/guideline2"
         app:layout_constraintStart_toEndOf="@id/tv_sign_up"
         app:layout_constraintTop_toBottomOf="@id/google_login" />

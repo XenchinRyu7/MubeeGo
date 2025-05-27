@@ -41,7 +41,14 @@ class MainNavigation : AppCompatActivity() {
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_home,
+                R.id.navigation_favorite,
+                R.id.navigation_playlist,
+                R.id.navigation_profile
+            )
+        )
         setupActionBarWithNavController(navController, appBarConfiguration)
         val bottomNavigationView = binding.bottomNavigation
         bottomNavigationView.setupWithNavController(navController)
@@ -68,7 +75,6 @@ class MainNavigation : AppCompatActivity() {
             }
         }
 
-        // Fix: Use default navigation for all tabs, including Favorite
         bottomNavigationView.setOnItemSelectedListener { item ->
             navController.navigate(item.itemId)
             true

@@ -2,18 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FAFAFA">
-
-
+    android:layout_height="match_parent">
     <!-- Profile Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardProfile"
         android:layout_width="0dp"
         android:layout_height="100dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="#2D2DC7"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +25,6 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:src="@drawable/ic_profile_24dp"
-                app:tint="@color/white"
                 android:scaleType="centerCrop"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +36,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Saeful Rohman"
-                android:textColor="@color/onPrimary"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 app:layout_constraintStart_toEndOf="@id/imgProfile"
@@ -54,7 +47,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="saefulrohmansmantika@gmail.com"
-                android:textColor="@color/onPrimary"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@id/tvProfileName"
                 app:layout_constraintTop_toBottomOf="@id/tvProfileName"
@@ -65,7 +57,6 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_edit_24dp"
-                app:tint="@color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -80,8 +71,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@id/cardProfile"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,14 +82,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
-
-            <!-- My Account Row -->
             <ImageView
                 android:id="@+id/icAccount"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_profile_24dp"
-                app:tint="@color/primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="12dp" />
@@ -110,7 +96,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="My Account"
-                android:textColor="@color/onBackground"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/icAccount"
@@ -122,7 +107,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Make changes to your account"
-                android:textColor="@color/onSurfaceVariant"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@id/tvMyAccount"
                 app:layout_constraintTop_toBottomOf="@id/tvMyAccount"
@@ -133,7 +117,6 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_arrow_right_24dp"
-                app:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icAccount"
                 app:layout_constraintBottom_toBottomOf="@id/icAccount" />
@@ -143,7 +126,6 @@
                 android:id="@+id/divider1"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="#F0F0F0"
                 app:layout_constraintTop_toBottomOf="@id/icAccount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -155,7 +137,6 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_profile_24dp"
-                app:tint="@color/primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider1"
                 android:layout_marginTop="12dp" />
@@ -165,7 +146,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Subscription"
-                android:textColor="@color/onBackground"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/icSubscription"
@@ -177,7 +157,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Upgrade your account to premium"
-                android:textColor="@color/onSurfaceVariant"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@id/tvSubscription"
                 app:layout_constraintTop_toBottomOf="@id/tvSubscription"
@@ -188,7 +167,6 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_arrow_right_24dp"
-                app:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icSubscription"
                 app:layout_constraintBottom_toBottomOf="@id/icSubscription" />
@@ -198,19 +176,16 @@
                 android:id="@+id/divider2"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="#F0F0F0"
                 app:layout_constraintTop_toBottomOf="@id/icSubscription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_marginTop="12dp" />
 
-            <!-- Theme (Dark Mode) Row -->
             <ImageView
                 android:id="@+id/icSettings"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_settings_24dp"
-                app:tint="@color/primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider2"
                 android:layout_marginTop="12dp" />
@@ -220,7 +195,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Settings"
-                android:textColor="@color/onBackground"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/icSettings"
@@ -232,7 +206,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Change app theme and preferences"
-                android:textColor="@color/onSurfaceVariant"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@id/tvSettings"
                 app:layout_constraintTop_toBottomOf="@id/icSettings"
@@ -243,21 +216,15 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_arrow_right_24dp"
-                app:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icSettings"
                 app:layout_constraintBottom_toBottomOf="@id/icSettings" />
-
-            <!-- Divider after Theme -->
-
-            <!-- Log out Row -->
 
             <View
                 android:id="@+id/dividerTheme"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
                 android:layout_marginTop="24dp"
-                android:background="#F0F0F0"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
@@ -268,7 +235,6 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_logout"
-                app:tint="@color/primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dividerTheme"
                 android:layout_marginTop="12dp" />
@@ -278,7 +244,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Log out"
-                android:textColor="@color/onBackground"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/icLogout"
@@ -290,7 +255,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Further secure your account for safety"
-                android:textColor="@color/onSurfaceVariant"
                 android:textSize="13sp"
                 app:layout_constraintStart_toStartOf="@id/tvLogout"
                 app:layout_constraintTop_toBottomOf="@id/tvLogout"
@@ -301,7 +265,6 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_arrow_right_24dp"
-                app:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icLogout"
                 app:layout_constraintBottom_toBottomOf="@id/icLogout" />
@@ -314,7 +277,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="More"
-        android:textColor="@color/onBackground"
         android:textStyle="bold"
         android:textSize="16sp"
         app:layout_constraintTop_toBottomOf="@id/cardAccountSection"
@@ -328,8 +290,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="#FFFFFF"
         app:layout_constraintTop_toBottomOf="@id/tvMoreTitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -348,7 +308,6 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_profile_24dp"
-                app:tint="@color/primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginTop="12dp" />
@@ -358,7 +317,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Help &amp; Support"
-                android:textColor="@color/onBackground"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/icHelp"
@@ -370,7 +328,6 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_arrow_right_24dp"
-                app:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icHelp"
                 app:layout_constraintBottom_toBottomOf="@id/icHelp" />
@@ -380,7 +337,6 @@
                 android:id="@+id/divider3"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:background="#F0F0F0"
                 app:layout_constraintTop_toBottomOf="@id/icHelp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -392,7 +348,6 @@
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:src="@drawable/ic_profile_24dp"
-                app:tint="@color/primary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider3"
                 android:layout_marginTop="12dp" />
@@ -402,7 +357,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="About App"
-                android:textColor="@color/onBackground"
                 android:textStyle="bold"
                 android:textSize="16sp"
                 app:layout_constraintStart_toEndOf="@id/icAbout"
@@ -414,7 +368,6 @@
                 android:layout_width="18dp"
                 android:layout_height="18dp"
                 android:src="@drawable/ic_arrow_right_24dp"
-                app:tint="@color/black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/icAbout"
                 app:layout_constraintBottom_toBottomOf="@id/icAbout" />

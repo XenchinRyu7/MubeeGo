@@ -2,7 +2,8 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:bottom="-1dp"
-        android:drawable="@color/grey_500"
+        android:background="?attr/colorSurface"
+        android:textColor="?attr/colorOnSurface"
         android:left="1dp"
         android:right="1dp"
         android:top="1dp" />

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
-// Replace Movie type with your actual data model
 class PosterCardAdapter : RecyclerView.Adapter<PosterCardAdapter.PosterViewHolder>() {
     private val items = mutableListOf<Movie>()
 

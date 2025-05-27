@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#F5F5F7">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:id="@+id/tvShowPoster"
             android:layout_width="match_parent"
             android:layout_height="220dp"
-            android:background="#E0E0E0"
             android:contentDescription="@string/poster"
             android:scaleType="centerCrop"
             tools:src="@drawable/poster_alita" />
@@ -69,8 +67,7 @@
                         android:layout_width="28dp"
                         android:layout_height="28dp"
                         android:contentDescription="Favorite"
-                        android:src="@drawable/ic_baseline_favorite_border_24"
-                        app:tint="@color/primary" />
+                        android:src="@drawable/ic_baseline_favorite_border_24"/>
                 </LinearLayout>
 
                 <!-- Rating Row -->
@@ -116,7 +113,6 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:text="DRAMA"
-                        android:textColor="@color/primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -130,7 +126,6 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:text="THRILLER"
-                        android:textColor="@color/primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -143,7 +138,6 @@
                         android:paddingStart="16dp"
                         android:paddingEnd="16dp"
                         android:text="MYSTERY"
-                        android:textColor="@color/primary"
                         android:textSize="12sp"
                         android:textStyle="bold" />
                 </LinearLayout>
@@ -191,7 +185,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
                     android:text="Description"
-                    android:textColor="@color/primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -211,7 +204,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
                     android:text="Seasons"
-                    android:textColor="@color/primary"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
