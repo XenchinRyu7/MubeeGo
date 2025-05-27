@@ -6,9 +6,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import android.os.Bundle
 import android.os.Handler
+import androidx.lifecycle.lifecycleScope
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import com.saefulrdevs.mubeego.ui.authentication.AuthActivity
 import com.saefulrdevs.mubeego.ui.main.MainNavigation
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 @SuppressLint("CustomSplashScreen")
@@ -19,7 +22,6 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Terapkan theme mode dari preferences
         when (userPreferencesUseCase.getThemeMode()) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
@@ -27,19 +29,18 @@ class SplashActivity : AppCompatActivity() {
         }
 
         val isUserLoggedIn = userPreferencesUseCase.getUser() != null
-
-        Handler(mainLooper).postDelayed({
-            val intent = if (isUserLoggedIn) {
-                Intent(this@SplashActivity, MainNavigation::class.java)
-            } else {
-                Intent(this@SplashActivity, AuthActivity::class.java)
+        val intent = if (isUserLoggedIn) {
+            Intent(this@SplashActivity, MainNavigation::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
             }
-            startActivity(intent)
-            finish()
-        }, SPLASH_TIME)
-    }
-
-    companion object {
-        const val SPLASH_TIME = 2000L
+        } else {
+            Intent(this@SplashActivity, AuthActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+        }
+        startActivity(intent)
+        overridePendingTransition(0, 0)
+        finish()
     }
 }
+

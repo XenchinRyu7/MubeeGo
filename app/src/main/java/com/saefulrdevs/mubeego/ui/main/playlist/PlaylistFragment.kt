@@ -124,6 +124,8 @@ class PlaylistFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Cegah memory leak pada adapter
+        binding.rvPlaylist.adapter = null
         _binding = null
     }
 }

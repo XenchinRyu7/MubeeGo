@@ -161,6 +161,11 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        // Cegah memory leak pada adapter
+        binding.rvNowShowing.adapter = null
+        binding.rvPopular.adapter = null
+        binding.rvMovies.adapter = null
+        binding.rvTvSeries.adapter = null
         _binding = null
     }
 }

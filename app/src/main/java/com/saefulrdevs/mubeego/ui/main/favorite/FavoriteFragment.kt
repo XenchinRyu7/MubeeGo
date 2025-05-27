@@ -8,8 +8,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.FragmentFavoriteBinding
-import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteMoviesAdapter
-import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteMoviesViewModel
+import com.saefulrdevs.mubeego.core.domain.model.SearchItem
+import androidx.navigation.fragment.findNavController
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteFragment : Fragment() {
@@ -34,15 +36,30 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val favoriteAdapter = FavoriteMoviesAdapter()
-        viewModel.getMovieFav().observe(viewLifecycleOwner) { movies ->
+        val mixedAdapter = FavoriteMixedAdapter { item ->
+            when (item.mediaType) {
+                "movie" -> {
+                    val bundle = Bundle().apply {
+                        putInt(MovieDetailFragment.EXTRA_MOVIE, item.id)
+                    }
+                    findNavController().navigate(R.id.navigation_detail_movie, bundle)
+                }
+                "tv" -> {
+                    val bundle = Bundle().apply {
+                        putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, item.id)
+                    }
+                    findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
+                }
+            }
+        }
+        viewModel.getFavoriteMixed().observe(viewLifecycleOwner) { items ->
             binding.progressCircular.visibility = View.GONE
-            favoriteAdapter.submitList(movies)
+            mixedAdapter.submitList(items)
         }
         with(binding.rvFavorite) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            adapter = favoriteAdapter
+            adapter = mixedAdapter
         }
     }
 

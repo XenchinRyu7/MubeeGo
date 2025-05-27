@@ -255,6 +255,34 @@ object DataMapper {
         )
     }
 
+    fun movieToSearchItem(movie: Movie): SearchItem {
+        return SearchItem(
+            id = movie.movieId,
+            name = movie.title,
+            posterPath = movie.posterPath,
+            backdropPath = movie.backdropPath,
+            mediaType = "movie",
+            overview = movie.overview,
+            voteCount = movie.voteCount,
+            voteAverage = movie.voteAverage,
+            releaseOrAirDate = movie.releaseDate
+        )
+    }
+
+    fun tvShowToSearchItem(tvShow: TvShow): SearchItem {
+        return SearchItem(
+            id = tvShow.tvShowId,
+            name = tvShow.name,
+            posterPath = tvShow.posterPath,
+            backdropPath = tvShow.backdropPath,
+            mediaType = "tv",
+            overview = tvShow.overview,
+            voteCount = tvShow.voteCount,
+            voteAverage = tvShow.voteAverage,
+            releaseOrAirDate = tvShow.firstAirDate
+        )
+    }
+
     private fun VideoResults.getYoutubeTrailerId(): String? {
         val ytTrailer = this.results?.filter { it.site == "YouTube" && it.type == "Trailer" }
         if (!ytTrailer.isNullOrEmpty()) {
