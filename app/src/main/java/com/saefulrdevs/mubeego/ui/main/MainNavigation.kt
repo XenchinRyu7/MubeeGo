@@ -1,16 +1,12 @@
 package com.saefulrdevs.mubeego.ui.main
 
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.fragment.NavHostFragment
@@ -19,9 +15,6 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.ActivityMainNavigationBinding
-import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
-import com.saefulrdevs.mubeego.ui.authentication.AuthActivity
-import org.koin.android.ext.android.inject
 
 class MainNavigation : AppCompatActivity() {
 

@@ -12,6 +12,7 @@
         </intent>
     </queries>
 
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -23,10 +24,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MubeeGo"
         tools:targetApi="31">
+
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
-            android:theme="@style/Theme.MubeeGo">
+            android:theme="@style/Theme.MubeeGo.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

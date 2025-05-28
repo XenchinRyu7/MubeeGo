@@ -166,8 +166,8 @@ class MovieDetailFragment : Fragment() {
             genre3.text = movieDetails.genres.getOrNull(2)?.toString() ?: "-"
             tvLength.text = "Length\n" + Utils.changeMinuteToDurationFormat(movieDetails.runtime)
             tvLanguage.text = "Language\n" + (movieDetails.originalLanguage.ifBlank { "-" })
-            tvPlatform.visibility = View.VISIBLE
             tvPlatform.text = "Platform streaming\n-"
+            movieSinopsis.text = movieDetails.overview
         }
 
         movieDetailViewModel.getMovieWatchProviders(movieDetails.movieId).asLiveData()

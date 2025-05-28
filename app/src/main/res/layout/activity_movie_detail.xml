@@ -52,7 +52,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Spiderman: No Way Home"
-                        android:textColor="#222222"
                         android:textSize="20sp"
                         android:textStyle="bold" />
 
@@ -92,7 +91,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:text="9.1/10 IMDb"
-                        android:textColor="#222222"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -158,7 +156,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Length\n2h 28min"
-                        android:textColor="#222222"
                         android:textSize="13sp" />
 
                     <TextView
@@ -167,7 +164,6 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Language\nEnglish"
-                        android:textColor="#222222"
                         android:textSize="13sp" />
 
                     <TextView
@@ -177,7 +173,6 @@
                         android:layout_weight="1"
                         android:visibility="visible"
                         android:text="Platform streaming\n-"
-                        android:textColor="#222222"
                         android:textSize="13sp" />
                 </LinearLayout>
 
@@ -197,7 +192,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="With Spider-Man's identity now revealed, Peter asks Doctor Strange for help. When a spell goes wrong, dangerous foes from other worlds start to appear, forcing Peter to discover what it truly means to be Spider-Man."
-                    android:textColor="#444444"
                     android:textSize="14sp" />
 
                 <!-- Cast -->

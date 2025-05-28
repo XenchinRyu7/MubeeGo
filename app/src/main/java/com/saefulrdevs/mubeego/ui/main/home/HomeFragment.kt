@@ -52,7 +52,7 @@ class HomeFragment : Fragment() {
 
         nowShowingAdapter = MoviesAdapter { movieId ->
             val bundle = Bundle().apply {
-                putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, movieId)
+                putInt(MovieDetailFragment.EXTRA_MOVIE, movieId)
             }
             findNavController().navigate(R.id.navigation_detail_movie, bundle)
         }
@@ -70,7 +70,7 @@ class HomeFragment : Fragment() {
         popularAdapter.submitList(emptyList())
         moviesAdapter = MoviesAdapter { movieId ->
             val bundle = Bundle().apply {
-                putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, movieId)
+                putInt(MovieDetailFragment.EXTRA_MOVIE, movieId)
             }
             findNavController().navigate(R.id.navigation_detail_movie, bundle)
         }
@@ -83,14 +83,12 @@ class HomeFragment : Fragment() {
         }
         tvSeriesAdapter.submitList(emptyList())
 
-        // Setup Now Showing RecyclerView (Horizontal)
         binding.rvNowShowing.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = nowShowingAdapter
             setHasFixedSize(true)
         }
 
-        // Setup Popular RecyclerView (Vertical)
         binding.rvPopular.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = popularAdapter

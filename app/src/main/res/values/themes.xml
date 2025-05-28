@@ -48,11 +48,6 @@
         <item name="colorSurfaceContainerHigh">@color/md_theme_surfaceContainerHigh</item>
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
 
-        <item name="windowSplashScreenBackground">@color/md_theme_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/mubeego_logo</item>
-        <item name="windowSplashScreenIconBackgroundColor">@color/md_theme_primaryContainer</item>
-        <item name="windowSplashScreenAnimationDuration">1000</item>
-        <item name="postSplashScreenTheme">@style/Theme.MubeeGo</item>
     </style>
 
     <style name="Theme.MubeeGo.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -141,4 +136,5 @@
         <item name="strokeColor">?attr/colorOutline</item>
         <item name="strokeWidth">1dp</item>
     </style>
+w
 </resources>
