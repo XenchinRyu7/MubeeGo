@@ -1,5 +1,6 @@
 package com.saefulrdevs.mubeego.core.data.source.local
 
+import com.saefulrdevs.mubeego.core.data.source.local.entity.GenreEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.MovieEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.SeasonEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.TvShowEntity
@@ -33,11 +34,15 @@ class LocalDataSource private constructor(private val tmdbDao: TmdbDao) {
     fun getTvShowWithSeason(showId: String): Flow<TvShowWithSeasonEntity> =
         tmdbDao.getSeasonByTvShowId(showId)
 
+    fun getGenres(): Flow<List<GenreEntity>> = tmdbDao.getGenres()
+
     fun insertMovies(movies: List<MovieEntity>) = tmdbDao.insertMovie(movies)
 
     fun insertTvShow(tvShows: List<TvShowEntity>) = tmdbDao.insertTvShow(tvShows)
 
     fun insertSeason(seasons: List<SeasonEntity>) = tmdbDao.insertSeason(seasons)
+
+    fun insertGenres(genres: List<GenreEntity>) = tmdbDao.insertGenres(genres)
 
     fun setMovieFavorite(movie: MovieEntity, newState: Boolean) {
         movie.favorited = newState
@@ -49,4 +54,5 @@ class LocalDataSource private constructor(private val tmdbDao: TmdbDao) {
         tmdbDao.updateTvShow(tvShow)
     }
 
+    fun clearMovies() = tmdbDao.clearMovies()
 }

@@ -1,6 +1,7 @@
 package com.saefulrdevs.mubeego.core.domain.repository
 
 import com.saefulrdevs.mubeego.core.data.Resource
+import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
@@ -23,4 +24,6 @@ interface ITmdbRepository {
     fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>>
     fun getTrendings(): Flow<Resource<List<SearchItem>>>
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>>
+    fun getGenres(): Flow<Resource<List<Genre>>>
+    fun clearMovies()
 }

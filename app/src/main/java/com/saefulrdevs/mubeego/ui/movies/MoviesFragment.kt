@@ -42,6 +42,9 @@ class MoviesFragment : Fragment() {
                 findNavController().navigate(R.id.navigation_detail_movie, bundle)
             }
 
+            // DEBUG: Clear movies table to force fresh fetch and mapping
+            moviesViewModel.clearMovies()
+
             moviesViewModel.getDiscoverMovies().observe(viewLifecycleOwner) { movies ->
                 if (movies != null) {
                     when (movies) {

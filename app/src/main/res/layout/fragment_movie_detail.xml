@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="24dp">
 
@@ -22,15 +22,16 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardMovieDetail"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="-40dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
             app:cardCornerRadius="24dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp">
 
@@ -204,7 +205,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:overScrollMode="never"
-                    android:scrollbars="none" />
+                    android:scrollbars="none"
+                    android:maxHeight="200dp" />
 
                 <Button
                     android:id="@+id/btnSeeMoreCast"

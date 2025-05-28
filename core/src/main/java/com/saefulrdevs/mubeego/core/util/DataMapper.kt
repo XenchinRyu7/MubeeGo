@@ -25,7 +25,9 @@ object DataMapper {
         return "$IMAGE_BASE_URL$this"
     }
 
+    // DEBUG: log genreIds saat mapping ResultsItemMovie ke MovieEntity
     fun ResultsItemMovie.toEntity(): MovieEntity {
+        android.util.Log.d("DataMapper", "toEntity genreIds: $genreIds for movieId: $id")
         return MovieEntity(
             movieId = id,
             title = title,
@@ -34,7 +36,12 @@ object DataMapper {
             backdropPath = backdropPath.toImageUrl(),
             releaseDate = releaseDate,
             voteAverage = voteAverage,
-            voteCount = voteCount
+            voteCount = voteCount,
+            runtime = 0,
+            genres = JSONArray(genreIds).toString(), // <-- Simpan genreIds sebagai JSON array
+            youtubeTrailerId = "",
+            favorited = false,
+            originalLanguage = originalLanguage
         )
     }
 
@@ -75,11 +82,11 @@ object DataMapper {
     }
 
     fun MovieDetailResponse.toEntity() : MovieEntity {
-        val listOfGenre = ArrayList<String>()
+        val listOfGenreId = ArrayList<Int>()
         if (genres != null) {
             for (genre in (genres)) {
-                if (genre != null) {
-                    genre.name?.let { listOfGenre.add(it) }
+                if (genre != null && genre.id != null) {
+                    listOfGenreId.add(genre.id)
                 }
             }
         }
@@ -94,7 +101,7 @@ object DataMapper {
             voteAverage = voteAverage ?: 0.0,
             voteCount = voteCount ?: 0,
             runtime = runtime ?: 0,
-            genres = JSONArray(listOfGenre).toString(),
+            genres = JSONArray(listOfGenreId).toString(), // <-- Simpan genre id
             youtubeTrailerId = videos?.getYoutubeTrailerId() ?: "",
             favorited = false,
             originalLanguage = originalLanguage ?: ""

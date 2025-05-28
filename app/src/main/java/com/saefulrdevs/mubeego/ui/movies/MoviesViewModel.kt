@@ -13,4 +13,6 @@ class MoviesViewModel
 
     fun getDiscoverMovies(): LiveData<Resource<List<Movie>>> =
         tmdbUseCase.getDiscoverMovies().asLiveData()
+
+    fun clearMovies() = tmdbUseCase.clearMovies()
 }

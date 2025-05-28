@@ -11,6 +11,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -26,10 +27,12 @@ import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
 import com.saefulrdevs.mubeego.core.domain.model.Movie
+import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentMovieDetailBinding
 import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.moviedetail.ReminderReceiver
+import org.json.JSONArray
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
 
@@ -39,6 +42,9 @@ class MovieDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val movieDetailViewModel: MovieDetailViewModel by viewModel()
+
+    private var pendingMovie: Movie? = null
+    private var genreList: List<Genre> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +61,18 @@ class MovieDetailFragment : Fragment() {
 
         createNotificationChannel()
 
+        // Ambil genre list dari ViewModel
+        movieDetailViewModel.getGenres().observe(viewLifecycleOwner) { resource ->
+            if (resource is com.saefulrdevs.mubeego.core.data.Resource.Success) {
+                genreList = resource.data ?: emptyList()
+                // Jika ada movie yang sudah ready tapi genre baru ready sekarang
+                pendingMovie?.let {
+                    showDetailMovie(it)
+                    pendingMovie = null
+                }
+            }
+        }
+
         val args = arguments
         if (args != null) {
             val movieId = args.getInt(EXTRA_MOVIE)
@@ -69,7 +87,13 @@ class MovieDetailFragment : Fragment() {
                         is Resource.Success -> {
                             movie.data?.let {
                                 movieDetailViewModel.setMovie(it)
-                                showDetailMovie(it)
+                                // Jika genreList sudah ready, langsung show
+                                if (genreList.isNotEmpty()) {
+                                    showDetailMovie(it)
+                                } else {
+                                    // Simpan dulu, nanti dipanggil setelah genreList ready
+                                    pendingMovie = it
+                                }
                             }
                         }
 
@@ -161,13 +185,23 @@ class MovieDetailFragment : Fragment() {
             movieTitle.text = movieDetails.title
             movieSinopsis.text = movieDetails.overview
             movieRating.text = String.format("%.1f/10 IMDb", movieDetails.voteAverage)
-            genre1.text = movieDetails.genres.getOrNull(0)?.toString() ?: "-"
-            genre2.text = movieDetails.genres.getOrNull(1)?.toString() ?: "-"
-            genre3.text = movieDetails.genres.getOrNull(2)?.toString() ?: "-"
+
+            val genreIds = try {
+                val arr = JSONArray(movieDetails.genres)
+                List(arr.length()) { arr.getInt(it) }
+            } catch (e: Exception) {
+                emptyList<Int>()
+            }
+            val genreNames = genreIds.mapNotNull { id -> genreList.find { it.id == id }?.name }
+            genre1.text = genreNames.getOrNull(0) ?: "-"
+            genre2.text = genreNames.getOrNull(1) ?: "-"
+            genre3.text = genreNames.getOrNull(2) ?: "-"
             tvLength.text = "Length\n" + Utils.changeMinuteToDurationFormat(movieDetails.runtime)
             tvLanguage.text = "Language\n" + (movieDetails.originalLanguage.ifBlank { "-" })
             tvPlatform.text = "Platform streaming\n-"
             movieSinopsis.text = movieDetails.overview
+            Log.d("MovieDetailFragment", "genreIds: $genreIds")
+            Log.d("MovieDetailFragment", "genreNames: $genreNames")
         }
 
         movieDetailViewModel.getMovieWatchProviders(movieDetails.movieId).asLiveData()

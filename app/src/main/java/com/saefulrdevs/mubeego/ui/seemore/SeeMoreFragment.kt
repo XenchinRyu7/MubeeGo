@@ -11,6 +11,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.FragmentSeeMoreBinding
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
@@ -67,15 +69,26 @@ class SeeMoreFragment : Fragment() {
         }
         setHasOptionsMenu(true)
 
-        // Setup adapter
-        seeMoreAdapter = SeeMoreAdapter()
+        seeMoreAdapter = SeeMoreAdapter(object : SeeMoreAdapter.OnItemClickListener {
+            override fun onMovieClicked(movieId: Int) {
+                val bundle = Bundle().apply {
+                    putInt(MovieDetailFragment.EXTRA_MOVIE, movieId)
+                }
+                findNavController().navigate(R.id.navigation_detail_movie, bundle)
+            }
+            override fun onTvShowClicked(tvShowId: Int) {
+                val bundle = Bundle().apply {
+                    putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, tvShowId)
+                }
+                findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
+            }
+        })
         binding.rvSeeMore.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = seeMoreAdapter
             setHasFixedSize(true)
         }
 
-        // Load data based on type
         loadDataBasedOnType()
     }
 

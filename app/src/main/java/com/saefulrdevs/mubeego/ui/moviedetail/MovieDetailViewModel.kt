@@ -33,4 +33,6 @@ class MovieDetailViewModel(private val tmdbUseCase: TmdbUseCase) : ViewModel() {
         }
         return false
     }
+
+    fun getGenres() = tmdbUseCase.getGenres().asLiveData()
 }

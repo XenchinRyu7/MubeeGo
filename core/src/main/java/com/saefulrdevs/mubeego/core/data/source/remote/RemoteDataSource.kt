@@ -10,6 +10,7 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemMovie
 import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemTvShow
 import com.saefulrdevs.mubeego.core.data.source.remote.response.SearchResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -191,6 +192,26 @@ class RemoteDataSource(private val apiService: ApiService) {
             try {
                 val response = apiService.getMovieWatchProviders(movieId, API_KEY)
                 emit(ApiResponse.Success(response))
+            } catch (e: IOException) {
+                emit(ApiResponse.Error(e.toString()))
+                Log.e("RemoteDataSource", e.toString())
+            }
+        }.flowOn(Dispatchers.IO)
+        EspressoIdlingResource.decrement()
+        return f
+    }
+
+    fun getMovieGenres(): Flow<ApiResponse<List<GenreResponse>>> {
+        EspressoIdlingResource.increment()
+        val f = flow {
+            try {
+                val response = apiService.getMovieGenres(API_KEY, LANGUAGE)
+                val results = response.genres
+                if (results.isNotEmpty()) {
+                    emit(ApiResponse.Success(results))
+                } else {
+                    emit(ApiResponse.Empty)
+                }
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
                 Log.e("RemoteDataSource", e.toString())

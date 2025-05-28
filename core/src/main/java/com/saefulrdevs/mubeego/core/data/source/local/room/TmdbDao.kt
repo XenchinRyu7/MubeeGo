@@ -5,6 +5,7 @@ import com.saefulrdevs.mubeego.core.data.source.local.entity.MovieEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.SeasonEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.TvShowEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.TvShowWithSeasonEntity
+import com.saefulrdevs.mubeego.core.data.source.local.entity.GenreEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,6 +26,9 @@ interface TmdbDao {
 
     @Update
     fun updateMovie(movie: MovieEntity)
+
+    @Query("DELETE FROM movies")
+    fun clearMovies()
 
     //Tv Show
     @Query("SELECT * FROM tvShows ORDER BY voteCount DESC")
@@ -48,4 +52,11 @@ interface TmdbDao {
 
     @Update
     fun updateTvShow(tvShow: TvShowEntity)
+
+    // Genre
+    @Query("SELECT * FROM genres")
+    fun getGenres(): Flow<List<GenreEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertGenres(genres: List<GenreEntity>)
 }

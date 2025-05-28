@@ -8,6 +8,7 @@ import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.domain.model.TvShowWithSeason
 import kotlinx.coroutines.flow.Flow
+import com.saefulrdevs.mubeego.core.domain.model.Genre
 
 interface TmdbUseCase {
     fun getNowPlayingMovies(): Flow<Resource<List<Movie>>>
@@ -26,4 +27,6 @@ interface TmdbUseCase {
     fun getPopular(): Flow<Resource<List<SearchItem>>>
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>>
     fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<WatchProvidersResponse>>
+    fun getGenres(): Flow<Resource<List<Genre>>>
+    fun clearMovies()
 }

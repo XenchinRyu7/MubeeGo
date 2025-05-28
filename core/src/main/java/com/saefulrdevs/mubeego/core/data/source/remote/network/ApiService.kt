@@ -6,6 +6,7 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailRespo
 import com.saefulrdevs.mubeego.core.data.source.remote.response.SearchResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreListResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -76,10 +77,9 @@ interface ApiService {
         @Query("with_release_type") releaseType: String = "2|3"
     ): DiscoverMovieResponse
 
-//    @GET("movie/{movieId}/watch/providers")
-//    suspend fun getProviders(
-//        @Path("movieId") movieId: String,
-//        @Query("api_key") api_key: String,
-//        @Query("language") language: String,
-//    ):
+    @GET("genre/movie/list")
+    suspend fun getMovieGenres(
+        @Query("api_key") api_key: String,
+        @Query("language") language: String = "en"
+    ): GenreListResponse
 }

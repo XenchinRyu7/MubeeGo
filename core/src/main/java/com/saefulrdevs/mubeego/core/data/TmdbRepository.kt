@@ -22,6 +22,9 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailRespo
 import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemMovie
 import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemTvShow
 import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
+import com.saefulrdevs.mubeego.core.domain.model.Genre
+import com.saefulrdevs.mubeego.core.data.source.local.entity.GenreEntity
+import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -479,5 +482,31 @@ class TmdbRepository private constructor(
 
     fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse>> {
         return remoteDataSource.getMovieWatchProviders(movieId)
+    }
+
+    override fun getGenres(): Flow<Resource<List<Genre>>> {
+        return object : NetworkBoundResource<List<Genre>, List<GenreResponse>>() {
+            override fun loadFromDB(): Flow<List<Genre>> {
+                return localDataSource.getGenres().map { list ->
+                    list.map { Genre(it.id, it.name) }
+                }
+            }
+
+            override fun shouldFetch(data: List<Genre>?): Boolean = data.isNullOrEmpty()
+
+            override suspend fun createCall(): Flow<ApiResponse<List<GenreResponse>>> =
+                remoteDataSource.getMovieGenres()
+
+            override suspend fun saveCallResult(data: List<GenreResponse>) {
+                val genres = data.map { GenreEntity(it.id, it.name) }
+                appExecutors.diskIO().execute {
+                    localDataSource.insertGenres(genres)
+                }
+            }
+        }.asFlow()
+    }
+
+    override fun clearMovies() {
+        localDataSource.clearMovies()
     }
 }

@@ -1,6 +1,7 @@
 package com.saefulrdevs.mubeego.core.domain.usecase
 
 import com.saefulrdevs.mubeego.core.data.Resource
+import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
@@ -72,4 +73,10 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
     override fun getMovieWatchProviders(movieId: String) =
         (tmdbRepository as? com.saefulrdevs.mubeego.core.data.TmdbRepository)?.getMovieWatchProviders(movieId)
             ?: throw NotImplementedError("getMovieWatchProviders not implemented in repository")
+
+    override fun getGenres() = tmdbRepository.getGenres()
+
+    override fun clearMovies() {
+        tmdbRepository.clearMovies()
+    }
 }

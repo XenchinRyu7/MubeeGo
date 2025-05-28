@@ -95,14 +95,12 @@ class HomeFragment : Fragment() {
             setHasFixedSize(true)
         }
 
-        // Setup Movies RecyclerView (Horizontal)
         binding.rvMovies.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = moviesAdapter
             setHasFixedSize(true)
         }
 
-        // Setup TV Series RecyclerView (Horizontal)
         binding.rvTvSeries.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = tvSeriesAdapter
@@ -134,7 +132,6 @@ class HomeFragment : Fragment() {
             }
         }
 
-        // See more click listeners (implement navigation as needed)
         binding.btnSeeMoreNowShowing.setOnClickListener {
             val bundle = Bundle().apply {
                 putString(SeeMoreFragment.EXTRA_TYPE, SeeMoreFragment.TYPE_NOW_SHOWING)
