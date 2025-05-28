@@ -57,7 +57,9 @@ class MainNavigation : AppCompatActivity() {
             if (
                 destination.id == R.id.seeMoreFragment ||
                 destination.id == R.id.navigation_detail_movie ||
-                destination.id == R.id.navigation_detail_tv_series
+                destination.id == R.id.navigation_detail_tv_series ||
+                destination.id == R.id.navigation_search ||
+                destination.id == R.id.navigation_settings
             ) {
                 bottomNavigationView.visibility = View.GONE
             } else {
@@ -96,5 +98,11 @@ class MainNavigation : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }

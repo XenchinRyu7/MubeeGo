@@ -4,7 +4,7 @@
     <item android:drawable="@color/white" />
 
     <item>
-        <bitmap android:src="@drawable/tmdb"
+        <bitmap android:src="@drawable/mubeego_logo"
             android:gravity="center" />
     </item>
 

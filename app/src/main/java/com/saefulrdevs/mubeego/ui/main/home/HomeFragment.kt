@@ -56,6 +56,7 @@ class HomeFragment : Fragment() {
             }
             findNavController().navigate(R.id.navigation_detail_movie, bundle)
         }
+        nowShowingAdapter.submitList(emptyList())
         popularAdapter = PopularAdapter { id, type ->
             val bundle = Bundle()
             if (type == "movie") {
@@ -66,18 +67,21 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
             }
         }
+        popularAdapter.submitList(emptyList())
         moviesAdapter = MoviesAdapter { movieId ->
             val bundle = Bundle().apply {
                 putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, movieId)
             }
             findNavController().navigate(R.id.navigation_detail_movie, bundle)
         }
+        moviesAdapter.submitList(emptyList())
         tvSeriesAdapter = TvShowsAdapter { showId ->
             val bundle = Bundle().apply {
                 putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, showId)
             }
             findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
         }
+        tvSeriesAdapter.submitList(emptyList())
 
         // Setup Now Showing RecyclerView (Horizontal)
         binding.rvNowShowing.apply {
@@ -161,7 +165,6 @@ class HomeFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Cegah memory leak pada adapter
         binding.rvNowShowing.adapter = null
         binding.rvPopular.adapter = null
         binding.rvMovies.adapter = null
