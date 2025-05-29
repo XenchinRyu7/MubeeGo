@@ -29,5 +29,4 @@ class HomeViewModel
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String) =
         tmdbUseCase.getUpcomingMoviesByDate(minDate, maxDate).asLiveData()
 
-
 }

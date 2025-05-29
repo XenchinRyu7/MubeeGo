@@ -7,7 +7,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -21,8 +20,7 @@ import com.saefulrdevs.mubeego.core.domain.model.Season
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentTvSeriesDetailBinding
 import com.saefulrdevs.mubeego.ui.main.detail.movie.CastAdapter
-import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class TvSeriesDetailFragment : Fragment() {
 
@@ -32,7 +30,7 @@ class TvSeriesDetailFragment : Fragment() {
     private lateinit var seasonAdapter: SeasonsAdapter
     private var castAdapter: CastAdapter? = null
 
-    private val tvSeriesDetailViewModel: TvSeriesDetailViewModel by viewModel()
+    private val tvSeriesDetailViewModel: TvSeriesDetailViewModel by activityViewModel()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +60,39 @@ class TvSeriesDetailFragment : Fragment() {
         }
         val showId = arguments?.getInt(EXTRA_TV_SHOW) ?: 0
         if (showId != 0) {
-            loadRemoteTvShowDetail(showId)
+            tvSeriesDetailViewModel.tvShowDetails.observe(viewLifecycleOwner) { map ->
+                val detail = map[showId]
+                val credits = tvSeriesDetailViewModel.getCachedTvShowCredits(showId)
+                val providers = tvSeriesDetailViewModel.getCachedTvShowProviders(showId)
+                if (detail != null && credits != null && providers != null) {
+                    showRemoteDetailTvShow(detail, credits, providers)
+                }
+            }
+            tvSeriesDetailViewModel.tvShowCredits.observe(viewLifecycleOwner) { map ->
+                val detail = tvSeriesDetailViewModel.getCachedTvShowDetail(showId)
+                val credits = map[showId]
+                val providers = tvSeriesDetailViewModel.getCachedTvShowProviders(showId)
+                if (detail != null && credits != null && providers != null) {
+                    showRemoteDetailTvShow(detail, credits, providers)
+                }
+            }
+            tvSeriesDetailViewModel.tvShowProviders.observe(viewLifecycleOwner) { map ->
+                val detail = tvSeriesDetailViewModel.getCachedTvShowDetail(showId)
+                val credits = tvSeriesDetailViewModel.getCachedTvShowCredits(showId)
+                val providers = map[showId]
+                if (detail != null && credits != null && providers != null) {
+                    showRemoteDetailTvShow(detail, credits, providers)
+                }
+            }
+            if (tvSeriesDetailViewModel.getCachedTvShowDetail(showId) == null) {
+                tvSeriesDetailViewModel.fetchTvShowDetail(showId)
+            }
+            if (tvSeriesDetailViewModel.getCachedTvShowCredits(showId) == null) {
+                tvSeriesDetailViewModel.fetchTvShowCredits(showId)
+            }
+            if (tvSeriesDetailViewModel.getCachedTvShowProviders(showId) == null) {
+                tvSeriesDetailViewModel.fetchTvShowProviders(showId)
+            }
         }
         binding.fabFavorite.setOnClickListener {
             val newState = tvSeriesDetailViewModel.setFavorite()
@@ -73,21 +103,6 @@ class TvSeriesDetailFragment : Fragment() {
             }
         }
         return binding.root
-    }
-
-    private fun loadRemoteTvShowDetail(showId: Int) {
-        binding.progressBar.visibility = View.VISIBLE
-        viewLifecycleOwner.lifecycleScope.launch {
-            val detail = tvSeriesDetailViewModel.getTvShowDetailRemote(showId)
-            val credits = tvSeriesDetailViewModel.getTvShowAggregateCreditsRemote(showId)
-            val providers = tvSeriesDetailViewModel.getTvShowWatchProvidersRemote(showId)
-            binding.progressBar.visibility = View.GONE
-            if (detail != null) {
-                showRemoteDetailTvShow(detail, credits, providers)
-            } else {
-                Toast.makeText(requireContext(), getString(R.string.error_while_getting_data), Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
     private fun showRemoteDetailTvShow(

@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.FragmentFavoriteBinding
-import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import androidx.navigation.fragment.findNavController
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
@@ -18,7 +17,7 @@ class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: FavoriteMoviesViewModel by viewModel()
+    private val viewModel: FavoriteViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

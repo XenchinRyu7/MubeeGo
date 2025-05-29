@@ -1,5 +1,6 @@
 package com.saefulrdevs.mubeego.core.data.source.remote.network
 
+import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.DiscoverMovieResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.DiscoverTvShowResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
@@ -88,18 +89,18 @@ interface ApiService {
         @Path("movieId") movieId: String,
         @Query("api_key") api_key: String,
         @Query("language") language: String = "en-US"
-    ): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
+    ): CreditsResponse
 
     @GET("tv/{tvShowId}/aggregate_credits")
     suspend fun getTvShowAggregateCredits(
         @Path("tvShowId") tvShowId: String,
         @Query("api_key") api_key: String,
         @Query("language") language: String = "en-US"
-    ): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
+    ): CreditsResponse
 
     @GET("tv/{tvShowId}/watch/providers")
     suspend fun getTvShowWatchProviders(
         @Path("tvShowId") tvShowId: String,
         @Query("api_key") api_key: String
-    ): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
+    ): WatchProvidersResponse
 }

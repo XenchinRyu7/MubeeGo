@@ -10,6 +10,12 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.domain.model.TvShowWithSeason
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
+import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TvSeriesDetailViewModel
     (private val tmdbUseCase: TmdbUseCase) :
@@ -37,7 +43,56 @@ class TvSeriesDetailViewModel
         return false
     }
 
-    suspend fun getTvShowDetailRemote(tvShowId: Int) = tmdbUseCase.getTvShowDetailRemote(tvShowId.toString())
-    suspend fun getTvShowAggregateCreditsRemote(tvShowId: Int) = tmdbUseCase.getTvShowAggregateCreditsRemote(tvShowId.toString())
-    suspend fun getTvShowWatchProvidersRemote(tvShowId: Int) = tmdbUseCase.getTvShowWatchProvidersRemote(tvShowId.toString())
+    private val _tvShowDetails = MutableLiveData<Map<Int, TvShowDetailResponse>>()
+    val tvShowDetails: LiveData<Map<Int, TvShowDetailResponse>> = _tvShowDetails
+
+    private val _tvShowCredits = MutableLiveData<Map<Int, CreditsResponse>>()
+    val tvShowCredits: LiveData<Map<Int, CreditsResponse>> = _tvShowCredits
+
+    private val _tvShowProviders = MutableLiveData<Map<Int, WatchProvidersResponse>>()
+    val tvShowProviders: LiveData<Map<Int, WatchProvidersResponse>> = _tvShowProviders
+
+    fun fetchTvShowDetail(showId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = tmdbUseCase.getTvShowDetailRemote(showId.toString())
+            if (result != null) {
+                val current = _tvShowDetails.value?.toMutableMap() ?: mutableMapOf()
+                current[showId] = result
+                _tvShowDetails.postValue(current)
+            }
+        }
+    }
+
+    fun fetchTvShowCredits(showId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = tmdbUseCase.getTvShowAggregateCreditsRemote(showId.toString())
+            if (result != null) {
+                val current = _tvShowCredits.value?.toMutableMap() ?: mutableMapOf()
+                current[showId] = result
+                _tvShowCredits.postValue(current)
+            }
+        }
+    }
+
+    fun fetchTvShowProviders(showId: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val result = tmdbUseCase.getTvShowWatchProvidersRemote(showId.toString())
+            if (result != null) {
+                val current = _tvShowProviders.value?.toMutableMap() ?: mutableMapOf()
+                current[showId] = result
+                _tvShowProviders.postValue(current)
+            }
+        }
+    }
+
+    fun getCachedTvShowDetail(showId: Int): TvShowDetailResponse? {
+        return _tvShowDetails.value?.get(showId)
+    }
+    fun getCachedTvShowCredits(showId: Int): CreditsResponse? {
+        return _tvShowCredits.value?.get(showId)
+    }
+    fun getCachedTvShowProviders(showId: Int): WatchProvidersResponse? {
+        return _tvShowProviders.value?.get(showId)
+    }
+
 }

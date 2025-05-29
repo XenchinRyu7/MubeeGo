@@ -29,7 +29,6 @@ class SeasonsAdapter : ListAdapter<Season, SeasonsAdapter.SeasonViewHolder>(DIFF
 
     override fun getItemCount(): Int {
         val count = super.getItemCount()
-        android.util.Log.d("SeasonsAdapter", "getItemCount: $count")
         return count
     }
 

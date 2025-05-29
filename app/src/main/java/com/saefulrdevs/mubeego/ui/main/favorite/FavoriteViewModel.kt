@@ -10,9 +10,14 @@ import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 import com.saefulrdevs.mubeego.core.util.DataMapper
 
-class FavoriteMoviesViewModel(
+class FavoriteViewModel(
     private val tmdbUseCase: TmdbUseCase
 ) : ViewModel() {
+    init {
+        tmdbUseCase.observeFavoriteMoviesRealtime()
+        tmdbUseCase.observeFavoriteTvShowsRealtime()
+    }
+
     fun getMovieFav(): LiveData<List<Movie>> =
         tmdbUseCase.getFavoriteMovie().asLiveData()
 

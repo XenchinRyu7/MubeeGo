@@ -18,24 +18,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
-import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
-import com.saefulrdevs.mubeego.core.domain.model.Movie
-import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentMovieDetailBinding
 import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.moviedetail.ReminderReceiver
-import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Calendar
 
 class MovieDetailFragment : Fragment() {
@@ -43,10 +37,7 @@ class MovieDetailFragment : Fragment() {
     private var _binding: FragmentMovieDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val movieDetailViewModel: MovieDetailViewModel by viewModel()
-
-    private var remoteMovieDetail: MovieDetailResponse? = null
-    private var remoteGenres: List<GenreResponse> = emptyList()
+    private val movieDetailViewModel: MovieDetailViewModel by activityViewModel()
 
     private var castAdapter: CastAdapter? = null
 
@@ -66,31 +57,114 @@ class MovieDetailFragment : Fragment() {
         createNotificationChannel()
 
         val args = arguments
+        var movieId: Int? = null
         if (args != null) {
-            val movieId = args.getInt(EXTRA_MOVIE)
+            movieId = args.getInt(EXTRA_MOVIE)
             if (movieId != 0) {
-                lifecycleScope.launch {
-                    val movieDetail = movieDetailViewModel.getMovieDetailRemote(movieId)
-                    val genres = movieDetailViewModel.getGenresRemote()
-                    val credits = movieDetailViewModel.getMovieCreditsRemote(movieId)
-                    if (movieDetail != null && genres != null) {
-                        remoteMovieDetail = movieDetail
-                        remoteGenres = genres
-                        showRemoteDetailMovie(movieDetail, genres)
-                        val castList = credits?.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
+                movieDetailViewModel.getMovieDetail(movieId).observe(viewLifecycleOwner) { resource ->
+                    val movie = resource.data
+                    if (movie != null) {
+                        movieDetailViewModel.setMovie(movie)
+                    }
+                }
+                movieDetailViewModel.isMovieFavorited(movieId).observe(viewLifecycleOwner) { isFav ->
+                    setFabIcon(isFav)
+                }
+                movieDetailViewModel.genres.observe(viewLifecycleOwner) { genresList ->
+                    val detail = movieDetailViewModel.getCachedMovieDetail(movieId)
+                    val credits = movieDetailViewModel.getCachedMovieCredits(movieId)
+                    val providers = movieDetailViewModel.getCachedMovieProviders(movieId)
+                    if (detail != null && credits != null && providers != null && genresList != null) {
+                        showRemoteDetailMovie(detail, genresList)
+                        val castList = credits.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
                         castAdapter = CastAdapter(castList)
                         binding.rvCast.apply {
                             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                             adapter = castAdapter
                             setHasFixedSize(true)
                         }
-                        binding.btnSeeMoreCast.visibility = if ((credits?.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
+                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
                         binding.btnSeeMoreCast.setOnClickListener {
                             Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
                         }
-                    } else {
-                        Toast.makeText(requireContext(), "Failed to fetch detail or genres", Toast.LENGTH_SHORT).show()
                     }
+                }
+                movieDetailViewModel.movieDetails.observe(viewLifecycleOwner) { map ->
+                    val detail = map[movieId]
+                    val credits = movieDetailViewModel.getCachedMovieCredits(movieId)
+                    val providers = movieDetailViewModel.getCachedMovieProviders(movieId)
+                    val genresList = movieDetailViewModel.getCachedGenres()
+                    if (detail != null && credits != null && providers != null && genresList != null) {
+                        showRemoteDetailMovie(detail, genresList)
+                        val castList = credits.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
+                        castAdapter = CastAdapter(castList)
+                        binding.rvCast.apply {
+                            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                            adapter = castAdapter
+                            setHasFixedSize(true)
+                        }
+                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
+                        binding.btnSeeMoreCast.setOnClickListener {
+                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                movieDetailViewModel.movieCredits.observe(viewLifecycleOwner) { map ->
+                    val detail = movieDetailViewModel.getCachedMovieDetail(movieId)
+                    val credits = map[movieId]
+                    val providers = movieDetailViewModel.getCachedMovieProviders(movieId)
+                    val genresList = movieDetailViewModel.getCachedGenres()
+                    if (detail != null && credits != null && providers != null && genresList != null) {
+                        showRemoteDetailMovie(detail, genresList)
+                        val castList = credits.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
+                        castAdapter = CastAdapter(castList)
+                        binding.rvCast.apply {
+                            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                            adapter = castAdapter
+                            setHasFixedSize(true)
+                        }
+                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
+                        binding.btnSeeMoreCast.setOnClickListener {
+                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                movieDetailViewModel.movieProviders.observe(viewLifecycleOwner) { map ->
+                    val detail = movieDetailViewModel.getCachedMovieDetail(movieId)
+                    val credits = movieDetailViewModel.getCachedMovieCredits(movieId)
+                    val providers = map[movieId]
+                    val genresList = movieDetailViewModel.getCachedGenres()
+                    if (detail != null && credits != null && providers != null && genresList != null) {
+                        showRemoteDetailMovie(detail, genresList)
+                        val castList = credits.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
+                        castAdapter = CastAdapter(castList)
+                        binding.rvCast.apply {
+                            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                            adapter = castAdapter
+                            setHasFixedSize(true)
+                        }
+                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
+                        binding.btnSeeMoreCast.setOnClickListener {
+                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                }
+                Log.d("MovieDetailFragment", "onCreateView: movieId=$movieId, cacheDetail=${movieDetailViewModel.getCachedMovieDetail(movieId)}, cacheCredits=${movieDetailViewModel.getCachedMovieCredits(movieId)}, cacheProviders=${movieDetailViewModel.getCachedMovieProviders(movieId)}, cacheGenres=${movieDetailViewModel.getCachedGenres()}");
+                if (movieDetailViewModel.getCachedMovieDetail(movieId) == null) {
+                    Log.d("MovieDetailFragment", "fetchMovieDetail($movieId)");
+                    movieDetailViewModel.fetchMovieDetail(movieId)
+                }
+                if (movieDetailViewModel.getCachedMovieCredits(movieId) == null) {
+                    Log.d("MovieDetailFragment", "fetchMovieCredits($movieId)");
+                    movieDetailViewModel.fetchMovieCredits(movieId)
+                }
+                if (movieDetailViewModel.getCachedMovieProviders(movieId) == null) {
+                    Log.d("MovieDetailFragment", "fetchMovieProviders($movieId)");
+                    movieDetailViewModel.fetchMovieProviders(movieId)
+                }
+                if (movieDetailViewModel.getCachedGenres() == null) {
+                    Log.d("MovieDetailFragment", "fetchGenres()");
+                    movieDetailViewModel.fetchGenres()
                 }
             }
         }
@@ -98,13 +172,10 @@ class MovieDetailFragment : Fragment() {
         binding.fabFavorite.setOnClickListener {
             val newState = movieDetailViewModel.setFavorite()
             if (newState) {
-                Toast.makeText(requireContext(), R.string.addedToFavorite, Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), R.string.addedToFavorite, Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), R.string.removedFromFavorite, Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(requireContext(), R.string.removedFromFavorite, Toast.LENGTH_SHORT).show()
             }
-            setFabIcon(newState)
         }
 
 
@@ -180,19 +251,18 @@ class MovieDetailFragment : Fragment() {
             movieSinopsis.text = movieDetail.overview ?: ""
             Log.d("MovieDetailFragment", "genreNames: $genreNames")
         }
-        lifecycleScope.launch {
-            val providers = movieDetailViewModel.getMovieWatchProvidersRemote(movieDetail.id ?: 0)
-            if (providers != null) {
-                val flatrate = providers.results?.get("ID")?.flatrate
-                if (!flatrate.isNullOrEmpty()) {
-                    val names = flatrate.joinToString(", ") { p -> p.providerName ?: "" }
-                    binding.tvPlatform.text = "Platform streaming\n$names"
-                } else {
-                    binding.tvPlatform.text = "Platform streaming\n-"
-                }
+        // Ambil providers dari cache, jangan fetch ulang
+        val providers = movieDetailViewModel.getCachedMovieProviders(movieDetail.id ?: 0)
+        if (providers != null) {
+            val flatrate = providers.results?.get("ID")?.flatrate
+            if (!flatrate.isNullOrEmpty()) {
+                val names = flatrate.joinToString(", ") { p -> p.providerName ?: "" }
+                binding.tvPlatform.text = "Platform streaming\n$names"
             } else {
                 binding.tvPlatform.text = "Platform streaming\n-"
             }
+        } else {
+            binding.tvPlatform.text = "Platform streaming\n-"
         }
         val backdropUrl = movieDetail.backdropPath?.let {
             if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it"
