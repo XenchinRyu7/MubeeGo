@@ -1,6 +1,7 @@
 package com.saefulrdevs.mubeego.core.domain.usecase
 
 import com.saefulrdevs.mubeego.core.data.Resource
+import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
 import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
@@ -83,4 +84,12 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
     override suspend fun getMovieDetailRemote(movieId: String) = tmdbRepository.getMovieDetailRemote(movieId)
 
     override suspend fun getGenresRemote() = tmdbRepository.getGenresRemote()
+
+    override suspend fun getMovieCreditsRemote(movieId: String): CreditsResponse? {
+        return tmdbRepository.getMovieCreditsRemote(movieId)
+    }
+
+    override suspend fun getMovieWatchProvidersRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse? {
+        return tmdbRepository.getMovieWatchProvidersRemote(movieId)
+    }
 }

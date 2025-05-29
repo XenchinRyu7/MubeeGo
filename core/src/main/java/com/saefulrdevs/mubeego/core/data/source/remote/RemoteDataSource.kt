@@ -229,6 +229,22 @@ class RemoteDataSource(private val apiService: ApiService) {
         }
     }
 
+    suspend fun getMovieCredits(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse? {
+        return try {
+            apiService.getMovieCredits(movieId, API_KEY)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun getMovieWatchProvidersOnce(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse? {
+        return try {
+            apiService.getMovieWatchProviders(movieId, API_KEY)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     companion object {
         private const val API_KEY = BuildConfig.TMDB_API_KEY
         private const val LANGUAGE = "en-US"

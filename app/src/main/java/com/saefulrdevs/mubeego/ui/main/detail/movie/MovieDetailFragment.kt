@@ -17,15 +17,14 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
-import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
@@ -36,7 +35,6 @@ import com.saefulrdevs.mubeego.databinding.FragmentMovieDetailBinding
 import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.moviedetail.ReminderReceiver
 import kotlinx.coroutines.launch
-import org.json.JSONArray
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
 
@@ -52,6 +50,8 @@ class MovieDetailFragment : Fragment() {
 
     private var remoteMovieDetail: MovieDetailResponse? = null
     private var remoteGenres: List<GenreResponse> = emptyList()
+
+    private var castAdapter: CastAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,10 +75,22 @@ class MovieDetailFragment : Fragment() {
                 lifecycleScope.launch {
                     val movieDetail = movieDetailViewModel.getMovieDetailRemote(movieId)
                     val genres = movieDetailViewModel.getGenresRemote()
+                    val credits = movieDetailViewModel.getMovieCreditsRemote(movieId)
                     if (movieDetail != null && genres != null) {
                         remoteMovieDetail = movieDetail
                         remoteGenres = genres
                         showRemoteDetailMovie(movieDetail, genres)
+                        val castList = credits?.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
+                        castAdapter = CastAdapter(castList)
+                        binding.rvCast.apply {
+                            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                            adapter = castAdapter
+                            setHasFixedSize(true)
+                        }
+                        binding.btnSeeMoreCast.visibility = if ((credits?.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
+                        binding.btnSeeMoreCast.setOnClickListener {
+                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Toast.makeText(requireContext(), "Failed to fetch detail or genres", Toast.LENGTH_SHORT).show()
                     }
@@ -172,19 +184,17 @@ class MovieDetailFragment : Fragment() {
             Log.d("MovieDetailFragment", "genreNames: $genreNames")
         }
         lifecycleScope.launch {
-            val providersResponse = movieDetailViewModel.getMovieWatchProviders(movieDetail.id ?: 0).asLiveData()
-            providersResponse.observe(viewLifecycleOwner) { response ->
-                response?.let {
-                    if (it is ApiResponse.Success) {
-                        val providers = it.data.results?.get("ID")?.flatrate
-                        if (!providers.isNullOrEmpty()) {
-                            val names = providers.joinToString(", ") { p -> p.providerName ?: "" }
-                            binding.tvPlatform.text = "Platform streaming\n$names"
-                        } else {
-                            binding.tvPlatform.text = "Platform streaming\n-"
-                        }
-                    }
+            val providers = movieDetailViewModel.getMovieWatchProvidersRemote(movieDetail.id ?: 0)
+            if (providers != null) {
+                val flatrate = providers.results?.get("ID")?.flatrate
+                if (!flatrate.isNullOrEmpty()) {
+                    val names = flatrate.joinToString(", ") { p -> p.providerName ?: "" }
+                    binding.tvPlatform.text = "Platform streaming\n$names"
+                } else {
+                    binding.tvPlatform.text = "Platform streaming\n-"
                 }
+            } else {
+                binding.tvPlatform.text = "Platform streaming\n-"
             }
         }
         val backdropUrl = movieDetail.backdropPath?.let {

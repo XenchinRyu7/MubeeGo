@@ -38,4 +38,6 @@ class MovieDetailViewModel(private val tmdbUseCase: TmdbUseCase) : ViewModel() {
 
     suspend fun getMovieDetailRemote(movieId: Int) = tmdbUseCase.getMovieDetailRemote(movieId.toString())
     suspend fun getGenresRemote() = tmdbUseCase.getGenresRemote()
+    suspend fun getMovieCreditsRemote(movieId: Int) = tmdbUseCase.getMovieCreditsRemote(movieId.toString())
+    suspend fun getMovieWatchProvidersRemote(movieId: Int) = tmdbUseCase.getMovieWatchProvidersRemote(movieId.toString())
 }

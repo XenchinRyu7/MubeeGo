@@ -31,4 +31,6 @@ interface ITmdbRepository {
 
     suspend fun getMovieDetailRemote(movieId: String): MovieDetailResponse?
     suspend fun getGenresRemote(): List<GenreResponse>?
+    suspend fun getMovieCreditsRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse?
+    suspend fun getMovieWatchProvidersRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse?
 }

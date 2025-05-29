@@ -82,4 +82,11 @@ interface ApiService {
         @Query("api_key") api_key: String,
         @Query("language") language: String = "en"
     ): GenreListResponse
+
+    @GET("movie/{movieId}/credits")
+    suspend fun getMovieCredits(
+        @Path("movieId") movieId: String,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String = "en-US"
+    ): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
 }

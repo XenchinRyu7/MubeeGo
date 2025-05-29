@@ -518,6 +518,22 @@ class TmdbRepository private constructor(
         }
     }
 
+    override suspend fun getMovieCreditsRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse? {
+        return try {
+            remoteDataSource.getMovieCredits(movieId)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    override suspend fun getMovieWatchProvidersRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse? {
+        return try {
+            remoteDataSource.getMovieWatchProvidersOnce(movieId)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     override fun clearMovies() {
         localDataSource.clearMovies()
     }
