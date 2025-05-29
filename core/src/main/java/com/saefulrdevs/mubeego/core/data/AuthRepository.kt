@@ -144,4 +144,18 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
             UserData(user.uid, user.displayName ?: "Unknown", user.email ?: "")
         }
     }
+
+    override fun sendPasswordResetEmail(email: String): Flow<Resource<Boolean>> = flow {
+        emit(Resource.Loading())
+        try {
+            auth.sendPasswordResetEmail(email).await()
+            emit(Resource.Success(true))
+        } catch (e: FirebaseAuthInvalidCredentialsException) {
+            Log.e("FirebaseAuth", "Invalid email format: ${e.message}")
+            emit(Resource.Error("Format email tidak valid!"))
+        } catch (e: Exception) {
+            Log.e("FirebaseAuth", "Error: ${e.message}")
+            emit(Resource.Error("Terjadi kesalahan. Silakan coba lagi."))
+        }
+    }
 }

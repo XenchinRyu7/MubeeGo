@@ -17,4 +17,19 @@
         android:label="Sign Up"
         tools:layout="@layout/fragment_sign_up" />
 
+    <fragment
+        android:id="@+id/navigation_forgot_password"
+        android:name="com.saefulrdevs.mubeego.ui.authentication.forgot.ForgotPassword"
+        android:label="Forgot Password"
+        tools:layout="@layout/fragment_forgot_password">
+        <action
+            android:id="@+id/action_forgotPassword_to_forgotPasswordConfirmation"
+            app:destination="@id/navigation_forgot_password_confirmation" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_forgot_password_confirmation"
+        android:name="com.saefulrdevs.mubeego.ui.authentication.forgot.ForgotPasswordConfirmation"
+        android:label="Forgot Password Confirmation"
+        tools:layout="@layout/fragment_forgot_password_confirmation" />
+
 </navigation>

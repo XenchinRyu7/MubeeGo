@@ -25,4 +25,8 @@ class AuthInteractor(private val authRepository: IAuthRepository) : AuthUseCase 
     override fun getCurrentUser(): UserData? {
         return authRepository.getCurrentUser()
     }
+
+    override fun sendPasswordResetEmail(email: String): Flow<Resource<Boolean>> {
+        return authRepository.sendPasswordResetEmail(email)
+    }
 }

@@ -83,6 +83,10 @@ class SignIn : Fragment() {
             googleLogin.setOnClickListener {
                 signInWithGoogle()
             }
+
+            tvForgotPassword.setOnClickListener {
+                findNavController().navigate(R.id.navigation_forgot_password)
+            }
         }
     }
 

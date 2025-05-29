@@ -30,7 +30,6 @@ class HomeFragment : Fragment() {
     private lateinit var popularAdapter: PopularAdapter
     private lateinit var moviesAdapter: MoviesAdapter
     private lateinit var tvSeriesAdapter: TvShowsAdapter
-    private var scrollPositionY: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -151,7 +150,6 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_home_to_seeMoreFragment, bundle)
         }
 
-        // Restore scroll position jika ada
         if (savedInstanceState != null) {
             val scrollY = savedInstanceState.getInt("scroll_y", 0)
             binding.scrollView.post {
@@ -159,7 +157,6 @@ class HomeFragment : Fragment() {
             }
             homeViewModel.scrollPositionY = scrollY
         } else {
-            // Restore dari ViewModel jika ada
             binding.scrollView.post {
                 binding.scrollView.scrollTo(0, homeViewModel.scrollPositionY)
             }
@@ -168,13 +165,11 @@ class HomeFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        // Simpan posisi scroll ke ViewModel, binding bisa null-safe
         homeViewModel.scrollPositionY = _binding?.scrollView?.scrollY ?: 0
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        // Jangan akses binding di sini, gunakan nilai dari ViewModel
         outState.putInt("scroll_y", homeViewModel.scrollPositionY)
     }
 

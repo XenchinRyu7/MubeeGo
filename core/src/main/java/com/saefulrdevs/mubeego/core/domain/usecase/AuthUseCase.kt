@@ -11,4 +11,5 @@ interface AuthUseCase {
     fun signInWithEmail(email: String, password: String): Flow<Resource<Boolean>>
     fun signOut(): Flow<Resource<Boolean>>
     fun getCurrentUser(): UserData?
+    fun sendPasswordResetEmail(email: String): Flow<Resource<Boolean>>
 }

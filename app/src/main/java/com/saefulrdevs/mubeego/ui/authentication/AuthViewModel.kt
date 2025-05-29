@@ -19,6 +19,9 @@ class AuthViewModel(
     private val _authState = MutableStateFlow<Resource<Boolean>>(Resource.Loading())
     val authState: StateFlow<Resource<Boolean>> = _authState
 
+    private val _resetPasswordState = MutableStateFlow<Resource<Boolean>?>(null)
+    val resetPasswordState: StateFlow<Resource<Boolean>?> = _resetPasswordState
+
     fun signUpWithEmail(fullname: String, email: String, password: String) {
         authUseCase.signUpWithEmail(
             fullname = fullname, email = email, password = password
@@ -65,6 +68,12 @@ class AuthViewModel(
                     userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
                 }
             }
+        }.launchIn(viewModelScope)
+    }
+
+    fun sendPasswordResetEmail(email: String) {
+        authUseCase.sendPasswordResetEmail(email).onEach { resource ->
+            _resetPasswordState.value = resource
         }.launchIn(viewModelScope)
     }
 
