@@ -1,6 +1,8 @@
 package com.saefulrdevs.mubeego.core.domain.repository
 
 import com.saefulrdevs.mubeego.core.data.Resource
+import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
 import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
@@ -26,4 +28,7 @@ interface ITmdbRepository {
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String): Flow<Resource<List<Movie>>>
     fun getGenres(): Flow<Resource<List<Genre>>>
     fun clearMovies()
+
+    suspend fun getMovieDetailRemote(movieId: String): MovieDetailResponse?
+    suspend fun getGenresRemote(): List<GenreResponse>?
 }

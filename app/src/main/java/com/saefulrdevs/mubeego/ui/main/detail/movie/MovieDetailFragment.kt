@@ -20,18 +20,22 @@ import android.widget.Toast
 import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentMovieDetailBinding
 import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.moviedetail.ReminderReceiver
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.Calendar
@@ -45,6 +49,9 @@ class MovieDetailFragment : Fragment() {
 
     private var pendingMovie: Movie? = null
     private var genreList: List<Genre> = emptyList()
+
+    private var remoteMovieDetail: MovieDetailResponse? = null
+    private var remoteGenres: List<GenreResponse> = emptyList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,49 +68,19 @@ class MovieDetailFragment : Fragment() {
 
         createNotificationChannel()
 
-        // Ambil genre list dari ViewModel
-        movieDetailViewModel.getGenres().observe(viewLifecycleOwner) { resource ->
-            if (resource is com.saefulrdevs.mubeego.core.data.Resource.Success) {
-                genreList = resource.data ?: emptyList()
-                // Jika ada movie yang sudah ready tapi genre baru ready sekarang
-                pendingMovie?.let {
-                    showDetailMovie(it)
-                    pendingMovie = null
-                }
-            }
-        }
-
         val args = arguments
         if (args != null) {
             val movieId = args.getInt(EXTRA_MOVIE)
             if (movieId != 0) {
-                val movieDetails = movieDetailViewModel.getMovieDetail(movieId)
-                movieDetails.observe(viewLifecycleOwner) { movie ->
-                    when (movie) {
-                        is Resource.Loading -> {
-                            // TODO: tampilkan progress jika ingin, misal pakai ProgressBar di layout
-                        }
-
-                        is Resource.Success -> {
-                            movie.data?.let {
-                                movieDetailViewModel.setMovie(it)
-                                // Jika genreList sudah ready, langsung show
-                                if (genreList.isNotEmpty()) {
-                                    showDetailMovie(it)
-                                } else {
-                                    // Simpan dulu, nanti dipanggil setelah genreList ready
-                                    pendingMovie = it
-                                }
-                            }
-                        }
-
-                        is Resource.Error -> {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.error_while_getting_data),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                lifecycleScope.launch {
+                    val movieDetail = movieDetailViewModel.getMovieDetailRemote(movieId)
+                    val genres = movieDetailViewModel.getGenresRemote()
+                    if (movieDetail != null && genres != null) {
+                        remoteMovieDetail = movieDetail
+                        remoteGenres = genres
+                        showRemoteDetailMovie(movieDetail, genres)
+                    } else {
+                        Toast.makeText(requireContext(), "Failed to fetch detail or genres", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
@@ -130,7 +107,6 @@ class MovieDetailFragment : Fragment() {
                     TimePickerDialog(requireContext(), { _, hour, minute ->
                         val cal = Calendar.getInstance()
                         cal.set(year, month, dayOfMonth, hour, minute, 0)
-                        // Permission check for exact alarm (Android 12+)
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                             val alarmManager =
                                 requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -179,33 +155,25 @@ class MovieDetailFragment : Fragment() {
         Toast.makeText(requireContext(), "Reminder set!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun showDetailMovie(movieDetails: Movie) {
+    private fun showRemoteDetailMovie(movieDetail: MovieDetailResponse, genres: List<GenreResponse>) {
         with(binding) {
-            setFabIcon(movieDetails.favorited)
-            movieTitle.text = movieDetails.title
-            movieSinopsis.text = movieDetails.overview
-            movieRating.text = String.format("%.1f/10 IMDb", movieDetails.voteAverage)
-
-            val genreIds = try {
-                val arr = JSONArray(movieDetails.genres)
-                List(arr.length()) { arr.getInt(it) }
-            } catch (e: Exception) {
-                emptyList<Int>()
-            }
-            val genreNames = genreIds.mapNotNull { id -> genreList.find { it.id == id }?.name }
+            setFabIcon(false)
+            movieTitle.text = movieDetail.title ?: ""
+            movieSinopsis.text = movieDetail.overview ?: ""
+            movieRating.text = String.format("%.1f/10 IMDb", movieDetail.voteAverage ?: 0.0)
+            val genreNames = movieDetail.genres?.mapNotNull { g -> genres.find { it.id == g?.id }?.name } ?: emptyList()
             genre1.text = genreNames.getOrNull(0) ?: "-"
             genre2.text = genreNames.getOrNull(1) ?: "-"
             genre3.text = genreNames.getOrNull(2) ?: "-"
-            tvLength.text = "Length\n" + Utils.changeMinuteToDurationFormat(movieDetails.runtime)
-            tvLanguage.text = "Language\n" + (movieDetails.originalLanguage.ifBlank { "-" })
+            tvLength.text = "Length\n" + Utils.changeMinuteToDurationFormat(movieDetail.runtime ?: 0)
+            tvLanguage.text = "Language\n" + (movieDetail.originalLanguage ?: "-")
             tvPlatform.text = "Platform streaming\n-"
-            movieSinopsis.text = movieDetails.overview
-            Log.d("MovieDetailFragment", "genreIds: $genreIds")
+            movieSinopsis.text = movieDetail.overview ?: ""
             Log.d("MovieDetailFragment", "genreNames: $genreNames")
         }
-
-        movieDetailViewModel.getMovieWatchProviders(movieDetails.movieId).asLiveData()
-            .observe(requireActivity()) { response ->
+        lifecycleScope.launch {
+            val providersResponse = movieDetailViewModel.getMovieWatchProviders(movieDetail.id ?: 0).asLiveData()
+            providersResponse.observe(viewLifecycleOwner) { response ->
                 response?.let {
                     if (it is ApiResponse.Success) {
                         val providers = it.data.results?.get("ID")?.flatrate
@@ -218,9 +186,12 @@ class MovieDetailFragment : Fragment() {
                     }
                 }
             }
-
+        }
+        val backdropUrl = movieDetail.backdropPath?.let {
+            if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it"
+        } ?: ""
         Glide.with(this)
-            .load(movieDetails.backdropPath)
+            .load(backdropUrl)
             .transform(RoundedCorners(16))
             .apply(
                 RequestOptions.placeholderOf(R.drawable.ic_loading)

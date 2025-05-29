@@ -94,7 +94,6 @@ class SeeMoreFragment : Fragment() {
 
     override fun onCreateOptionsMenu(menu: android.view.Menu, inflater: android.view.MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        // Sembunyikan icon search jika ada
         val searchItem = menu.findItem(R.id.menu_search)
         searchItem?.isVisible = false
     }

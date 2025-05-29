@@ -506,6 +506,18 @@ class TmdbRepository private constructor(
         }.asFlow()
     }
 
+    override suspend fun getMovieDetailRemote(movieId: String): MovieDetailResponse? {
+        return remoteDataSource.getMovieDetail(movieId)
+    }
+
+    override suspend fun getGenresRemote(): List<GenreResponse>? {
+        return try {
+            remoteDataSource.getMovieGenresOnce()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     override fun clearMovies() {
         localDataSource.clearMovies()
     }

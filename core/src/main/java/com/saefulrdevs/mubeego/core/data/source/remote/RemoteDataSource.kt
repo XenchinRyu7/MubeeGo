@@ -221,6 +221,14 @@ class RemoteDataSource(private val apiService: ApiService) {
         return f
     }
 
+    suspend fun getMovieGenresOnce(): List<GenreResponse>? {
+        return try {
+            apiService.getMovieGenres(API_KEY, LANGUAGE).genres
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     companion object {
         private const val API_KEY = BuildConfig.TMDB_API_KEY
         private const val LANGUAGE = "en-US"

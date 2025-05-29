@@ -2,6 +2,8 @@ package com.saefulrdevs.mubeego.core.domain.usecase
 
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
@@ -29,4 +31,7 @@ interface TmdbUseCase {
     fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<WatchProvidersResponse>>
     fun getGenres(): Flow<Resource<List<Genre>>>
     fun clearMovies()
+
+    suspend fun getMovieDetailRemote(movieId: String): MovieDetailResponse?
+    suspend fun getGenresRemote(): List<GenreResponse>?
 }

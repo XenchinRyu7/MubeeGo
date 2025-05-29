@@ -79,4 +79,8 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
     override fun clearMovies() {
         tmdbRepository.clearMovies()
     }
+
+    override suspend fun getMovieDetailRemote(movieId: String) = tmdbRepository.getMovieDetailRemote(movieId)
+
+    override suspend fun getGenresRemote() = tmdbRepository.getGenresRemote()
 }

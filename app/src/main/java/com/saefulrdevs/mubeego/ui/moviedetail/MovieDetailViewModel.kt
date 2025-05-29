@@ -35,4 +35,7 @@ class MovieDetailViewModel(private val tmdbUseCase: TmdbUseCase) : ViewModel() {
     }
 
     fun getGenres() = tmdbUseCase.getGenres().asLiveData()
+
+    suspend fun getMovieDetailRemote(movieId: Int) = tmdbUseCase.getMovieDetailRemote(movieId.toString())
+    suspend fun getGenresRemote() = tmdbUseCase.getGenresRemote()
 }
