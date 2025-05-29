@@ -19,7 +19,7 @@
     </fragment>
     <fragment
         android:id="@+id/seeMoreFragment"
-        android:name="com.saefulrdevs.mubeego.ui.seemore.SeeMoreFragment"
+        android:name="com.saefulrdevs.mubeego.ui.main.seemore.SeeMoreFragment"
         android:label="See More"
         tools:layout="@layout/fragment_see_more">
         <argument

@@ -1,8 +1,10 @@
 package com.saefulrdevs.mubeego.core.domain.repository
 
 import com.saefulrdevs.mubeego.core.data.Resource
+import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
 import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
@@ -31,6 +33,9 @@ interface ITmdbRepository {
 
     suspend fun getMovieDetailRemote(movieId: String): MovieDetailResponse?
     suspend fun getGenresRemote(): List<GenreResponse>?
-    suspend fun getMovieCreditsRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse?
-    suspend fun getMovieWatchProvidersRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse?
+    suspend fun getMovieCreditsRemote(movieId: String): CreditsResponse?
+    suspend fun getMovieWatchProvidersRemote(movieId: String): WatchProvidersResponse?
+    suspend fun getTvShowDetailRemote(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse?
+    suspend fun getTvShowAggregateCreditsRemote(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse?
+    suspend fun getTvShowWatchProvidersRemote(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse?
 }

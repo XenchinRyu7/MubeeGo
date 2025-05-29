@@ -13,7 +13,7 @@ import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
 import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
-import com.saefulrdevs.mubeego.ui.tvshowdetail.TvSeriesDetailViewModel
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteMoviesViewModel
 import com.saefulrdevs.mubeego.ui.main.playlist.PlaylistViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel

@@ -16,6 +16,8 @@ import com.saefulrdevs.mubeego.core.domain.model.TvShow
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.core.util.Utils.changeStringToDateFormat
 import com.saefulrdevs.mubeego.databinding.ActivityTvShowDetailBinding
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.SeasonsAdapter
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class TvShowDetailActivity : AppCompatActivity() {

@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.seemore
+package com.saefulrdevs.mubeego.ui.main.seemore
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -1,6 +1,6 @@
 @file:Suppress("BooleanMethodIsAlwaysInverted")
 
-package com.saefulrdevs.mubeego.ui.tvshowdetail
+package com.saefulrdevs.mubeego.ui.main.detail.tvseries
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -36,4 +36,8 @@ class TvSeriesDetailViewModel
         }
         return false
     }
+
+    suspend fun getTvShowDetailRemote(tvShowId: Int) = tmdbUseCase.getTvShowDetailRemote(tvShowId.toString())
+    suspend fun getTvShowAggregateCreditsRemote(tvShowId: Int) = tmdbUseCase.getTvShowAggregateCreditsRemote(tvShowId.toString())
+    suspend fun getTvShowWatchProvidersRemote(tvShowId: Int) = tmdbUseCase.getTvShowWatchProvidersRemote(tvShowId.toString())
 }

@@ -245,6 +245,30 @@ class RemoteDataSource(private val apiService: ApiService) {
         }
     }
 
+    suspend fun getTvShowDetailOnce(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse? {
+        return try {
+            apiService.getTvShowDetail(tvShowId, API_KEY, LANGUAGE)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun getTvShowAggregateCredits(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse? {
+        return try {
+            apiService.getTvShowAggregateCredits(tvShowId, API_KEY)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    suspend fun getTvShowWatchProvidersOnce(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse? {
+        return try {
+            apiService.getTvShowWatchProviders(tvShowId, API_KEY)
+        } catch (e: Exception) {
+            null
+        }
+    }
+
     companion object {
         private const val API_KEY = BuildConfig.TMDB_API_KEY
         private const val LANGUAGE = "en-US"

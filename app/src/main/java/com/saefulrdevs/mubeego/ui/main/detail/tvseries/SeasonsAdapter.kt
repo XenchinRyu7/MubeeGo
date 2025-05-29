@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.tvshowdetail
+package com.saefulrdevs.mubeego.ui.main.detail.tvseries
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -25,6 +25,12 @@ class SeasonsAdapter : ListAdapter<Season, SeasonsAdapter.SeasonViewHolder>(DIFF
     override fun onBindViewHolder(holder: SeasonViewHolder, position: Int) {
         val season = getItem(position)
         holder.bind(season)
+    }
+
+    override fun getItemCount(): Int {
+        val count = super.getItemCount()
+        android.util.Log.d("SeasonsAdapter", "getItemCount: $count")
+        return count
     }
 
     class SeasonViewHolder(private val binding: ItemSeasonsBinding) :

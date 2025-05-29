@@ -89,4 +89,17 @@ interface ApiService {
         @Query("api_key") api_key: String,
         @Query("language") language: String = "en-US"
     ): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
+
+    @GET("tv/{tvShowId}/aggregate_credits")
+    suspend fun getTvShowAggregateCredits(
+        @Path("tvShowId") tvShowId: String,
+        @Query("api_key") api_key: String,
+        @Query("language") language: String = "en-US"
+    ): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
+
+    @GET("tv/{tvShowId}/watch/providers")
+    suspend fun getTvShowWatchProviders(
+        @Path("tvShowId") tvShowId: String,
+        @Query("api_key") api_key: String
+    ): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
 }

@@ -92,4 +92,8 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
     override suspend fun getMovieWatchProvidersRemote(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse? {
         return tmdbRepository.getMovieWatchProvidersRemote(movieId)
     }
+
+    override suspend fun getTvShowDetailRemote(tvShowId: String) = tmdbRepository.getTvShowDetailRemote(tvShowId)
+    override suspend fun getTvShowAggregateCreditsRemote(tvShowId: String) = tmdbRepository.getTvShowAggregateCreditsRemote(tvShowId)
+    override suspend fun getTvShowWatchProvidersRemote(tvShowId: String) = tmdbRepository.getTvShowWatchProvidersRemote(tvShowId)
 }

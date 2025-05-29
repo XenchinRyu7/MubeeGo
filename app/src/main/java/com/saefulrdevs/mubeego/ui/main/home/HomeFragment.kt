@@ -14,7 +14,7 @@ import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.common.PopularAdapter
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
-import com.saefulrdevs.mubeego.ui.seemore.SeeMoreFragment
+import com.saefulrdevs.mubeego.ui.main.seemore.SeeMoreFragment
 import com.saefulrdevs.mubeego.ui.tvshows.TvShowsAdapter
 import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel

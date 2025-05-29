@@ -166,6 +166,14 @@
                         android:layout_weight="1"
                         android:text="First Air\n2021"
                         android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvPlatform"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Platform streaming\n-"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
                 <!-- Description -->
@@ -186,6 +194,33 @@
                     android:text="TV Show description here"
                     android:textSize="14sp" />
 
+                <!-- Cast -->
+                <TextView
+                    android:id="@+id/tvCastTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="18dp"
+                    android:text="Cast"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvCast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                    android:maxHeight="200dp" />
+
+                <Button
+                    android:id="@+id/btnSeeMoreCast"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="8dp"
+                    android:text="See more" />
+
                 <!-- Seasons -->
                 <TextView
                     android:id="@+id/tvSeasonsTitle"
@@ -201,8 +236,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
+                    android:minHeight="100dp"
                     android:nestedScrollingEnabled="false"
-                    tools:itemCount="3"
+                    tools:itemCount="2"
                     tools:listitem="@layout/item_seasons" />
 
             </LinearLayout>

@@ -45,9 +45,6 @@ class MovieDetailFragment : Fragment() {
 
     private val movieDetailViewModel: MovieDetailViewModel by viewModel()
 
-    private var pendingMovie: Movie? = null
-    private var genreList: List<Genre> = emptyList()
-
     private var remoteMovieDetail: MovieDetailResponse? = null
     private var remoteGenres: List<GenreResponse> = emptyList()
 
