@@ -19,16 +19,16 @@ import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SeeMoreFragment : Fragment() {
 
     private var _binding: FragmentSeeMoreBinding? = null
     private val binding get() = _binding!!
     private lateinit var seeMoreAdapter: SeeMoreAdapter
-    private val homeViewModel: HomeViewModel by viewModel()
-    private val moviesViewModel: MoviesViewModel by viewModel()
-    private val tvSeriesViewModel: TvSeriesViewModel by viewModel()
+    private val homeViewModel: HomeViewModel by activityViewModel()
+    private val moviesViewModel: MoviesViewModel by activityViewModel()
+    private val tvSeriesViewModel: TvSeriesViewModel by activityViewModel()
 
     companion object {
         const val EXTRA_TYPE = "extra_type"
@@ -112,11 +112,12 @@ class SeeMoreFragment : Fragment() {
             }
 
             TYPE_POPULAR -> {
-                homeViewModel.getPopular().observe(viewLifecycleOwner, Observer { resource ->
-                    resource.data?.let { popular ->
+                homeViewModel.popular.observe(viewLifecycleOwner) { popular ->
+                    if (popular != null) {
                         seeMoreAdapter.submitSearchItemList(popular)
                     }
-                })
+                }
+                homeViewModel.fetchPopular()
             }
 
             TYPE_MOVIE -> {

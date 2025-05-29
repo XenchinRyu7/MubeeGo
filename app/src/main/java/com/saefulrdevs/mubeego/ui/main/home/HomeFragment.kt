@@ -17,26 +17,20 @@ import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.seemore.SeeMoreFragment
 import com.saefulrdevs.mubeego.ui.tvshows.TvShowsAdapter
 import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-    private val moviesViewModel: MoviesViewModel by viewModel()
-    private val tvSeriesViewModel: TvSeriesViewModel by viewModel()
-    private val homeViewModel: HomeViewModel by viewModel()
+    private val moviesViewModel: MoviesViewModel by activityViewModel()
+    private val tvSeriesViewModel: TvSeriesViewModel by activityViewModel()
+    private val homeViewModel: HomeViewModel by activityViewModel()
     private lateinit var nowShowingAdapter: MoviesAdapter
     private lateinit var popularAdapter: PopularAdapter
     private lateinit var moviesAdapter: MoviesAdapter
     private lateinit var tvSeriesAdapter: TvShowsAdapter
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-    }
+    private var scrollPositionY: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -113,13 +107,13 @@ class HomeFragment : Fragment() {
             }
         }
 
-        homeViewModel.getPopular().observe(viewLifecycleOwner) { resource ->
-            resource.data?.let { popular ->
+        homeViewModel.popular.observe(viewLifecycleOwner) { popular ->
+            if (popular != null) {
                 popularAdapter.submitList(popular.take(5))
             }
         }
+        homeViewModel.fetchPopular()
 
-        // Observe movies and split for all sections
         moviesViewModel.getDiscoverMovies().observe(viewLifecycleOwner) { resource ->
             resource.data?.let { movies ->
                 moviesAdapter.submitList(movies.drop(5).take(5))
@@ -156,6 +150,32 @@ class HomeFragment : Fragment() {
             }
             findNavController().navigate(R.id.action_navigation_home_to_seeMoreFragment, bundle)
         }
+
+        // Restore scroll position jika ada
+        if (savedInstanceState != null) {
+            val scrollY = savedInstanceState.getInt("scroll_y", 0)
+            binding.scrollView.post {
+                binding.scrollView.scrollTo(0, scrollY)
+            }
+            homeViewModel.scrollPositionY = scrollY
+        } else {
+            // Restore dari ViewModel jika ada
+            binding.scrollView.post {
+                binding.scrollView.scrollTo(0, homeViewModel.scrollPositionY)
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Simpan posisi scroll ke ViewModel, binding bisa null-safe
+        homeViewModel.scrollPositionY = _binding?.scrollView?.scrollY ?: 0
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Jangan akses binding di sini, gunakan nilai dari ViewModel
+        outState.putInt("scroll_y", homeViewModel.scrollPositionY)
     }
 
     override fun onDestroyView() {

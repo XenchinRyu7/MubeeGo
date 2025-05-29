@@ -149,21 +149,16 @@ class MovieDetailFragment : Fragment() {
                         }
                     }
                 }
-                Log.d("MovieDetailFragment", "onCreateView: movieId=$movieId, cacheDetail=${movieDetailViewModel.getCachedMovieDetail(movieId)}, cacheCredits=${movieDetailViewModel.getCachedMovieCredits(movieId)}, cacheProviders=${movieDetailViewModel.getCachedMovieProviders(movieId)}, cacheGenres=${movieDetailViewModel.getCachedGenres()}");
                 if (movieDetailViewModel.getCachedMovieDetail(movieId) == null) {
-                    Log.d("MovieDetailFragment", "fetchMovieDetail($movieId)");
                     movieDetailViewModel.fetchMovieDetail(movieId)
                 }
                 if (movieDetailViewModel.getCachedMovieCredits(movieId) == null) {
-                    Log.d("MovieDetailFragment", "fetchMovieCredits($movieId)");
                     movieDetailViewModel.fetchMovieCredits(movieId)
                 }
                 if (movieDetailViewModel.getCachedMovieProviders(movieId) == null) {
-                    Log.d("MovieDetailFragment", "fetchMovieProviders($movieId)");
                     movieDetailViewModel.fetchMovieProviders(movieId)
                 }
                 if (movieDetailViewModel.getCachedGenres() == null) {
-                    Log.d("MovieDetailFragment", "fetchGenres()");
                     movieDetailViewModel.fetchGenres()
                 }
             }

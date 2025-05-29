@@ -11,13 +11,13 @@ import com.saefulrdevs.mubeego.databinding.FragmentFavoriteBinding
 import androidx.navigation.fragment.findNavController
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: FavoriteViewModel by viewModel()
+    private val viewModel: FavoriteViewModel by activityViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,7 +51,8 @@ class FavoriteFragment : Fragment() {
                 }
             }
         }
-        viewModel.getFavoriteMixed().observe(viewLifecycleOwner) { items ->
+        // Ganti observer ke getFavoriteMixedCached agar pakai cache manual
+        viewModel.getFavoriteMixedCached().observe(viewLifecycleOwner) { items ->
             binding.progressCircular.visibility = View.GONE
             mixedAdapter.submitList(items)
         }

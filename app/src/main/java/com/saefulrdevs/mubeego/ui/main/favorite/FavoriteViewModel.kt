@@ -24,7 +24,9 @@ class FavoriteViewModel(
     fun getTvShowFav(): LiveData<List<TvShow>> =
         tmdbUseCase.getFavoriteTvShow().asLiveData()
 
-    fun getFavoriteMixed(): LiveData<List<SearchItem>> {
+    private var cachedFavorite: List<SearchItem>? = null
+
+    fun getFavoriteMixedCached(): LiveData<List<SearchItem>> {
         val result = MediatorLiveData<List<SearchItem>>()
         val movieLive = getMovieFav()
         val tvLive = getTvShowFav()
@@ -32,14 +34,20 @@ class FavoriteViewModel(
             val tvs = tvLive.value ?: emptyList()
             val movieItems = movies.map { DataMapper.movieToSearchItem(it) }
             val tvItems = tvs.map { DataMapper.tvShowToSearchItem(it) }
-            result.value = (movieItems + tvItems).sortedByDescending { it.voteAverage }
+            val combined = (movieItems + tvItems).sortedByDescending { it.voteAverage }
+            cachedFavorite = combined
+            result.value = combined
         }
         result.addSource(tvLive) { tvs ->
             val movies = movieLive.value ?: emptyList()
             val movieItems = movies.map { DataMapper.movieToSearchItem(it) }
             val tvItems = tvs.map { DataMapper.tvShowToSearchItem(it) }
-            result.value = (movieItems + tvItems).sortedByDescending { it.voteAverage }
+            val combined = (movieItems + tvItems).sortedByDescending { it.voteAverage }
+            cachedFavorite = combined
+            result.value = combined
         }
+        cachedFavorite?.let { result.value = it }
         return result
     }
+
 }
