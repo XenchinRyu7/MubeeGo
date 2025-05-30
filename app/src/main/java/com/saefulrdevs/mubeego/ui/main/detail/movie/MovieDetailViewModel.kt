@@ -1,7 +1,6 @@
-@file:Suppress("BooleanMethodIsAlwaysInverted")
+package com.saefulrdevs.mubeego.ui.main.detail.movie
 
-package com.saefulrdevs.mubeego.ui.moviedetail
-
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,7 +16,6 @@ import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.collections.toMutableMap
 
 @Suppress("BooleanMethodIsAlwaysInverted")
 class MovieDetailViewModel(private val tmdbUseCase: TmdbUseCase) : ViewModel() {
@@ -64,54 +62,54 @@ class MovieDetailViewModel(private val tmdbUseCase: TmdbUseCase) : ViewModel() {
     val genres: LiveData<List<GenreResponse>> = _genres
 
     init {
-        android.util.Log.d("MovieDetailViewModel", "ViewModel created: $this")
+        Log.d("MovieDetailViewModel", "ViewModel created: $this")
     }
 
     fun fetchMovieDetail(movieId: Int) {
-        android.util.Log.d("MovieDetailViewModel", "fetchMovieDetail($movieId) called")
+        Log.d("MovieDetailViewModel", "fetchMovieDetail($movieId) called")
         CoroutineScope(Dispatchers.IO).launch {
             val result = tmdbUseCase.getMovieDetailRemote(movieId.toString())
             if (result != null) {
                 val current = _movieDetails.value?.toMutableMap() ?: mutableMapOf()
                 current[movieId] = result
-                android.util.Log.d("MovieDetailViewModel", "MovieDetail cached for $movieId: $result")
+                Log.d("MovieDetailViewModel", "MovieDetail cached for $movieId: $result")
                 _movieDetails.postValue(current)
             }
         }
     }
 
     fun fetchMovieCredits(movieId: Int) {
-        android.util.Log.d("MovieDetailViewModel", "fetchMovieCredits($movieId) called")
+        Log.d("MovieDetailViewModel", "fetchMovieCredits($movieId) called")
         CoroutineScope(Dispatchers.IO).launch {
             val result = tmdbUseCase.getMovieCreditsRemote(movieId.toString())
             if (result != null) {
                 val current = _movieCredits.value?.toMutableMap() ?: mutableMapOf()
                 current[movieId] = result
-                android.util.Log.d("MovieDetailViewModel", "MovieCredits cached for $movieId: $result")
+                Log.d("MovieDetailViewModel", "MovieCredits cached for $movieId: $result")
                 _movieCredits.postValue(current)
             }
         }
     }
 
     fun fetchMovieProviders(movieId: Int) {
-        android.util.Log.d("MovieDetailViewModel", "fetchMovieProviders($movieId) called")
+        Log.d("MovieDetailViewModel", "fetchMovieProviders($movieId) called")
         CoroutineScope(Dispatchers.IO).launch {
             val result = tmdbUseCase.getMovieWatchProvidersRemote(movieId.toString())
             if (result != null) {
                 val current = _movieProviders.value?.toMutableMap() ?: mutableMapOf()
                 current[movieId] = result
-                android.util.Log.d("MovieDetailViewModel", "MovieProviders cached for $movieId: $result")
+                Log.d("MovieDetailViewModel", "MovieProviders cached for $movieId: $result")
                 _movieProviders.postValue(current)
             }
         }
     }
 
     fun fetchGenres() {
-        android.util.Log.d("MovieDetailViewModel", "fetchGenres() called")
+        Log.d("MovieDetailViewModel", "fetchGenres() called")
         CoroutineScope(Dispatchers.IO).launch {
             val result = tmdbUseCase.getGenresRemote()
             if (result != null) {
-                android.util.Log.d("MovieDetailViewModel", "Genres cached: $result")
+                Log.d("MovieDetailViewModel", "Genres cached: $result")
                 _genres.postValue(result)
             }
         }

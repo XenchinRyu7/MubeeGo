@@ -10,6 +10,8 @@ import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
+import androidx.navigation.findNavController
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 
 class UpcomingMoviesAdapter : ListAdapter<Movie, UpcomingMoviesAdapter.MovieViewHolder>(DIFF_CALLBACK) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieViewHolder {
@@ -32,9 +34,11 @@ class UpcomingMoviesAdapter : ListAdapter<Movie, UpcomingMoviesAdapter.MovieView
                     .apply(RequestOptions.placeholderOf(R.drawable.placholder).error(R.drawable.placholder))
                     .into(imgPoster)
                 itemView.setOnClickListener {
-                    val intent = android.content.Intent(itemView.context, com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailActivity::class.java)
-                    intent.putExtra(com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailActivity.EXTRA_MOVIE, movie.movieId)
-                    itemView.context.startActivity(intent)
+                    val navController = itemView.findNavController()
+                    val bundle = android.os.Bundle().apply {
+                        putInt(MovieDetailFragment.EXTRA_MOVIE, movie.movieId)
+                    }
+                    navController.navigate(R.id.navigation_detail_movie, bundle)
                 }
             }
         }

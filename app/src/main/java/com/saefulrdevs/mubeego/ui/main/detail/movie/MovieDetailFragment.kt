@@ -27,7 +27,7 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentMovieDetailBinding
-import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.moviedetail.ReminderReceiver
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Calendar

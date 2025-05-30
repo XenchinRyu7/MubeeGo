@@ -1,11 +1,9 @@
 package com.saefulrdevs.mubeego.ui.search
 
-import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailActivity
-import com.saefulrdevs.mubeego.ui.tvshowdetail.TvShowDetailActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.mancj.materialsearchbar.adapter.SuggestionsAdapter
@@ -13,6 +11,9 @@ import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.ItemSuggestionsBinding
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
+import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
+import androidx.navigation.findNavController
 
 class SearchSuggestionsAdapter(inflater: LayoutInflater?) :
     SuggestionsAdapter<SearchItem, SearchSuggestionsAdapter.SuggestionHolder>(inflater) {
@@ -51,15 +52,17 @@ class SearchSuggestionsAdapter(inflater: LayoutInflater?) :
                     .into(imgPoster)
 
                 itemView.setOnClickListener {
-                    //show detail page
+                    val navController = itemView.findNavController()
                     if (suggestion.mediaType == "tv") {
-                        val intent = Intent(itemView.context, TvShowDetailActivity::class.java)
-                        intent.putExtra(TvShowDetailActivity.EXTRA_TV_SHOW, suggestion.id)
-                        itemView.context.startActivity(intent)
+                        val bundle = Bundle().apply {
+                            putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, suggestion.id)
+                        }
+                        navController.navigate(R.id.navigation_detail_tv_series, bundle)
                     } else if (suggestion.mediaType == "movie") {
-                        val intent = Intent(itemView.context, MovieDetailActivity::class.java)
-                        intent.putExtra(MovieDetailActivity.EXTRA_MOVIE, suggestion.id)
-                        itemView.context.startActivity(intent)
+                        val bundle = Bundle().apply {
+                            putInt(MovieDetailFragment.EXTRA_MOVIE, suggestion.id)
+                        }
+                        navController.navigate(R.id.navigation_detail_movie, bundle)
                     }
                 }
             }

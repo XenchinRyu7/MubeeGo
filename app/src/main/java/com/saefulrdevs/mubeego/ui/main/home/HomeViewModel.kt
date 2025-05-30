@@ -18,7 +18,6 @@ class HomeViewModel
     private val _popular = MutableLiveData<List<SearchItem>>()
     val popular: LiveData<List<SearchItem>> = _popular
 
-    // Untuk menyimpan posisi scroll Home agar survive antar fragment
     var scrollPositionY: Int = 0
 
     fun fetchPopular() {

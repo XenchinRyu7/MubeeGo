@@ -11,7 +11,7 @@ import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import com.saefulrdevs.mubeego.ui.authentication.AuthViewModel
 import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
-import com.saefulrdevs.mubeego.ui.moviedetail.MovieDetailViewModel
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteViewModel

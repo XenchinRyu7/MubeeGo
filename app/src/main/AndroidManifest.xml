@@ -12,7 +12,6 @@
         </intent>
     </queries>
 
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -24,13 +23,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MubeeGo"
         tools:targetApi="31">
-
+        <activity
+            android:name=".ui.landing.LandingActivity"
+            android:exported="false" />
         <activity
             android:name=".ui.SplashActivity"
             android:exported="true"
             android:theme="@style/Theme.MubeeGo.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -51,6 +53,7 @@
             android:exported="false" />
 
         <receiver android:name=".ui.moviedetail.ReminderReceiver" />
+
         <service android:name="androidx.core.app.JobIntentService" />
     </application>
 

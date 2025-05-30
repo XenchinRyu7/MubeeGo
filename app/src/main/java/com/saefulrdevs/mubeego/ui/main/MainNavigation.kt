@@ -27,8 +27,19 @@ class MainNavigation : AppCompatActivity() {
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+            val currentDest = navHostFragment.navController.currentDestination
+            val isFullScreen = currentDest?.id == R.id.seeMoreFragment ||
+                    currentDest?.id == R.id.navigation_detail_movie ||
+                    currentDest?.id == R.id.navigation_detail_tv_series ||
+                    currentDest?.id == R.id.navigation_search ||
+                    currentDest?.id == R.id.navigation_settings
+            v.setPadding(
+                systemBars.left,
+                systemBars.top,
+                systemBars.right,
+                if (isFullScreen) systemBars.bottom else 0
+            )
 
             insets
         }
@@ -36,7 +47,6 @@ class MainNavigation : AppCompatActivity() {
         val toolbar: Toolbar = binding.toolbar
         setSupportActionBar(toolbar)
 
-        // Setup Navigation
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController

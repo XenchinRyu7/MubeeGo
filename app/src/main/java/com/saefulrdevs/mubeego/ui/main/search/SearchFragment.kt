@@ -1,5 +1,6 @@
 package com.saefulrdevs.mubeego.ui.main.search
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
 import androidx.fragment.app.Fragment
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.navigation.fragment.findNavController
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
+import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.databinding.FragmentSearchBinding
 import com.saefulrdevs.mubeego.ui.common.PopularAdapter
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
@@ -62,10 +64,9 @@ class SearchFragment : Fragment() {
             setHasFixedSize(true)
             adapter = popularAdapter
         }
-        // Setup Upcoming Movies Adapter
         upcomingAdapter = UpcomingMoviesAdapter()
         binding.btnStartDate.setOnClickListener {
-            val datePicker = android.app.DatePickerDialog(requireContext())
+            val datePicker = DatePickerDialog(requireContext())
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                 val m = (month + 1).toString().padStart(2, '0')
                 val d = dayOfMonth.toString().padStart(2, '0')
@@ -75,7 +76,7 @@ class SearchFragment : Fragment() {
             datePicker.show()
         }
         binding.btnEndDate.setOnClickListener {
-            val datePicker = android.app.DatePickerDialog(requireContext())
+            val datePicker = DatePickerDialog(requireContext())
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->
                 val m = (month + 1).toString().padStart(2, '0')
                 val d = dayOfMonth.toString().padStart(2, '0')
@@ -91,9 +92,8 @@ class SearchFragment : Fragment() {
                 Toast.makeText(requireContext(), "Please select first and last date", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            // Clear list before loading
-            upcomingAdapter.submitList(emptyList())
-            binding.rvTrending.adapter = upcomingAdapter
+            binding.rvTrending.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            binding.rvTrending.adapter = popularAdapter
             binding.progressCircular.visibility = View.VISIBLE
             isShowingUpcoming = true
             homeViewModel.getUpcomingMoviesByDate(min, max).observe(viewLifecycleOwner) { result ->
@@ -101,7 +101,24 @@ class SearchFragment : Fragment() {
                     is Resource.Success -> {
                         binding.progressCircular.visibility = View.GONE
                         val movies = result.data ?: emptyList()
-                        upcomingAdapter.submitList(movies)
+                        movies.forEachIndexed { idx, m ->
+                            android.util.Log.d("SearchFragment", "item[$idx]: $m")
+                        }
+                        val searchItems = movies.map { movie ->
+                            val mediaType = try { movie.javaClass.getDeclaredField("mediaType").let { f -> f.isAccessible = true; f.get(movie) as? String } } catch (_: Exception) { null } ?: "movie"
+                            SearchItem(
+                                id = movie.movieId,
+                                name = movie.title,
+                                overview = movie.overview,
+                                posterPath = movie.posterPath,
+                                releaseOrAirDate = movie.releaseDate,
+                                mediaType = mediaType
+                            )
+                        }
+                        popularAdapter.submitList(searchItems)
+                        binding.rvTrending.postDelayed({
+                            val adapterCount = binding.rvTrending.adapter?.itemCount ?: -1
+                        }, 500)
                     }
                     is Resource.Error -> {
                         binding.progressCircular.visibility = View.GONE

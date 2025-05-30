@@ -24,6 +24,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import android.widget.ImageView
 import androidx.lifecycle.asLiveData
+import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
+import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailViewModel
 
 class MovieDetailActivity : AppCompatActivity() {
 
@@ -133,10 +135,9 @@ class MovieDetailActivity : AppCompatActivity() {
             tvPlatform.text = "Platform streaming\n-"
         }
 
-        // Ambil platform streaming dari TMDb
         movieDetailViewModel.getMovieWatchProviders(movieDetails.movieId).asLiveData().observe(this@MovieDetailActivity) { response ->
             response?.let {
-                if (it is com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse.Success) {
+                if (it is ApiResponse.Success) {
                     val providers = it.data.results?.get("ID")?.flatrate
                     if (!providers.isNullOrEmpty()) {
                         val names = providers.joinToString(", ") { p -> p.providerName ?: "" }

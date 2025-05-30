@@ -51,7 +51,6 @@ class FavoriteFragment : Fragment() {
                 }
             }
         }
-        // Ganti observer ke getFavoriteMixedCached agar pakai cache manual
         viewModel.getFavoriteMixedCached().observe(viewLifecycleOwner) { items ->
             binding.progressCircular.visibility = View.GONE
             mixedAdapter.submitList(items)
