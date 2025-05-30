@@ -31,4 +31,12 @@ class UserPreferencesInteractor(private val userPreferencesRepository: IUserPref
     override fun isNotificationEnabled(): Boolean {
         return userPreferencesRepository.isNotificationEnabled()
     }
+
+    override fun setOnboardingShown(shown: Boolean) {
+        userPreferencesRepository.setOnboardingShown(shown)
+    }
+
+    override fun isOnboardingShown(): Boolean {
+        return userPreferencesRepository.isOnboardingShown()
+    }
 }

@@ -6,6 +6,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.auth
 import com.saefulrdevs.mubeego.core.domain.model.UserData
 import com.saefulrdevs.mubeego.core.domain.repository.IUserPreferencesRepository
+import androidx.core.content.edit
 
 class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
     private val prefs: SharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
@@ -47,5 +48,13 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
 
     override fun isNotificationEnabled(): Boolean {
         return prefs.getBoolean("NOTIFICATION_ENABLED", true)
+    }
+
+    override fun setOnboardingShown(shown: Boolean) {
+        prefs.edit { putBoolean("ONBOARDING_SHOWN", shown) }
+    }
+
+    override fun isOnboardingShown(): Boolean {
+        return prefs.getBoolean("ONBOARDING_SHOWN", false)
     }
 }

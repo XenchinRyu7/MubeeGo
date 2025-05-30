@@ -10,4 +10,6 @@ interface UserPreferencesUseCase {
     fun getThemeMode(): Int
     fun setNotificationEnabled(enabled: Boolean)
     fun isNotificationEnabled(): Boolean
+    fun setOnboardingShown(shown: Boolean)
+    fun isOnboardingShown(): Boolean
 }

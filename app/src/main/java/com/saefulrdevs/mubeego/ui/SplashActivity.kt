@@ -31,6 +31,16 @@ class SplashActivity : AppCompatActivity() {
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
 
+        if (!userPreferencesUseCase.isOnboardingShown()) {
+            val intent = Intent(this@SplashActivity, com.saefulrdevs.mubeego.ui.landing.LandingActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+            }
+            startActivity(intent)
+            overridePendingTransition(0, 0)
+            finish()
+            return
+        }
+
         val isUserLoggedIn = userPreferencesUseCase.getUser() != null
         val intent = if (isUserLoggedIn) {
             Intent(this@SplashActivity, MainNavigation::class.java).apply {
