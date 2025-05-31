@@ -4,8 +4,8 @@ import com.saefulrdevs.mubeego.core.domain.model.UserData
 import com.saefulrdevs.mubeego.core.domain.repository.IUserPreferencesRepository
 
 class UserPreferencesInteractor(private val userPreferencesRepository: IUserPreferencesRepository) : UserPreferencesUseCase {
-    override fun saveUser(uid: String, fullname: String, email: String) {
-        userPreferencesRepository.saveUser(uid, fullname, email)
+    override fun saveUser(uid: String, fullname: String, email: String, isPremium: Boolean) {
+        userPreferencesRepository.saveUser(uid, fullname, email, isPremium)
     }
 
     override fun getUser(): UserData? {

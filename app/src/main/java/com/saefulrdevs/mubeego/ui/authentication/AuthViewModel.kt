@@ -44,9 +44,9 @@ class AuthViewModel(
                 user?.let {
                     Log.d(
                         "AuthViewModel",
-                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}"
+                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}, ${it.isPremium}"
                     )
-                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email, it.isPremium)
                 }
             }
         }.launchIn(viewModelScope)
@@ -63,9 +63,9 @@ class AuthViewModel(
                 user?.let {
                     Log.d(
                         "AuthViewModel",
-                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}"
+                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}, ${it.isPremium}"
                     )
-                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email, it.isPremium)
                 }
             }
         }.launchIn(viewModelScope)

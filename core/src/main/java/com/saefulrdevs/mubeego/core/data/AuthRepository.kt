@@ -11,6 +11,7 @@ import com.google.firebase.auth.userProfileChangeRequest
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.saefulrdevs.mubeego.core.domain.model.UserData
+import com.saefulrdevs.mubeego.core.domain.model.toMap
 import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -34,14 +35,14 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
                 }
                 user.updateProfile(profileUpdates).await()
 
-                val userData = hashMapOf(
-                    "fullname" to fullname,
-                    "email" to email,
-                    "isPremium" to false,
-                    "createdAt" to FieldValue.serverTimestamp()
+                val userData = UserData(
+                    uid = user.uid,
+                    fullname = fullname,
+                    email = email,
+                    isPremium = false,
+                    createdAt = System.currentTimeMillis()
                 )
-
-                firestore.collection("users").document(user.uid).set(userData).await()
+                firestore.collection("users").document(user.uid).set(userData.toMap()).await()
                 emit(Resource.Success(true))
             } ?: emit(Resource.Error("User creation failed"))
         } catch (e: FirebaseAuthInvalidCredentialsException) {
@@ -67,16 +68,15 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
                 // Cek apakah data user sudah ada di Firestore
                 val userDoc = firestore.collection("users").document(user.uid).get().await()
                 if (!userDoc.exists()) {
-                    // Kalau belum ada, tambahin data baru
-                    val userData = hashMapOf(
-                        "fullname" to (user.displayName ?: "No Name"),
-                        "email" to (user.email ?: ""),
-                        "isPremium" to false,
-                        "createdAt" to FieldValue.serverTimestamp()
+                    val userData = UserData(
+                        uid = user.uid,
+                        fullname = user.displayName ?: "No Name",
+                        email = user.email ?: "",
+                        isPremium = false,
+                        createdAt = System.currentTimeMillis()
                     )
-                    firestore.collection("users").document(user.uid).set(userData).await()
+                    firestore.collection("users").document(user.uid).set(userData.toMap()).await()
                 }
-
                 emit(Resource.Success(true))
             } else {
                 emit(Resource.Error("Sign-in dengan Google gagal"))
@@ -106,16 +106,15 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
                 // Cek apakah user sudah punya dokumen di Firestore
                 val userDoc = firestore.collection("users").document(user.uid).get().await()
                 if (!userDoc.exists()) {
-                    // Kalau belum ada, simpan data default
-                    val userData = hashMapOf(
-                        "fullname" to (user.displayName ?: "No Name"),
-                        "email" to (user.email ?: email),
-                        "isPremium" to false,
-                        "createdAt" to FieldValue.serverTimestamp()
+                    val userData = UserData(
+                        uid = user.uid,
+                        fullname = user.displayName ?: "No Name",
+                        email = user.email ?: email,
+                        isPremium = false,
+                        createdAt = System.currentTimeMillis()
                     )
-                    firestore.collection("users").document(user.uid).set(userData).await()
+                    firestore.collection("users").document(user.uid).set(userData.toMap()).await()
                 }
-
                 emit(Resource.Success(true))
             } else {
                 emit(Resource.Error("Sign-in gagal, user tidak ditemukan"))
@@ -139,9 +138,27 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
         emit(Resource.Success(true))
     }
 
+    private suspend fun fetchIsPremium(uid: String): Boolean {
+        return try {
+            val doc = firestore.collection("users").document(uid).get().await()
+            doc.getBoolean("isPremium") ?: false
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     override fun getCurrentUser(): UserData? {
         return auth.currentUser?.let { user ->
-            UserData(user.uid, user.displayName ?: "Unknown", user.email ?: "")
+            // Ambil isPremium dari Firestore secara sinkron (blocking, karena getCurrentUser bukan suspend)
+            // Untuk production, sebaiknya gunakan flow/suspend, tapi untuk sekarang blocking saja
+            var isPremium = false
+            try {
+                val doc = firestore.collection("users").document(user.uid).get().getResult()
+                isPremium = doc?.getBoolean("isPremium") ?: false
+            } catch (e: Exception) {
+                isPremium = false
+            }
+            UserData(user.uid, user.displayName ?: "Unknown", user.email ?: "", isPremium)
         }
     }
 

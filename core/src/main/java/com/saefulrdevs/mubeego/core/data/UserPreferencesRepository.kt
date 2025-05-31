@@ -11,11 +11,12 @@ import androidx.core.content.edit
 class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
     private val prefs: SharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
 
-    override fun saveUser(uid: String, fullname: String, email: String) {
+    override fun saveUser(uid: String, fullname: String, email: String, isPremium: Boolean) {
         prefs.edit().apply {
             putString("UID", uid)
             putString("FULLNAME", fullname)
             putString("EMAIL", email)
+            putBoolean("IS_PREMIUM", isPremium)
             apply()
         }
     }
@@ -24,8 +25,9 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
         val uid = prefs.getString("UID", null)
         val fullname = prefs.getString("FULLNAME", null)
         val email = prefs.getString("EMAIL", null)
+        val isPremium = prefs.getBoolean("IS_PREMIUM", false)
         return if (uid != null && fullname != null && email != null) {
-            UserData(uid, fullname, email)
+            UserData(uid, fullname, email, isPremium)
         } else null
     }
 

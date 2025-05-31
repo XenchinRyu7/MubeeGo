@@ -32,40 +32,29 @@
                 android:layout_marginStart="16dp" />
 
             <TextView
-                android:id="@+id/tvProfileName"
+                android:id="@+id/tvProfileUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
                 android:text="Saeful Rohman"
-                android:textStyle="bold"
                 android:textSize="18sp"
+                android:textStyle="bold"
                 app:layout_constraintStart_toEndOf="@id/imgProfile"
-                app:layout_constraintTop_toTopOf="@id/imgProfile"
-                android:layout_marginStart="16dp" />
+                app:layout_constraintTop_toTopOf="@id/imgProfile" />
 
             <TextView
-                android:id="@+id/tvProfileUsername"
+                android:id="@+id/tvProfileEmail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="saefulrohmansmantika@gmail.com"
                 android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@id/tvProfileName"
-                app:layout_constraintTop_toBottomOf="@id/tvProfileName"
+                app:layout_constraintStart_toStartOf="@id/tvProfileUsername"
+                app:layout_constraintTop_toBottomOf="@id/tvProfileUsername"
                 android:layout_marginTop="2dp" />
-
-            <ImageView
-                android:id="@+id/btnEditProfile"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_edit_24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:layout_marginEnd="16dp"
-                android:contentDescription="Edit Profile" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- Account Section Card -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardAccountSection"
         android:layout_width="0dp"
@@ -78,197 +67,243 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:padding="16dp">
-            <ImageView
-                android:id="@+id/icAccount"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_profile_24dp"
+
+            <!-- My Account Row -->
+            <LinearLayout
+                android:id="@+id/llMyAccount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/tvMyAccount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="My Account"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/icAccount"
-                app:layout_constraintTop_toTopOf="@id/icAccount"
-                android:layout_marginStart="16dp" />
-
-            <TextView
-                android:id="@+id/tvMyAccountDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Make changes to your account"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="@id/tvMyAccount"
-                app:layout_constraintTop_toBottomOf="@id/tvMyAccount"
-                android:layout_marginTop="2dp" />
-
-            <ImageView
-                android:id="@+id/icAccountWarning"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_arrow_right_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icAccount"
-                app:layout_constraintBottom_toBottomOf="@id/icAccount" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <!-- Divider -->
+                <ImageView
+                    android:id="@+id/icAccount"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_profile_24dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+                    <TextView
+                        android:id="@+id/tvMyAccount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="My Account"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tvMyAccountDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Make changes to your account"
+                        android:textSize="13sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/icAccountWarning"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_arrow_right_24dp" />
+            </LinearLayout>
+
             <View
                 android:id="@+id/divider1"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                app:layout_constraintTop_toBottomOf="@id/icAccount"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="12dp" />
+                app:layout_constraintTop_toBottomOf="@id/llMyAccount"
+                android:layout_marginTop="0dp" />
 
             <!-- Subscription Row -->
-            <ImageView
-                android:id="@+id/icSubscription"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_profile_24dp"
+            <LinearLayout
+                android:id="@+id/llSubscription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider1"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/tvSubscription"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Subscription"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/icSubscription"
-                app:layout_constraintTop_toTopOf="@id/icSubscription"
-                android:layout_marginStart="16dp" />
-
-            <TextView
-                android:id="@+id/tvSubscriptionDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upgrade your account to premium"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="@id/tvSubscription"
-                app:layout_constraintTop_toBottomOf="@id/tvSubscription"
-                android:layout_marginTop="2dp" />
-
-            <ImageView
-                android:id="@+id/icSubscriptionArrow"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_arrow_right_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icSubscription"
-                app:layout_constraintBottom_toBottomOf="@id/icSubscription" />
+                app:layout_constraintTop_toBottomOf="@id/divider1">
 
-            <!-- Divider -->
+                <ImageView
+                    android:id="@+id/icSubscription"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_profile_24dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+                    <TextView
+                        android:id="@+id/tvSubscription"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Subscription"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tvSubscriptionDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Upgrade your account to premium"
+                        android:textSize="13sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/icSubscriptionArrow"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_arrow_right_24dp" />
+            </LinearLayout>
+
             <View
                 android:id="@+id/divider2"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                app:layout_constraintTop_toBottomOf="@id/icSubscription"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="12dp" />
+                app:layout_constraintTop_toBottomOf="@id/llSubscription"
+                android:layout_marginTop="0dp" />
 
-            <ImageView
-                android:id="@+id/icSettings"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_settings_24dp"
+            <!-- Settings Row -->
+            <LinearLayout
+                android:id="@+id/llSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider2"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/tvSettings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Settings"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/icSettings"
-                app:layout_constraintTop_toTopOf="@id/icSettings"
-                android:layout_marginStart="16dp" />
-
-            <TextView
-                android:id="@+id/tvThemeDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Change app theme and preferences"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="@id/tvSettings"
-                app:layout_constraintTop_toBottomOf="@id/icSettings"
-                android:layout_marginTop="2dp" />
-
-            <ImageView
-                android:id="@+id/icSettingsArrow"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_arrow_right_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icSettings"
-                app:layout_constraintBottom_toBottomOf="@id/icSettings" />
+                app:layout_constraintTop_toBottomOf="@id/divider2">
+
+                <ImageView
+                    android:id="@+id/icSettings"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_settings_24dp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+                    <TextView
+                        android:id="@+id/tvSettings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Settings"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tvThemeDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Change app theme and preferences"
+                        android:textSize="13sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/icSettingsArrow"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_arrow_right_24dp" />
+            </LinearLayout>
 
             <View
                 android:id="@+id/dividerTheme"
                 android:layout_width="0dp"
                 android:layout_height="1dp"
-                android:layout_marginTop="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/icSettings" />
-
-            <ImageView
-                android:id="@+id/icLogout"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_logout"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dividerTheme"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/tvLogout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Log out"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/icLogout"
-                app:layout_constraintTop_toTopOf="@id/icLogout"
-                android:layout_marginStart="16dp" />
-
-            <TextView
-                android:id="@+id/tvLogoutDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Further secure your account for safety"
-                android:textSize="13sp"
-                app:layout_constraintStart_toStartOf="@id/tvLogout"
-                app:layout_constraintTop_toBottomOf="@id/tvLogout"
-                android:layout_marginTop="2dp" />
-
-            <ImageView
-                android:id="@+id/icLogoutArrow"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_arrow_right_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icLogout"
-                app:layout_constraintBottom_toBottomOf="@id/icLogout" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toBottomOf="@id/llSettings"
+                android:layout_marginTop="0dp" />
+
+            <!-- Logout Row -->
+            <LinearLayout
+                android:id="@+id/llLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dividerTheme">
+
+                <ImageView
+                    android:id="@+id/icLogout"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_logout" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:layout_marginStart="16dp">
+                    <TextView
+                        android:id="@+id/tvLogout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Log out"
+                        android:textStyle="bold"
+                        android:textSize="16sp" />
+                    <TextView
+                        android:id="@+id/tvLogoutDesc"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Further secure your account for safety"
+                        android:textSize="13sp"
+                        android:layout_marginTop="2dp" />
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/icLogoutArrow"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_arrow_right_24dp" />
+            </LinearLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <!-- More Title -->
@@ -297,81 +332,84 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
 
             <!-- Help & Support Row -->
-            <ImageView
-                android:id="@+id/icHelp"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_profile_24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/tvHelp"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/llHelp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Help &amp; Support"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/icHelp"
-                app:layout_constraintTop_toTopOf="@id/icHelp"
-                android:layout_marginStart="16dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+                <ImageView
+                    android:id="@+id/icHelp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_profile_24dp" />
+                <TextView
+                    android:id="@+id/tvHelp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Help &amp; Support"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginStart="16dp" />
+                <ImageView
+                    android:id="@+id/icHelpArrow"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_arrow_right_24dp" />
+            </LinearLayout>
 
-            <ImageView
-                android:id="@+id/icHelpArrow"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_arrow_right_24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icHelp"
-                app:layout_constraintBottom_toBottomOf="@id/icHelp" />
-
-            <!-- Divider -->
             <View
                 android:id="@+id/divider3"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
-                app:layout_constraintTop_toBottomOf="@id/icHelp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:layout_marginTop="12dp" />
+                android:layout_marginTop="0dp" />
 
             <!-- About App Row -->
-            <ImageView
-                android:id="@+id/icAbout"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_profile_24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/divider3"
-                android:layout_marginTop="12dp" />
-
-            <TextView
-                android:id="@+id/tvAbout"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/llAbout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="About App"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                app:layout_constraintStart_toEndOf="@id/icAbout"
-                app:layout_constraintTop_toTopOf="@id/icAbout"
-                android:layout_marginStart="16dp" />
-
-            <ImageView
-                android:id="@+id/icAboutArrow"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
-                android:src="@drawable/ic_arrow_right_24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/icAbout"
-                app:layout_constraintBottom_toBottomOf="@id/icAbout" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
+                <ImageView
+                    android:id="@+id/icAbout"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_profile_24dp" />
+                <TextView
+                    android:id="@+id/tvAbout"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="About App"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
+                    android:layout_marginStart="16dp" />
+                <ImageView
+                    android:id="@+id/icAboutArrow"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_arrow_right_24dp" />
+            </LinearLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

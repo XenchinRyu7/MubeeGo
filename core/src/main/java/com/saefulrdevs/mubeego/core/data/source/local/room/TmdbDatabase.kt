@@ -26,15 +26,16 @@ abstract class TmdbDatabase : RoomDatabase() {
 
         fun getInstance(context: Context): TmdbDatabase =
             INSTANCE ?: synchronized(this) {
-                val passphrase: ByteArray = SQLiteDatabase.getBytes("saefulr".toCharArray())
-                val factory = SupportFactory(passphrase)
+                // Nonaktifkan SQLCipher sementara untuk App Inspection
+                // val passphrase: ByteArray = SQLiteDatabase.getBytes("saefulr".toCharArray())
+                // val factory = SupportFactory(passphrase)
                 Room.databaseBuilder(
                     context.applicationContext,
                     TmdbDatabase::class.java,
                     "Tmdb.db"
                 )
                     .fallbackToDestructiveMigration()
-                    .openHelperFactory(factory)
+                    // .openHelperFactory(factory) // SQLCipher dinonaktifkan sementara
                     .build()
                     .apply {
                         INSTANCE = this

@@ -9,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
-import com.saefulrdevs.mubeego.core.util.Utils.changeStringToDateFormat
 import com.saefulrdevs.mubeego.databinding.ItemVerticalCardBinding
 
 class TvShowsAdapter(

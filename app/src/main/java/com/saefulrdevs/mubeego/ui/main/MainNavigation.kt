@@ -34,6 +34,7 @@ class MainNavigation : AppCompatActivity() {
                     currentDest?.id == R.id.navigation_detail_tv_series ||
                     currentDest?.id == R.id.navigation_search ||
                     currentDest?.id == R.id.navigation_settings
+                    currentDest?.id == R.id.profileUpdateFragment
             v.setPadding(
                 systemBars.left,
                 systemBars.top,
@@ -68,7 +69,8 @@ class MainNavigation : AppCompatActivity() {
                 destination.id == R.id.navigation_detail_movie ||
                 destination.id == R.id.navigation_detail_tv_series ||
                 destination.id == R.id.navigation_search ||
-                destination.id == R.id.navigation_settings
+                destination.id == R.id.navigation_settings ||
+                destination.id == R.id.profileUpdateFragment
             ) {
                 bottomNavigationView.visibility = View.GONE
             } else {

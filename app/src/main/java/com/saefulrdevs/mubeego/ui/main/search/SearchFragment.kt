@@ -32,7 +32,6 @@ class SearchFragment : Fragment() {
     private val homeViewModel: HomeViewModel by viewModel()
     private var startDate: String? = null
     private var endDate: String? = null
-    private lateinit var upcomingAdapter: UpcomingMoviesAdapter
     private var isShowingUpcoming = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +63,6 @@ class SearchFragment : Fragment() {
             setHasFixedSize(true)
             adapter = popularAdapter
         }
-        upcomingAdapter = UpcomingMoviesAdapter()
         binding.btnStartDate.setOnClickListener {
             val datePicker = DatePickerDialog(requireContext())
             datePicker.setOnDateSetListener { _, year, month, dayOfMonth ->

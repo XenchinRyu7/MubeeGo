@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
@@ -26,7 +27,17 @@ class OnboardingFragment3 : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val btnGetStarted = view.findViewById<Button>(R.id.btnGetStarted)
+        val btnBack = view.findViewById<Button>(R.id.btnBack)
+        val tvSkip = view.findViewById<TextView>(R.id.tvSkip)
+        btnBack.setOnClickListener {
+            (requireActivity() as? LandingActivity)?.binding?.viewPagerOnboarding?.setCurrentItem(1, true)
+        }
         btnGetStarted.setOnClickListener {
+            userPreferencesUseCase.setOnboardingShown(true)
+            startActivity(Intent(requireContext(), AuthActivity::class.java))
+            requireActivity().finish()
+        }
+        tvSkip.setOnClickListener {
             userPreferencesUseCase.setOnboardingShown(true)
             startActivity(Intent(requireContext(), AuthActivity::class.java))
             requireActivity().finish()

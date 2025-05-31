@@ -9,14 +9,17 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
+import com.saefulrdevs.mubeego.core.util.fetchUserDataFromFirestore
 import com.saefulrdevs.mubeego.databinding.FragmentProfileBinding
 import com.saefulrdevs.mubeego.ui.authentication.AuthActivity
 import com.saefulrdevs.mubeego.ui.authentication.AuthViewModel
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 class ProfileFragment : Fragment() {
@@ -43,11 +46,37 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val goToSettings = View.OnClickListener {
+        val user = userPreferencesUseCase.getUser()
+        user?.let {
+            binding.tvProfileUsername.text = it.fullname
+            binding.tvProfileEmail.text = it.email
+        }
+
+        binding.llSubscription.setOnClickListener {
+            val uid = userPreferencesUseCase.getUser()?.uid
+            if (uid != null) {
+                lifecycleScope.launch {
+                    val userData = fetchUserDataFromFirestore(uid)
+                    Log.d("ProfileFragment", "Fetched userData: $userData")
+                    val isPremium = userData?.isPremium == true
+                    Log.d("ProfileFragment", "isPremium: $isPremium (raw: ${userData?.isPremium})")
+                    val dialogMsg = if (isPremium) "You are premium!" else "You are not premium."
+                    AlertDialog.Builder(requireContext())
+                        .setTitle("Subscription Status")
+                        .setMessage(dialogMsg)
+                        .setPositiveButton("OK") { d, _ -> d.dismiss() }
+                        .show()
+                }
+            }
+        }
+
+        binding.llSettings.setOnClickListener {
             findNavController().navigate(R.id.action_profileFragment_to_settingsFragment)
         }
-        binding.icSettingsArrow.setOnClickListener(goToSettings)
-        binding.icLogoutArrow.setOnClickListener {
+        binding.llMyAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_profileUpdateFragment)
+        }
+        binding.llLogout.setOnClickListener {
             val builder = AlertDialog.Builder(requireContext())
             builder.setTitle("Logout")
             builder.setMessage("Apakah Anda yakin ingin logout?")
