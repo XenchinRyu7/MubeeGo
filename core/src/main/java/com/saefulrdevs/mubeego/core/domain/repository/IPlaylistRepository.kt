@@ -10,7 +10,7 @@ interface IPlaylistRepository {
     fun addItemToPlaylist(userId: String, playlistId: String, item: PlaylistItem): Flow<Resource<Unit>>
     fun removeItemFromPlaylist(userId: String, playlistId: String, itemId: Long): Flow<Resource<Unit>>
     fun getUserPlaylists(userId: String): Flow<Resource<List<Playlist>>>
-    fun getPublicPlaylists(): Flow<Resource<List<Playlist>>>
+//    fun getPublicPlaylists(): Flow<Resource<List<Playlist>>>
     fun getPlaylistDetails(userId: String, playlistId: String): Flow<Resource<Playlist>>
     fun updatePlaylistVisibility(userId: String, playlistId: String, isPublic: Boolean): Flow<Resource<Unit>>
 }

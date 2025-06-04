@@ -8,16 +8,21 @@ data class Playlist(
     val ownerId: String = "",
     val ownerName: String = "",
     val isPublic: Boolean = false,
+    val notes: String = "",
+    val rating: Double = 0.0,
     val createdAt: Timestamp = Timestamp.now(),
     val updatedAt: Timestamp = Timestamp.now(),
     val items: List<PlaylistItem> = emptyList()
 )
 
 data class PlaylistItem(
-    val itemId: Long = 0L,
-    val itemType: MediaType = MediaType.MOVIE,
+    val id: Long = 0L,
+    val type: String = "movie",
     val addedAt: Timestamp = Timestamp.now()
-)
+) {
+    val itemId: Long get() = id
+    val itemType: MediaType get() = if (type.equals("tv", true)) MediaType.TV else MediaType.MOVIE
+}
 
 enum class MediaType {
     MOVIE, TV

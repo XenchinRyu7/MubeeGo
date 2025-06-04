@@ -21,6 +21,7 @@ import com.saefulrdevs.mubeego.ui.authentication.AuthActivity
 import com.saefulrdevs.mubeego.ui.authentication.AuthViewModel
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
+import androidx.core.net.toUri
 
 class ProfileFragment : Fragment() {
 
@@ -53,19 +54,34 @@ class ProfileFragment : Fragment() {
         }
 
         binding.llSubscription.setOnClickListener {
-            val uid = userPreferencesUseCase.getUser()?.uid
+            val user = userPreferencesUseCase.getUser()
+            val uid = user?.uid
             if (uid != null) {
                 lifecycleScope.launch {
                     val userData = fetchUserDataFromFirestore(uid)
                     Log.d("ProfileFragment", "Fetched userData: $userData")
                     val isPremium = userData?.isPremium == true
-                    Log.d("ProfileFragment", "isPremium: $isPremium (raw: ${userData?.isPremium})")
+                    Log.d("ProfileFragment", "isPremium: $isPremium (raw: ${userData?.isPremium}})")
                     val dialogMsg = if (isPremium) "You are premium!" else "You are not premium."
-                    AlertDialog.Builder(requireContext())
+                    val builder = AlertDialog.Builder(requireContext())
                         .setTitle("Subscription Status")
                         .setMessage(dialogMsg)
-                        .setPositiveButton("OK") { d, _ -> d.dismiss() }
-                        .show()
+                    if (!isPremium) {
+                        val uid = user.uid
+                        val username = user.fullname
+                        val email = user.email
+                        val paymentUrl = "https://payment-gateway-ashen-zeta.vercel.app/${uid}/${username}/${email}"
+                        builder.setPositiveButton("Open Payment Web") { d, _ ->
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.data = paymentUrl.toUri()
+                            startActivity(intent)
+                            d.dismiss()
+                        }
+                        builder.setNegativeButton("Cancel") { d, _ -> d.dismiss() }
+                    } else {
+                        builder.setPositiveButton("OK") { d, _ -> d.dismiss() }
+                    }
+                    builder.show()
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.saefulrdevs.mubeego.ui.main.search
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -100,7 +101,7 @@ class SearchFragment : Fragment() {
                         binding.progressCircular.visibility = View.GONE
                         val movies = result.data ?: emptyList()
                         movies.forEachIndexed { idx, m ->
-                            android.util.Log.d("SearchFragment", "item[$idx]: $m")
+                            Log.d("SearchFragment", "item[$idx]: $m")
                         }
                         val searchItems = movies.map { movie ->
                             val mediaType = try { movie.javaClass.getDeclaredField("mediaType").let { f -> f.isAccessible = true; f.get(movie) as? String } } catch (_: Exception) { null } ?: "movie"
@@ -115,7 +116,7 @@ class SearchFragment : Fragment() {
                         }
                         popularAdapter.submitList(searchItems)
                         binding.rvTrending.postDelayed({
-                            val adapterCount = binding.rvTrending.adapter?.itemCount ?: -1
+                            binding.rvTrending.adapter?.itemCount ?: -1
                         }, 500)
                     }
                     is Resource.Error -> {
@@ -152,7 +153,6 @@ class SearchFragment : Fragment() {
             if (query.isNotEmpty()) {
                 binding.progressCircular.visibility = View.VISIBLE
                 isShowingUpcoming = false
-                // Clear and set trending adapter
                 (binding.rvTrending.adapter as? UpcomingMoviesAdapter)?.submitList(emptyList())
                 binding.rvTrending.adapter = popularAdapter
                 homeViewModel.getSearchResult(query).observe(viewLifecycleOwner) { items ->

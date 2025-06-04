@@ -1,19 +1,23 @@
 package com.saefulrdevs.mubeego.ui.main.playlist
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.saefulrdevs.mubeego.databinding.FragmentPlaylistBinding
 import com.saefulrdevs.mubeego.core.data.Resource
-import com.saefulrdevs.mubeego.core.domain.model.Playlist
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import com.saefulrdevs.mubeego.R
+import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment : Fragment() {
@@ -22,6 +26,9 @@ class PlaylistFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: PlaylistViewModel by viewModel()
     private lateinit var playlistAdapter: PlaylistAdapter
+    private val userPreferencesUseCase: UserPreferencesUseCase by inject()
+
+    private var isUpdatingVisibility = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,18 +41,37 @@ class PlaylistFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val user = userPreferencesUseCase.getUser()
+        user?.let {
+
+        }
         setupRecyclerView()
         setupFab()
         observeUserPlaylists()
     }
 
     private fun setupRecyclerView() {
+        val user = userPreferencesUseCase.getUser()
+
         playlistAdapter = PlaylistAdapter(
             onPlaylistClick = { playlist ->
-                // Navigate to playlist detail
-                // TODO: Implement navigation to playlist detail
+                val bundle = Bundle().apply {
+                    putString("playlistId", playlist.id)
+                    putString("userId", user?.uid)
+                }
+                parentFragment?.findNavController()?.navigate(R.id.navigation_playlist_detail, bundle)
             },
             onVisibilityToggle = { userId, playlistId, isPublic ->
+                // Optimistic update
+                val currentList = playlistAdapter.currentList.toMutableList()
+                val idx = currentList.indexOfFirst { it.id == playlistId }
+                if (idx != -1) {
+                    val playlist = currentList[idx]
+                    currentList[idx] = playlist.copy(isPublic = isPublic)
+                    playlistAdapter.submitList(currentList.toList())
+                }
+                isUpdatingVisibility = true
                 viewModel.updatePlaylistVisibility(userId, playlistId, isPublic)
             }
         )
@@ -90,7 +116,24 @@ class PlaylistFragment : Fragment() {
                                 showEmptyState(true)
                             } else {
                                 showEmptyState(false)
-                                playlistAdapter.submitList(result.data)
+                                result.data?.forEach {
+                                    Log.d("PlaylistFragment", "API: ${it.name} isPublic=${it.isPublic}")
+                                }
+                                if (isUpdatingVisibility) {
+                                    val localList = playlistAdapter.currentList
+                                    val backendList = result.data ?: emptyList()
+                                    val allMatch = localList.size == backendList.size &&
+                                        localList.zip(backendList).all { (local: com.saefulrdevs.mubeego.core.domain.model.Playlist, backend: com.saefulrdevs.mubeego.core.domain.model.Playlist) ->
+                                            local.id == backend.id && local.isPublic == backend.isPublic
+                                        }
+                                    if (allMatch) {
+                                        isUpdatingVisibility = false
+                                        playlistAdapter.submitList(backendList)
+                                    }
+                                    // else: tunggu sampai backend sync
+                                } else {
+                                    playlistAdapter.submitList(result.data)
+                                }
                             }
                         }
                         is Resource.Loading -> {
@@ -124,7 +167,6 @@ class PlaylistFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // Cegah memory leak pada adapter
         binding.rvPlaylist.adapter = null
         _binding = null
     }

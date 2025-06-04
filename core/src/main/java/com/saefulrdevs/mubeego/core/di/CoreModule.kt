@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.saefulrdevs.mubeego.core.BuildConfig
 import com.saefulrdevs.mubeego.core.data.AuthRepository
-import com.saefulrdevs.mubeego.core.data.PlaylistRepositoryImpl
+import com.saefulrdevs.mubeego.core.data.PlaylistRepository
 import com.saefulrdevs.mubeego.core.data.TmdbRepository
 import com.saefulrdevs.mubeego.core.data.UserPreferencesRepository
 import com.saefulrdevs.mubeego.core.data.source.firebase.PlaylistFirestoreDataSource
@@ -99,7 +99,7 @@ val repositoryModule = module {
 
     // Playlist dependencies
     single { PlaylistFirestoreDataSource(get()) }
-    single<IPlaylistRepository> { PlaylistRepositoryImpl(get()) }
+    single<IPlaylistRepository> { PlaylistRepository(get()) }
 }
 
 suspend fun getCertificatePins(hostname: String): List<String> {

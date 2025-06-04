@@ -6,7 +6,7 @@ import com.saefulrdevs.mubeego.core.domain.model.PlaylistItem
 import com.saefulrdevs.mubeego.core.domain.repository.IPlaylistRepository
 import kotlinx.coroutines.flow.Flow
 
-class PlaylistRepositoryImpl(
+class PlaylistRepository(
     private val firestoreDataSource: PlaylistFirestoreDataSource
 ) : IPlaylistRepository {
 
@@ -26,9 +26,9 @@ class PlaylistRepositoryImpl(
         return firestoreDataSource.getUserPlaylists(userId)
     }
 
-    override fun getPublicPlaylists(): Flow<Resource<List<Playlist>>> {
-        return firestoreDataSource.getPublicPlaylists()
-    }
+//    override fun getPublicPlaylists(): Flow<Resource<List<Playlist>>> {
+//        return firestoreDataSource.getPublicPlaylists()
+//    }
 
     override fun getPlaylistDetails(userId: String, playlistId: String): Flow<Resource<Playlist>> {
         return firestoreDataSource.getPlaylistDetails(userId, playlistId)

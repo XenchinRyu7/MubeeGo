@@ -58,8 +58,10 @@ class MovieDetailFragment : Fragment() {
 
         val args = arguments
         var movieId: Int? = null
+        Log.d("MovieDetailFragment", "onCreateView: args = $args")
         if (args != null) {
             movieId = args.getInt(EXTRA_MOVIE)
+            Log.d("MovieDetailFragment", "onCreateView: EXTRA_MOVIE id = $movieId")
             if (movieId != 0) {
                 movieDetailViewModel.getMovieDetail(movieId).observe(viewLifecycleOwner) { resource ->
                     val movie = resource.data

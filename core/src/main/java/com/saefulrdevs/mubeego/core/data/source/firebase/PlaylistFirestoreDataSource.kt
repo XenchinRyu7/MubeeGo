@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 import com.google.firebase.Timestamp
+import com.saefulrdevs.mubeego.core.domain.model.MediaType
 
 class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
     
@@ -25,7 +26,6 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
             emit(Resource.Loading())
             Log.d(TAG, "Creating playlist: $playlist")
             
-            // Create playlist under user's playlists collection
             val playlistRef = firestore.collection(USERS_COLLECTION)
                 .document(playlist.ownerId)
                 .collection(PLAYLISTS_COLLECTION)
@@ -34,6 +34,7 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
             val playlistData = hashMapOf(
                 "id" to playlistRef.id,
                 "name" to playlist.name,
+                "notes" to playlist.notes,
                 "ownerId" to playlist.ownerId,
                 "ownerName" to playlist.ownerName,
                 "isPublic" to playlist.isPublic,
@@ -92,7 +93,16 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
                 .await()
                 .documents
                 .mapNotNull { doc ->
-                    doc.toObject(Playlist::class.java)
+                    val data = doc.data
+                    val isPublic = when (val value = data?.get("isPublic")) {
+                        is Boolean -> value
+                        is String -> value.toBoolean()
+                        is Number -> value.toInt() != 0
+                        else -> false
+                    }
+                    val playlist = doc.toObject(Playlist::class.java)?.copy(isPublic = isPublic)
+                    Log.d(TAG, "FETCHED PLAYLIST: ${playlist?.name} isPublic=${playlist?.isPublic} raw=${doc.data}")
+                    playlist
                 }
             
             Log.d(TAG, "Retrieved ${playlists.size} playlists for user")
@@ -103,42 +113,42 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
         }
     }
 
-    fun getPublicPlaylists(): Flow<Resource<List<Playlist>>> = flow {
-        try {
-            emit(Resource.Loading())
-            Log.d(TAG, "Getting public playlists")
-            
-            val publicPlaylists = mutableListOf<Playlist>()
-            
-            val usersSnapshot = firestore.collection(USERS_COLLECTION)
-                .get()
-                .await()
-
-            Log.d(TAG, "Found ${usersSnapshot.size()} users")
-            
-            for (userDoc in usersSnapshot.documents) {
-                val userPlaylists = userDoc.reference
-                    .collection(PLAYLISTS_COLLECTION)
-                    .whereEqualTo("isPublic", true)
-                    .orderBy("updatedAt", Query.Direction.DESCENDING)
-                    .get()
-                    .await()
-                    .documents
-                    .mapNotNull { doc ->
-                        doc.toObject(Playlist::class.java)
-                    }
-                Log.d(TAG, "Found ${userPlaylists.size} public playlists for user ${userDoc.id}")
-                publicPlaylists.addAll(userPlaylists)
-            }
-
-            publicPlaylists.sortByDescending { it.updatedAt.seconds }
-            Log.d(TAG, "Retrieved ${publicPlaylists.size} total public playlists")
-            emit(Resource.Success(publicPlaylists))
-        } catch (e: Exception) {
-            Log.e(TAG, "Error getting public playlists", e)
-            emit(Resource.Error(e.message ?: "Failed to get public playlists"))
-        }
-    }
+//    fun getPublicPlaylists(): Flow<Resource<List<Playlist>>> = flow {
+//        try {
+//            emit(Resource.Loading())
+//            Log.d(TAG, "Getting public playlists")
+//
+//            val publicPlaylists = mutableListOf<Playlist>()
+//
+//            val usersSnapshot = firestore.collection(USERS_COLLECTION)
+//                .get()
+//                .await()
+//
+//            Log.d(TAG, "Found ${usersSnapshot.size()} users")
+//
+//            for (userDoc in usersSnapshot.documents) {
+//                val userPlaylists = userDoc.reference
+//                    .collection(PLAYLISTS_COLLECTION)
+//                    .whereEqualTo("isPublic", true)
+//                    .orderBy("updatedAt", Query.Direction.DESCENDING)
+//                    .get()
+//                    .await()
+//                    .documents
+//                    .mapNotNull { doc ->
+//                        doc.toObject(Playlist::class.java)
+//                    }
+//                Log.d(TAG, "Found ${userPlaylists.size} public playlists for user ${userDoc.id}")
+//                publicPlaylists.addAll(userPlaylists)
+//            }
+//
+//            publicPlaylists.sortByDescending { it.updatedAt.seconds }
+//            Log.d(TAG, "Retrieved ${publicPlaylists.size} total public playlists")
+//            emit(Resource.Success(publicPlaylists))
+//        } catch (e: Exception) {
+//            Log.e(TAG, "Error getting public playlists", e)
+//            emit(Resource.Error(e.message ?: "Failed to get public playlists"))
+//        }
+//    }
 
     fun updatePlaylistVisibility(userId: String, playlistId: String, isPublic: Boolean): Flow<Resource<Unit>> = flow {
         try {
@@ -181,7 +191,6 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
 
             Log.d(TAG, "Retrieved playlist: $playlist")
 
-            // Get playlist items
             val items = firestore.collection(USERS_COLLECTION)
                 .document(userId)
                 .collection(PLAYLISTS_COLLECTION)

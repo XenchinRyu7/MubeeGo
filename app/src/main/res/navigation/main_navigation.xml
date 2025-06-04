@@ -88,4 +88,10 @@
         android:name="com.saefulrdevs.mubeego.ui.main.profile.ProfileUpdateFragment"
         android:label="Edit Profile"
         tools:layout="@layout/fragment_profile_update" />
+
+    <fragment
+        android:id="@+id/navigation_playlist_detail"
+        android:name="com.saefulrdevs.mubeego.ui.main.playlist.PlaylistDetailFragment"
+        android:label="Playlist Detail"
+        tools:layout="@layout/fragment_playlist_detail" />
 </navigation>

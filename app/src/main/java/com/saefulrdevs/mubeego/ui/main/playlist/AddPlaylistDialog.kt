@@ -22,6 +22,7 @@ class AddPlaylistDialog(
         val view = inflater.inflate(R.layout.dialog_add_playlist, null)
 
         val etPlaylistName = view.findViewById<EditText>(R.id.etPlaylistName)
+        val etNotes = view.findViewById<EditText>(R.id.etPlaylistNotes)
         val cbPublic = view.findViewById<CheckBox>(R.id.cbPublic)
 
         return AlertDialog.Builder(requireContext())
@@ -29,10 +30,12 @@ class AddPlaylistDialog(
             .setView(view)
             .setPositiveButton("Create") { _, _ ->
                 val name = etPlaylistName.text.toString().trim()
-                if (name.isNotEmpty()) {
+                val notes = etNotes.text.toString().trim()
+                if (name.isNotEmpty() && notes.isNotEmpty()) {
                     val playlist = Playlist(
-                        id = "", // Will be set by Firestore
+                        id = "",
                         name = name,
+                        notes = notes,
                         ownerId = userId,
                         ownerName = userName,
                         isPublic = cbPublic.isChecked,

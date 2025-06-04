@@ -33,8 +33,9 @@ class MainNavigation : AppCompatActivity() {
                     currentDest?.id == R.id.navigation_detail_movie ||
                     currentDest?.id == R.id.navigation_detail_tv_series ||
                     currentDest?.id == R.id.navigation_search ||
-                    currentDest?.id == R.id.navigation_settings
-                    currentDest?.id == R.id.profileUpdateFragment
+                    currentDest?.id == R.id.navigation_settings ||
+                    currentDest?.id == R.id.profileUpdateFragment ||
+                    currentDest?.id == R.id.navigation_playlist_detail
             v.setPadding(
                 systemBars.left,
                 systemBars.top,
@@ -70,7 +71,8 @@ class MainNavigation : AppCompatActivity() {
                 destination.id == R.id.navigation_detail_tv_series ||
                 destination.id == R.id.navigation_search ||
                 destination.id == R.id.navigation_settings ||
-                destination.id == R.id.profileUpdateFragment
+                destination.id == R.id.profileUpdateFragment ||
+                destination.id == R.id.navigation_playlist_detail
             ) {
                 bottomNavigationView.visibility = View.GONE
             } else {
@@ -86,6 +88,8 @@ class MainNavigation : AppCompatActivity() {
             if (destination.id == R.id.seeMoreFragment) {
                 supportActionBar?.title = ""
             }
+
+            invalidateOptionsMenu()
         }
 
         bottomNavigationView.setOnItemSelectedListener { item ->
@@ -97,6 +101,15 @@ class MainNavigation : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        val currentDest = navController.currentDestination
+        val isHome = currentDest?.id == R.id.navigation_home
+        menu?.findItem(R.id.menu_search)?.isVisible = isHome
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -117,3 +130,4 @@ class MainNavigation : AppCompatActivity() {
         return navController.navigateUp() || super.onSupportNavigateUp()
     }
 }
+
