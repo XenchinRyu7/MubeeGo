@@ -8,8 +8,6 @@ import com.saefulrdevs.mubeego.core.data.source.local.entity.GenreEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.MovieEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.SeasonEntity
 import com.saefulrdevs.mubeego.core.data.source.local.entity.TvShowEntity
-import net.sqlcipher.database.SQLiteDatabase
-import net.sqlcipher.database.SupportFactory
 
 @Database(
     entities = [MovieEntity::class, TvShowEntity::class, SeasonEntity::class, GenreEntity::class],

@@ -20,16 +20,14 @@ class LocalDataSource private constructor(private val tmdbDao: TmdbDao) {
     fun getAllMovies(): Flow<List<MovieEntity>> = tmdbDao.getDiscoverMovie()
 
     fun getMovieById(movieId: String): Flow<MovieEntity> =
-        tmdbDao.getMovieById(movieId)
-
-    fun getFavoriteMovie(): Flow<List<MovieEntity>> = tmdbDao.getFavoriteMovie()
+        tmdbDao.getMovieById(movieId).also {
+            android.util.Log.d("DEBUG_LOCAL", "getMovieById called: movieId=$movieId")
+        }
 
     fun getAllTvShow(): Flow<List<TvShowEntity>> = tmdbDao.getDiscoverTvShow()
 
     fun getTvShowById(showId: String): Flow<TvShowEntity> =
         tmdbDao.getTvShowById(showId)
-
-    fun getFavoriteTvShow(): Flow<List<TvShowEntity>> = tmdbDao.getFavoriteTvShow()
 
     fun getTvShowWithSeason(showId: String): Flow<TvShowWithSeasonEntity> =
         tmdbDao.getSeasonByTvShowId(showId)
@@ -43,16 +41,6 @@ class LocalDataSource private constructor(private val tmdbDao: TmdbDao) {
     fun insertSeason(seasons: List<SeasonEntity>) = tmdbDao.insertSeason(seasons)
 
     fun insertGenres(genres: List<GenreEntity>) = tmdbDao.insertGenres(genres)
-
-    fun setMovieFavorite(movie: MovieEntity, newState: Boolean) {
-        movie.favorited = newState
-        tmdbDao.updateMovie(movie)
-    }
-
-    fun setTvShowFavorite(tvShow: TvShowEntity, newState: Boolean) {
-        tvShow.favorited = newState
-        tmdbDao.updateTvShow(tvShow)
-    }
 
     fun clearMovies() = tmdbDao.clearMovies()
 }

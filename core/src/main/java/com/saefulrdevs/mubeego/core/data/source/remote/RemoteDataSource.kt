@@ -1,9 +1,9 @@
 package com.saefulrdevs.mubeego.core.data.source.remote
 
-import android.util.Log
 import com.saefulrdevs.mubeego.core.BuildConfig
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiService
+import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
 import com.saefulrdevs.mubeego.core.util.EspressoIdlingResource
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemMovie
@@ -11,6 +11,7 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.ResultsItemTvSho
 import com.saefulrdevs.mubeego.core.data.source.remote.response.SearchResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -32,7 +33,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 }
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }.flowOn(Dispatchers.IO)
         EspressoIdlingResource.decrement()
@@ -52,7 +52,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 }
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }.flowOn(Dispatchers.IO)
         EspressoIdlingResource.decrement()
@@ -72,7 +71,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 }
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }.flowOn(Dispatchers.IO)
         EspressoIdlingResource.decrement()
@@ -88,7 +86,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 emit(ApiResponse.Success(response))
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }
         EspressoIdlingResource.decrement()
@@ -104,7 +101,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 emit(ApiResponse.Success(response))
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }
         EspressoIdlingResource.decrement()
@@ -114,8 +110,7 @@ class RemoteDataSource(private val apiService: ApiService) {
     suspend fun getMovieDetail(movieId: String): MovieDetailResponse? {
         return try {
             apiService.getMovieDetail(movieId, API_KEY, LANGUAGE, "videos")
-        } catch (e: IOException) {
-            Log.e("RemoteDataSource", "getMovieDetailOnce error: ${e.message}")
+        } catch (_: IOException) {
             null
         }
     }
@@ -123,8 +118,7 @@ class RemoteDataSource(private val apiService: ApiService) {
     suspend fun getTvShowDetail(showId: String): TvShowDetailResponse? {
         return try {
             apiService.getTvShowDetail(showId, API_KEY, LANGUAGE, "videos")
-        } catch (e: IOException) {
-            Log.e("RemoteDataSource", "getTvShowDetailOnce error: ${e.message}")
+        } catch (_: IOException) {
             null
         }
     }
@@ -138,7 +132,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 emit(ApiResponse.Success(response))
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }
         EspressoIdlingResource.decrement()
@@ -153,7 +146,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 emit(ApiResponse.Success(response))
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }
         EspressoIdlingResource.decrement()
@@ -163,18 +155,10 @@ class RemoteDataSource(private val apiService: ApiService) {
     fun getUpcomingMoviesByDate(minDate: String, maxDate: String) = flow {
         EspressoIdlingResource.increment()
         try {
-            android.util.Log.d(
-                "API_REQUEST",
-                "getUpcomingMoviesByDate: minDate=$minDate, maxDate=$maxDate"
-            )
             val response = apiService.getUpcomingMoviesByDate(
                 API_KEY, LANGUAGE, minDate, maxDate
             )
             val results = response.results
-            android.util.Log.d(
-                "API_RESPONSE",
-                "getUpcomingMoviesByDate: results=${results.map { it.title + ", " + it.releaseDate }}"
-            )
             if (results.isNotEmpty()) {
                 emit(ApiResponse.Success(results))
             } else {
@@ -186,7 +170,7 @@ class RemoteDataSource(private val apiService: ApiService) {
         EspressoIdlingResource.decrement()
     }.flowOn(Dispatchers.IO)
 
-    fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse>> {
+    fun getMovieWatchProviders(movieId: String): Flow<ApiResponse<WatchProvidersResponse>> {
         EspressoIdlingResource.increment()
         val f = flow {
             try {
@@ -194,7 +178,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 emit(ApiResponse.Success(response))
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }.flowOn(Dispatchers.IO)
         EspressoIdlingResource.decrement()
@@ -214,7 +197,6 @@ class RemoteDataSource(private val apiService: ApiService) {
                 }
             } catch (e: IOException) {
                 emit(ApiResponse.Error(e.toString()))
-                Log.e("RemoteDataSource", e.toString())
             }
         }.flowOn(Dispatchers.IO)
         EspressoIdlingResource.decrement()
@@ -224,47 +206,47 @@ class RemoteDataSource(private val apiService: ApiService) {
     suspend fun getMovieGenresOnce(): List<GenreResponse>? {
         return try {
             apiService.getMovieGenres(API_KEY, LANGUAGE).genres
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
-    suspend fun getMovieCredits(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse? {
+    suspend fun getMovieCredits(movieId: String): CreditsResponse? {
         return try {
             apiService.getMovieCredits(movieId, API_KEY)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
-    suspend fun getMovieWatchProvidersOnce(movieId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse? {
+    suspend fun getMovieWatchProvidersOnce(movieId: String): WatchProvidersResponse? {
         return try {
             apiService.getMovieWatchProviders(movieId, API_KEY)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
-    suspend fun getTvShowDetailOnce(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse? {
+    suspend fun getTvShowDetailOnce(tvShowId: String): TvShowDetailResponse? {
         return try {
             apiService.getTvShowDetail(tvShowId, API_KEY, LANGUAGE)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
-    suspend fun getTvShowAggregateCredits(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse? {
+    suspend fun getTvShowAggregateCredits(tvShowId: String): CreditsResponse? {
         return try {
             apiService.getTvShowAggregateCredits(tvShowId, API_KEY)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
 
-    suspend fun getTvShowWatchProvidersOnce(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse? {
+    suspend fun getTvShowWatchProvidersOnce(tvShowId: String): WatchProvidersResponse? {
         return try {
             apiService.getTvShowWatchProviders(tvShowId, API_KEY)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
     }
@@ -272,6 +254,5 @@ class RemoteDataSource(private val apiService: ApiService) {
     companion object {
         private const val API_KEY = BuildConfig.TMDB_API_KEY
         private const val LANGUAGE = "en-US"
-
     }
 }

@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.tvshows
+package com.saefulrdevs.mubeego.ui.main.tvshows
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

@@ -2,7 +2,6 @@ package com.saefulrdevs.mubeego.core.domain.usecase
 
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
-import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.domain.model.Movie
 import com.saefulrdevs.mubeego.core.domain.model.SearchItem
 import com.saefulrdevs.mubeego.core.domain.model.TvShow
@@ -33,30 +32,6 @@ class TmdbInteractor(private val tmdbRepository: ITmdbRepository) : TmdbUseCase 
 
     override fun getTvShowWithSeason(showId: String): Flow<Resource<TvShowWithSeason>> {
         return tmdbRepository.getTvShowWithSeason(showId)
-    }
-
-    override fun getFavoriteMovie(): Flow<List<Movie>> {
-        return tmdbRepository.getFavoriteMovie()
-    }
-
-    override fun getFavoriteTvShow(): Flow<List<TvShow>> {
-        return tmdbRepository.getFavoriteTvShow()
-    }
-
-    override fun setFavoriteMovie(movie: Movie, newState: Boolean) {
-        return tmdbRepository.setFavoriteMovie(movie, newState)
-    }
-
-    override fun setFavoriteTvShow(tvShow: TvShow, newState: Boolean) {
-        return tmdbRepository.setFavoriteTvShow(tvShow, newState)
-    }
-
-    override fun observeFavoriteMoviesRealtime() {
-        return tmdbRepository.observeFavoriteMoviesRealtime()
-    }
-
-    override fun observeFavoriteTvShowsRealtime() {
-        return tmdbRepository.observeFavoriteTvShowsRealtime()
     }
 
     override fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>> {

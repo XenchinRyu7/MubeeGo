@@ -33,11 +33,11 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
 
     override fun clearUser() {
         Firebase.auth.signOut()
-        prefs.edit().clear().apply()
+        prefs.edit { clear() }
     }
 
     override fun setThemeMode(mode: Int) {
-        prefs.edit().putInt("THEME_MODE", mode).apply()
+        prefs.edit { putInt("THEME_MODE", mode) }
     }
 
     override fun getThemeMode(): Int {
@@ -45,7 +45,7 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
     }
 
     override fun setNotificationEnabled(enabled: Boolean) {
-        prefs.edit().putBoolean("NOTIFICATION_ENABLED", enabled).apply()
+        prefs.edit { putBoolean("NOTIFICATION_ENABLED", enabled) }
     }
 
     override fun isNotificationEnabled(): Boolean {

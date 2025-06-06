@@ -17,8 +17,8 @@ import com.saefulrdevs.mubeego.databinding.FragmentSeeMoreBinding
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
-import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
-import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
+import com.saefulrdevs.mubeego.ui.main.movies.MoviesViewModel
+import com.saefulrdevs.mubeego.ui.main.tvshows.TvSeriesViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SeeMoreFragment : Fragment() {

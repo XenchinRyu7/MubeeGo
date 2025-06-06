@@ -47,7 +47,6 @@ class PlaylistDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         adapter = PopularAdapter { id, type ->
-            val bundle = Bundle()
             if (type == "movie") {
                 val bundle = Bundle().apply {
                     putInt(MovieDetailFragment.EXTRA_MOVIE, id)

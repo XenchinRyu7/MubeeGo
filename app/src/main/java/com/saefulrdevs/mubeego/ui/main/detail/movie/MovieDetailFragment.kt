@@ -27,8 +27,8 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentMovieDetailBinding
-import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailViewModel
-import com.saefulrdevs.mubeego.ui.moviedetail.ReminderReceiver
+import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteViewModel
+import com.saefulrdevs.mubeego.ui.common.ReminderReceiver
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Calendar
 
@@ -38,15 +38,11 @@ class MovieDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val movieDetailViewModel: MovieDetailViewModel by activityViewModel()
+    private val favoriteViewModel: FavoriteViewModel by activityViewModel()
 
     private var castAdapter: CastAdapter? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-
-        }
-    }
+    private var lastFavoriteState: Boolean? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -58,19 +54,28 @@ class MovieDetailFragment : Fragment() {
 
         val args = arguments
         var movieId: Int? = null
-        Log.d("MovieDetailFragment", "onCreateView: args = $args")
         if (args != null) {
             movieId = args.getInt(EXTRA_MOVIE)
-            Log.d("MovieDetailFragment", "onCreateView: EXTRA_MOVIE id = $movieId")
             if (movieId != 0) {
+                movieDetailViewModel.fetchFavoriteStatus(movieId)
+                movieDetailViewModel.isFavorited.observe(viewLifecycleOwner) { isFav ->
+                    setFabIcon(isFav == true)
+                    // Tampilkan toast hanya jika state berubah karena aksi user
+                    if (lastFavoriteState != null && isFav != lastFavoriteState) {
+                        if (isFav == true) {
+                            Toast.makeText(requireContext(), "Added to favorite", Toast.LENGTH_SHORT).show()
+                        } else if (isFav == false) {
+                            Toast.makeText(requireContext(), "Removed from favorite", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    lastFavoriteState = isFav
+                }
                 movieDetailViewModel.getMovieDetail(movieId).observe(viewLifecycleOwner) { resource ->
                     val movie = resource.data
+                    Log.d("MovieDetailFragment", "getMovieDetail observer: movieId=$movieId")
                     if (movie != null) {
                         movieDetailViewModel.setMovie(movie)
                     }
-                }
-                movieDetailViewModel.isMovieFavorited(movieId).observe(viewLifecycleOwner) { isFav ->
-                    setFabIcon(isFav)
                 }
                 movieDetailViewModel.genres.observe(viewLifecycleOwner) { genresList ->
                     val detail = movieDetailViewModel.getCachedMovieDetail(movieId)
@@ -167,16 +172,14 @@ class MovieDetailFragment : Fragment() {
         }
 
         binding.fabFavorite.setOnClickListener {
-            val newState = movieDetailViewModel.setFavorite()
-            if (newState) {
-                Toast.makeText(requireContext(), R.string.addedToFavorite, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), R.string.removedFromFavorite, Toast.LENGTH_SHORT).show()
+            movieId?.let { id ->
+                movieDetailViewModel.toggleFavorite(id)
+                favoriteViewModel.refreshFavoriteList()
             }
         }
 
 
-        binding.ivNotif.setOnClickListener {
+        binding.ivOptions.setOnClickListener {
             val now = Calendar.getInstance()
             DatePickerDialog(
                 requireContext(),
@@ -234,7 +237,6 @@ class MovieDetailFragment : Fragment() {
 
     private fun showRemoteDetailMovie(movieDetail: MovieDetailResponse, genres: List<GenreResponse>) {
         with(binding) {
-            setFabIcon(false)
             movieTitle.text = movieDetail.title ?: ""
             movieSinopsis.text = movieDetail.overview ?: ""
             movieRating.text = String.format("%.1f/10 IMDb", movieDetail.voteAverage ?: 0.0)
@@ -248,7 +250,6 @@ class MovieDetailFragment : Fragment() {
             movieSinopsis.text = movieDetail.overview ?: ""
             Log.d("MovieDetailFragment", "genreNames: $genreNames")
         }
-        // Ambil providers dari cache, jangan fetch ulang
         val providers = movieDetailViewModel.getCachedMovieProviders(movieDetail.id ?: 0)
         if (providers != null) {
             val flatrate = providers.results?.get("ID")?.flatrate
@@ -275,6 +276,7 @@ class MovieDetailFragment : Fragment() {
     }
 
     private fun setFabIcon(isFavorited: Boolean) {
+        Log.d("MovieDetailFragment", "setFabIcon called: isFavorited=$isFavorited")
         binding.fabFavorite.setImageResource(
             if (isFavorited) R.drawable.ic_baseline_favorite_24
             else R.drawable.ic_baseline_favorite_border_24

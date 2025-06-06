@@ -9,12 +9,15 @@ import com.saefulrdevs.mubeego.core.data.AuthRepository
 import com.saefulrdevs.mubeego.core.data.PlaylistRepository
 import com.saefulrdevs.mubeego.core.data.TmdbRepository
 import com.saefulrdevs.mubeego.core.data.UserPreferencesRepository
+import com.saefulrdevs.mubeego.core.data.repository.FavoriteFirestoreRepository
 import com.saefulrdevs.mubeego.core.data.source.firebase.PlaylistFirestoreDataSource
 import com.saefulrdevs.mubeego.core.data.source.local.LocalDataSource
 import com.saefulrdevs.mubeego.core.data.source.local.room.TmdbDatabase
 import com.saefulrdevs.mubeego.core.data.source.remote.RemoteDataSource
+import com.saefulrdevs.mubeego.core.data.source.remote.firestore.FavoriteFirestoreDataSource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiService
 import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
+import com.saefulrdevs.mubeego.core.domain.repository.IFavoriteFirestoreRepository
 import com.saefulrdevs.mubeego.core.domain.repository.IPlaylistRepository
 import com.saefulrdevs.mubeego.core.domain.repository.ITmdbRepository
 import com.saefulrdevs.mubeego.core.domain.repository.IUserPreferencesRepository
@@ -100,6 +103,11 @@ val repositoryModule = module {
     // Playlist dependencies
     single { PlaylistFirestoreDataSource(get()) }
     single<IPlaylistRepository> { PlaylistRepository(get()) }
+
+    // favorite dependencies
+    single { FavoriteFirestoreDataSource(get()) }
+    single< IFavoriteFirestoreRepository> { FavoriteFirestoreRepository(get()) }
+
 }
 
 suspend fun getCertificatePins(hostname: String): List<String> {

@@ -1,5 +1,6 @@
-package com.saefulrdevs.mubeego.ui.search
+package com.saefulrdevs.mubeego.ui.main.search
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -35,7 +36,7 @@ class UpcomingMoviesAdapter : ListAdapter<Movie, UpcomingMoviesAdapter.MovieView
                     .into(imgPoster)
                 itemView.setOnClickListener {
                     val navController = itemView.findNavController()
-                    val bundle = android.os.Bundle().apply {
+                    val bundle = Bundle().apply {
                         putInt(MovieDetailFragment.EXTRA_MOVIE, movie.movieId)
                     }
                     navController.navigate(R.id.navigation_detail_movie, bundle)

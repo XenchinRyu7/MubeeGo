@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.moviedetail
+package com.saefulrdevs.mubeego.ui.common
 
 import android.Manifest
 import android.content.BroadcastReceiver

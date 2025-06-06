@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import com.google.firebase.auth.FirebaseAuth
-import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.util.fetchUserDataFromFirestore
 import com.saefulrdevs.mubeego.databinding.FragmentProfileUpdateBinding
 import kotlinx.coroutines.launch
@@ -46,8 +45,8 @@ class ProfileUpdateFragment : Fragment() {
         }
 
         binding.btnUpdate.setOnClickListener {
-            val newUsername = binding.etUsername.text.toString()
-            val newPassword = binding.etPassword.text.toString()
+            binding.etUsername.text.toString()
+            binding.etPassword.text.toString()
             // TODO: Implement update logic (update username and password in Firestore/FirebaseAuth)
             Toast.makeText(requireContext(), "Update clicked", Toast.LENGTH_SHORT).show()
         }

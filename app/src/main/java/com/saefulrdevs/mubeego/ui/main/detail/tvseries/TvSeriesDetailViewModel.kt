@@ -5,43 +5,33 @@ package com.saefulrdevs.mubeego.ui.main.detail.tvseries
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import com.saefulrdevs.mubeego.core.data.Resource
-import com.saefulrdevs.mubeego.core.domain.model.TvShow
-import com.saefulrdevs.mubeego.core.domain.model.TvShowWithSeason
+import androidx.lifecycle.viewModelScope
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
+import com.saefulrdevs.mubeego.core.domain.usecase.FavoriteFirestoreUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
-class TvSeriesDetailViewModel
-    (private val tmdbUseCase: TmdbUseCase) :
-    ViewModel() {
+class TvSeriesDetailViewModel(
+    private val tmdbUseCase: TmdbUseCase,
+    private val favoriteFirestoreUseCase: FavoriteFirestoreUseCase
+) : ViewModel() {
 
-    private val tvShow = MutableLiveData<TvShow>()
-
-    fun setSelectedTvShow(tvShow: TvShow) {
-        this.tvShow.value = tvShow
-    }
-
-    fun getTvShowDetail(showId: Int): LiveData<Resource<TvShow>> =
-        tmdbUseCase.getTvShowDetail(showId.toString()).asLiveData()
-
-    fun getTvShowSeasons(showId: Int): LiveData<Resource<TvShowWithSeason>> =
-        tmdbUseCase.getTvShowWithSeason(showId.toString()).asLiveData()
-
-    fun setFavorite(): Boolean {
-        val tvShow = tvShow.value
-        if (tvShow != null) {
-            val newState = !tvShow.favorited
-            tmdbUseCase.setFavoriteTvShow(tvShow, newState)
-            return newState
-        }
-        return false
-    }
+//    private val tvShow = MutableLiveData<TvShow>()
+//
+//    fun setSelectedTvShow(tvShow: TvShow) {
+//        this.tvShow.value = tvShow
+//    }
+//
+//    fun getTvShowDetail(showId: Int): LiveData<Resource<TvShow>> =
+//        tmdbUseCase.getTvShowDetail(showId.toString()).asLiveData()
+//
+//    fun getTvShowSeasons(showId: Int): LiveData<Resource<TvShowWithSeason>> =
+//        tmdbUseCase.getTvShowWithSeason(showId.toString()).asLiveData()
 
     private val _tvShowDetails = MutableLiveData<Map<Int, TvShowDetailResponse>>()
     val tvShowDetails: LiveData<Map<Int, TvShowDetailResponse>> = _tvShowDetails
@@ -51,6 +41,9 @@ class TvSeriesDetailViewModel
 
     private val _tvShowProviders = MutableLiveData<Map<Int, WatchProvidersResponse>>()
     val tvShowProviders: LiveData<Map<Int, WatchProvidersResponse>> = _tvShowProviders
+
+    private val _isFavorited = MutableLiveData<Boolean>()
+    val isFavorited: LiveData<Boolean> get() = _isFavorited
 
     fun fetchTvShowDetail(showId: Int) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -81,6 +74,41 @@ class TvSeriesDetailViewModel
                 val current = _tvShowProviders.value?.toMutableMap() ?: mutableMapOf()
                 current[showId] = result
                 _tvShowProviders.postValue(current)
+            }
+        }
+    }    fun fetchFavoriteStatus(tvShowId: Int) {
+        viewModelScope.launch {
+            try {
+                val isFavorite = favoriteFirestoreUseCase.isTvShowFavorited(tvShowId)
+                android.util.Log.d("TvSeriesDetailViewModel", "fetchFavoriteStatus for TV show $tvShowId: $isFavorite")
+                _isFavorited.postValue(isFavorite)
+            } catch (e: Exception) {
+                android.util.Log.e("TvSeriesDetailViewModel", "Error fetching favorite status: ${e.message}", e)
+            }
+        }
+    }fun toggleFavorite(tvShowId: Int) {
+        viewModelScope.launch {
+            try {
+                val current = favoriteFirestoreUseCase.isTvShowFavorited(tvShowId)
+                if (current) {
+                    // Unfavorite
+                    val userId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("users").document(userId)
+                        .collection("favorites_tv").document(tvShowId.toString())
+                        .delete().await() // Ensure the operation completes before updating UI
+                } else {
+                    // Favorite
+                    val userId = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser?.uid ?: return@launch
+                    com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                        .collection("users").document(userId)
+                        .collection("favorites_tv").document(tvShowId.toString())
+                        .set(mapOf("favorited" to true)).await() // Ensure the operation completes before updating UI
+                }
+                // Only update UI after Firestore operations complete
+                fetchFavoriteStatus(tvShowId)
+            } catch (e: Exception) {
+                android.util.Log.e("TvSeriesDetailViewModel", "Error toggling favorite: ${e.message}", e)
             }
         }
     }

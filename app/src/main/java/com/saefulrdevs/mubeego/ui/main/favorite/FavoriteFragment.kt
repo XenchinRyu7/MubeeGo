@@ -11,19 +11,14 @@ import com.saefulrdevs.mubeego.databinding.FragmentFavoriteBinding
 import androidx.navigation.fragment.findNavController
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoriteFragment : Fragment() {
 
     private var _binding: FragmentFavoriteBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: FavoriteViewModel by activityViewModel()
+    private val viewModel: FavoriteViewModel by viewModel()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,14 +46,15 @@ class FavoriteFragment : Fragment() {
                 }
             }
         }
-        viewModel.getFavoriteMixedCached().observe(viewLifecycleOwner) { items ->
-            binding.progressCircular.visibility = View.GONE
-            mixedAdapter.submitList(items)
-        }
         with(binding.rvFavorite) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
             adapter = mixedAdapter
+        }
+        viewModel.favoriteList.observe(viewLifecycleOwner) { items ->
+            mixedAdapter.submitList(null) // force clear to ensure diff util triggers
+            mixedAdapter.submitList(items ?: emptyList())
+            binding.progressCircular.visibility = if (items == null) View.VISIBLE else View.GONE
         }
     }
 

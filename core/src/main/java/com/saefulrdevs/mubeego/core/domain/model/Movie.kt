@@ -16,6 +16,5 @@ data class Movie(
     val runtime: Int = 0,
     val genres: String = "",
     val youtubeTrailerId: String = "",
-    var favorited: Boolean = false,
     val originalLanguage: String = ""
 ) : Parcelable

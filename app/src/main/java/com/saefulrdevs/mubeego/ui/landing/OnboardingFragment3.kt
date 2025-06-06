@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import com.saefulrdevs.mubeego.ui.authentication.AuthActivity
-import com.saefulrdevs.mubeego.ui.main.MainNavigation
 import org.koin.android.ext.android.inject
 
 class OnboardingFragment3 : Fragment() {
@@ -33,11 +32,6 @@ class OnboardingFragment3 : Fragment() {
             (requireActivity() as? LandingActivity)?.binding?.viewPagerOnboarding?.setCurrentItem(1, true)
         }
         btnGetStarted.setOnClickListener {
-            userPreferencesUseCase.setOnboardingShown(true)
-            startActivity(Intent(requireContext(), AuthActivity::class.java))
-            requireActivity().finish()
-        }
-        tvSkip.setOnClickListener {
             userPreferencesUseCase.setOnboardingShown(true)
             startActivity(Intent(requireContext(), AuthActivity::class.java))
             requireActivity().finish()

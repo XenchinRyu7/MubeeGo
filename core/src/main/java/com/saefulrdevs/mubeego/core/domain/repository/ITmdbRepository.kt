@@ -4,6 +4,7 @@ import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.GenreResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailResponse
+import com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse
 import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse
 import com.saefulrdevs.mubeego.core.domain.model.Genre
 import com.saefulrdevs.mubeego.core.domain.model.Movie
@@ -19,10 +20,6 @@ interface ITmdbRepository {
     fun getMovieDetail(movieId: String): Flow<Resource<Movie>>
     fun getTvShowDetail(showId: String): Flow<Resource<TvShow>>
     fun getTvShowWithSeason(showId: String): Flow<Resource<TvShowWithSeason>>
-    fun getFavoriteMovie(): Flow<List<Movie>>
-    fun getFavoriteTvShow(): Flow<List<TvShow>>
-    fun setFavoriteMovie(movie: Movie, newState: Boolean)
-    fun setFavoriteTvShow(tvShow: TvShow, newState: Boolean)
     fun observeFavoriteMoviesRealtime()
     fun observeFavoriteTvShowsRealtime()
     fun getSearchResult(title: String): Flow<Resource<List<SearchItem>>>
@@ -35,7 +32,7 @@ interface ITmdbRepository {
     suspend fun getGenresRemote(): List<GenreResponse>?
     suspend fun getMovieCreditsRemote(movieId: String): CreditsResponse?
     suspend fun getMovieWatchProvidersRemote(movieId: String): WatchProvidersResponse?
-    suspend fun getTvShowDetailRemote(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.TvShowDetailResponse?
-    suspend fun getTvShowAggregateCreditsRemote(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.CreditsResponse?
-    suspend fun getTvShowWatchProvidersRemote(tvShowId: String): com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersResponse?
+    suspend fun getTvShowDetailRemote(tvShowId: String): TvShowDetailResponse?
+    suspend fun getTvShowAggregateCreditsRemote(tvShowId: String): CreditsResponse?
+    suspend fun getTvShowWatchProvidersRemote(tvShowId: String): WatchProvidersResponse?
 }

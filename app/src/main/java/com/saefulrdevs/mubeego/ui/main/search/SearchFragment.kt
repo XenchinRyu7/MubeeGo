@@ -21,7 +21,6 @@ import com.saefulrdevs.mubeego.ui.common.PopularAdapter
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
-import com.saefulrdevs.mubeego.ui.search.UpcomingMoviesAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.getValue
 

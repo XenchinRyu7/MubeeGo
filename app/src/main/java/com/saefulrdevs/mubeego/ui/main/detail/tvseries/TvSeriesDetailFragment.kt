@@ -7,6 +7,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -20,6 +21,9 @@ import com.saefulrdevs.mubeego.core.domain.model.Season
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentTvSeriesDetailBinding
 import com.saefulrdevs.mubeego.ui.main.detail.movie.CastAdapter
+import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteViewModel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class TvSeriesDetailFragment : Fragment() {
@@ -31,7 +35,9 @@ class TvSeriesDetailFragment : Fragment() {
     private var castAdapter: CastAdapter? = null
 
     private val tvSeriesDetailViewModel: TvSeriesDetailViewModel by activityViewModel()
+    private val favoriteViewModel: FavoriteViewModel by activityViewModel()
 
+    private var lastFavoriteState: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,29 +66,18 @@ class TvSeriesDetailFragment : Fragment() {
         }
         val showId = arguments?.getInt(EXTRA_TV_SHOW) ?: 0
         if (showId != 0) {
-            tvSeriesDetailViewModel.tvShowDetails.observe(viewLifecycleOwner) { map ->
-                val detail = map[showId]
-                val credits = tvSeriesDetailViewModel.getCachedTvShowCredits(showId)
-                val providers = tvSeriesDetailViewModel.getCachedTvShowProviders(showId)
-                if (detail != null && credits != null && providers != null) {
-                    showRemoteDetailTvShow(detail, credits, providers)
+            tvSeriesDetailViewModel.fetchFavoriteStatus(showId)
+            tvSeriesDetailViewModel.isFavorited.observe(viewLifecycleOwner) { isFav ->
+                setFabIcon(isFav == true)
+                // Tampilkan toast hanya jika state berubah karena aksi user
+                if (lastFavoriteState != null && isFav != lastFavoriteState) {
+                    if (isFav == true) {
+                        Toast.makeText(requireContext(), "Added to favorite", Toast.LENGTH_SHORT).show()
+                    } else if (isFav == false) {
+                        Toast.makeText(requireContext(), "Removed from favorite", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
-            tvSeriesDetailViewModel.tvShowCredits.observe(viewLifecycleOwner) { map ->
-                val detail = tvSeriesDetailViewModel.getCachedTvShowDetail(showId)
-                val credits = map[showId]
-                val providers = tvSeriesDetailViewModel.getCachedTvShowProviders(showId)
-                if (detail != null && credits != null && providers != null) {
-                    showRemoteDetailTvShow(detail, credits, providers)
-                }
-            }
-            tvSeriesDetailViewModel.tvShowProviders.observe(viewLifecycleOwner) { map ->
-                val detail = tvSeriesDetailViewModel.getCachedTvShowDetail(showId)
-                val credits = tvSeriesDetailViewModel.getCachedTvShowCredits(showId)
-                val providers = map[showId]
-                if (detail != null && credits != null && providers != null) {
-                    showRemoteDetailTvShow(detail, credits, providers)
-                }
+                lastFavoriteState = isFav
             }
             if (tvSeriesDetailViewModel.getCachedTvShowDetail(showId) == null) {
                 tvSeriesDetailViewModel.fetchTvShowDetail(showId)
@@ -93,16 +88,51 @@ class TvSeriesDetailFragment : Fragment() {
             if (tvSeriesDetailViewModel.getCachedTvShowProviders(showId) == null) {
                 tvSeriesDetailViewModel.fetchTvShowProviders(showId)
             }
+
+            // Observe state for detail, credits, providers
+            tvSeriesDetailViewModel.tvShowDetails.observe(viewLifecycleOwner) { detailsMap ->
+                val detail = detailsMap[showId]
+                val credits = tvSeriesDetailViewModel.tvShowCredits.value?.get(showId)
+                val providers = tvSeriesDetailViewModel.tvShowProviders.value?.get(showId)
+                if (detail != null && credits != null && providers != null) {
+                    showRemoteDetailTvShow(detail, credits, providers)
+                }
+            }
+            tvSeriesDetailViewModel.tvShowCredits.observe(viewLifecycleOwner) { creditsMap ->
+                val detail = tvSeriesDetailViewModel.tvShowDetails.value?.get(showId)
+                val credits = creditsMap[showId]
+                val providers = tvSeriesDetailViewModel.tvShowProviders.value?.get(showId)
+                if (detail != null && credits != null && providers != null) {
+                    showRemoteDetailTvShow(detail, credits, providers)
+                }
+            }
+            tvSeriesDetailViewModel.tvShowProviders.observe(viewLifecycleOwner) { providersMap ->
+                val detail = tvSeriesDetailViewModel.tvShowDetails.value?.get(showId)
+                val credits = tvSeriesDetailViewModel.tvShowCredits.value?.get(showId)
+                val providers = providersMap[showId]
+                if (detail != null && credits != null && providers != null) {
+                    showRemoteDetailTvShow(detail, credits, providers)
+                }
+            }
         }
         binding.fabFavorite.setOnClickListener {
-            val newState = tvSeriesDetailViewModel.setFavorite()
-            if (newState) {
-                Toast.makeText(requireContext(), R.string.addedToFavorite, Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(requireContext(), R.string.removedFromFavorite, Toast.LENGTH_SHORT).show()
+            if (showId != 0) {
+                // Tunda sedikit operasi refreshFavoriteList untuk memastikan Firestore telah diperbarui
+                viewLifecycleOwner.lifecycleScope.launch {
+                    tvSeriesDetailViewModel.toggleFavorite(showId)
+                    // Tunggu sebentar agar Firestore sync
+                    delay(300)
+                    favoriteViewModel.refreshFavoriteList()
+                }
             }
         }
         return binding.root
+    }
+
+    private fun setFabIcon(isFavorited: Boolean) {
+        binding.fabFavorite.setImageResource(
+            if (isFavorited) R.drawable.ic_baseline_favorite_24 else R.drawable.ic_baseline_favorite_border_24
+        )
     }
 
     private fun showRemoteDetailTvShow(
@@ -111,7 +141,6 @@ class TvSeriesDetailFragment : Fragment() {
         providers: WatchProvidersResponse?
     ) {
         with(binding) {
-            setFabIcon(false)
             tvShowPoster.alpha = 0.75F
             tvShowTitle.text = detail.name ?: "-"
             tvShowSinopsis.text = detail.overview ?: "-"
@@ -142,7 +171,6 @@ class TvSeriesDetailFragment : Fragment() {
                     posterPath = it.posterPath?.let { p -> if (p.startsWith("http")) p else "https://image.tmdb.org/t/p/w185$p" } ?: ""
                 )
             } ?: emptyList()
-            android.util.Log.d("TvSeriesDetailFragment", "remoteSeasons: $remoteSeasons")
             seasonAdapter.submitList(remoteSeasons)
         }
         Glide.with(this)
@@ -150,13 +178,6 @@ class TvSeriesDetailFragment : Fragment() {
             .transform(RoundedCorners(16))
             .apply(RequestOptions.placeholderOf(R.drawable.ic_loading).error(R.drawable.placholder))
             .into(binding.tvShowPoster)
-    }
-
-    private fun setFabIcon(isFavorited: Boolean) {
-        binding.fabFavorite.setImageResource(
-            if (isFavorited) R.drawable.ic_baseline_favorite_24
-            else R.drawable.ic_baseline_favorite_border_24
-        )
     }
 
     @Deprecated("Deprecated in Java")

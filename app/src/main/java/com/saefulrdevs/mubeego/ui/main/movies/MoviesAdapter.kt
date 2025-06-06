@@ -1,6 +1,5 @@
-package com.saefulrdevs.mubeego.ui.movies
+package com.saefulrdevs.mubeego.ui.main.movies
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil

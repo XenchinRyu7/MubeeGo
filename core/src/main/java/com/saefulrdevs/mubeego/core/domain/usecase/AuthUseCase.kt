@@ -1,6 +1,5 @@
 package com.saefulrdevs.mubeego.core.domain.usecase
 
-import com.saefulrdevs.mubeego.core.data.AuthRepository
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.domain.model.UserData
 import kotlinx.coroutines.flow.Flow

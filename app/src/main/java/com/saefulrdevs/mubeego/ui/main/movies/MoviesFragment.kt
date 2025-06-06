@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.movies
+package com.saefulrdevs.mubeego.ui.main.movies
 
 import android.os.Bundle
 import android.view.LayoutInflater

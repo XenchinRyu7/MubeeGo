@@ -5,14 +5,10 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import android.os.Bundle
-import android.os.Handler
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.lifecycle.lifecycleScope
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import com.saefulrdevs.mubeego.ui.authentication.AuthActivity
 import com.saefulrdevs.mubeego.ui.main.MainNavigation
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 
 @SuppressLint("CustomSplashScreen")

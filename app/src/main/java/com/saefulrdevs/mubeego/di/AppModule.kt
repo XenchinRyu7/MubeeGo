@@ -2,6 +2,8 @@ package com.saefulrdevs.mubeego.di
 
 import com.saefulrdevs.mubeego.core.domain.usecase.AuthInteractor
 import com.saefulrdevs.mubeego.core.domain.usecase.AuthUseCase
+import com.saefulrdevs.mubeego.core.domain.usecase.FavoriteFirestoreInteractor
+import com.saefulrdevs.mubeego.core.domain.usecase.FavoriteFirestoreUseCase
 import com.saefulrdevs.mubeego.core.domain.usecase.PlaylistInteractor
 import com.saefulrdevs.mubeego.core.domain.usecase.PlaylistUseCase
 import com.saefulrdevs.mubeego.core.domain.usecase.TmdbInteractor
@@ -9,8 +11,8 @@ import com.saefulrdevs.mubeego.core.domain.usecase.TmdbUseCase
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesInteractor
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import com.saefulrdevs.mubeego.ui.authentication.AuthViewModel
-import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
-import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
+import com.saefulrdevs.mubeego.ui.main.movies.MoviesViewModel
+import com.saefulrdevs.mubeego.ui.main.tvshows.TvSeriesViewModel
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailViewModel
 import com.saefulrdevs.mubeego.ui.main.home.HomeViewModel
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailViewModel
@@ -24,13 +26,14 @@ val useCaseModule = module {
     factory<AuthUseCase> { AuthInteractor(get()) }
     factory<UserPreferencesUseCase> { UserPreferencesInteractor(get()) }
     factory<PlaylistUseCase> { PlaylistInteractor(get()) }
+    factory<FavoriteFirestoreUseCase> { FavoriteFirestoreInteractor(get(), get()) }
 }
 
 val viewModelModule = module {
     viewModel { MoviesViewModel(get()) }
     viewModel { TvSeriesViewModel(get()) }
-    viewModel { MovieDetailViewModel(get()) }
-    viewModel { TvSeriesDetailViewModel(get()) }
+    viewModel { MovieDetailViewModel(get(), get()) }
+    viewModel { TvSeriesDetailViewModel(get(), get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { AuthViewModel(get(), get()) }
     viewModel { FavoriteViewModel(get()) }

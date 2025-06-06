@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
@@ -52,7 +53,7 @@
             android:name=".ui.authentication.AuthActivity"
             android:exported="false" />
 
-        <receiver android:name=".ui.moviedetail.ReminderReceiver" />
+        <receiver android:name=".ui.common.ReminderReceiver" />
 
         <service android:name="androidx.core.app.JobIntentService" />
     </application>

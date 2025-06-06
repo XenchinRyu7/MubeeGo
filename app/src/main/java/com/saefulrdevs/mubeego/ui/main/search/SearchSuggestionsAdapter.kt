@@ -1,4 +1,4 @@
-package com.saefulrdevs.mubeego.ui.search
+package com.saefulrdevs.mubeego.ui.main.search
 
 import android.os.Bundle
 import android.view.LayoutInflater

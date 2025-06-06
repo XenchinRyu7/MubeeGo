@@ -20,19 +20,16 @@ class SeeMoreAdapter(
     fun submitMovieList(movies: List<Movie>) {
         items.clear()
         items.addAll(movies)
-        notifyDataSetChanged()
     }
     
     fun submitTvShowList(tvShows: List<TvShow>) {
         items.clear()
         items.addAll(tvShows)
-        notifyDataSetChanged()
     }
     
     fun submitSearchItemList(searchItems: List<SearchItem>) {
         items.clear()
         items.addAll(searchItems)
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SeeMoreViewHolder {
@@ -75,7 +72,7 @@ class SeeMoreAdapter(
                         tvItemTitle.text = item.name
                         tvItemDate.text = Utils.changeStringToDateFormat(item.firstAirDate)
                         
-                        if (binding.tvItemRating != null) {
+                        if (true) {
                             binding.tvItemRating.text = String.format("%.1f/10 IMDb", item.voteAverage)
                         }
                         

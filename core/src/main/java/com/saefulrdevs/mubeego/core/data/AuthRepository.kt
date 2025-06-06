@@ -8,13 +8,11 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.saefulrdevs.mubeego.core.domain.model.UserData
 import com.saefulrdevs.mubeego.core.domain.model.toMap
 import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
@@ -141,7 +139,7 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
     private suspend fun fetchIsPremium(uid: String): Boolean {
         return try {
             val doc = firestore.collection("users").document(uid).get().await()
-            doc.getBoolean("isPremium") ?: false
+            doc.getBoolean("isPremium") == true
         } catch (e: Exception) {
             false
         }

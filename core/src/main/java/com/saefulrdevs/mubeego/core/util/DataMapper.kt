@@ -40,7 +40,6 @@ object DataMapper {
             runtime = 0,
             genres = JSONArray(genreIds).toString(), // <-- Simpan genreIds sebagai JSON array
             youtubeTrailerId = "",
-            favorited = false,
             originalLanguage = originalLanguage
         )
     }
@@ -58,7 +57,6 @@ object DataMapper {
             runtime = runtime,
             genres = genres,
             youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited,
             originalLanguage = originalLanguage
         )
     }
@@ -76,7 +74,6 @@ object DataMapper {
             runtime = runtime,
             genres = genres,
             youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited,
             originalLanguage = originalLanguage
         )
     }
@@ -103,7 +100,6 @@ object DataMapper {
             runtime = runtime ?: 0,
             genres = JSONArray(listOfGenreId).toString(), // <-- Simpan genre id
             youtubeTrailerId = videos?.getYoutubeTrailerId() ?: "",
-            favorited = false,
             originalLanguage = originalLanguage ?: ""
         )
     }
@@ -120,8 +116,7 @@ object DataMapper {
             firstAirDate = firstAirDate,
             genres = genres,
             runtime = runtime,
-            youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            youtubeTrailerId = youtubeTrailerId
         )
     }
 
@@ -142,9 +137,7 @@ object DataMapper {
         val listOfGenre = ArrayList<String>()
         if (genres != null) {
             for (genre in (genres)) {
-                if (genre != null) {
-                    genre.name?.let { listOfGenre.add(it) }
-                }
+                genre?.name?.let { listOfGenre.add(it) }
             }
         }
 
@@ -175,8 +168,7 @@ object DataMapper {
             firstAirDate = firstAirDate,
             genres = genres,
             runtime = runtime,
-            youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            youtubeTrailerId = youtubeTrailerId
         )
     }
 
@@ -300,5 +292,33 @@ object DataMapper {
             return ytVideo[0].key
         }
         return null
+    }
+
+    fun movieDetailResponseToSearchItem(detail: MovieDetailResponse): SearchItem {
+        return SearchItem(
+            id = detail.id,
+            name = detail.title ?: "",
+            posterPath = detail.posterPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            backdropPath = detail.backdropPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            mediaType = "movie",
+            overview = detail.overview ?: "",
+            voteCount = detail.voteCount ?: 0,
+            voteAverage = detail.voteAverage ?: 0.0,
+            releaseOrAirDate = detail.releaseDate ?: ""
+        )
+    }
+
+    fun tvShowDetailResponseToSearchItem(detail: TvShowDetailResponse): SearchItem {
+        return SearchItem(
+            id = detail.id,
+            name = detail.name ?: "",
+            posterPath = detail.posterPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            backdropPath = detail.backdropPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            mediaType = "tv",
+            overview = detail.overview ?: "",
+            voteCount = detail.voteCount ?: 0,
+            voteAverage = detail.voteAverage ?: 0.0,
+            releaseOrAirDate = detail.firstAirDate ?: ""
+        )
     }
 }

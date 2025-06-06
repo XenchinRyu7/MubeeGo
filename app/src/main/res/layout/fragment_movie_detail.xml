@@ -59,11 +59,11 @@
                         android:src="@drawable/ic_baseline_favorite_border_24" />
 
                     <ImageView
-                        android:id="@+id/ivNotif"
+                        android:id="@+id/ivOptions"
                         android:layout_width="28dp"
                         android:layout_height="28dp"
-                        android:contentDescription="Set Notification"
-                        android:src="@drawable/ic_notif_24dp" />
+                        android:contentDescription="More Options"
+                        android:src="@drawable/ic_options_24dp" />
                 </LinearLayout>
 
                 <!-- Rating Row -->

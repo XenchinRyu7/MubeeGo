@@ -34,19 +34,13 @@ class AuthViewModel(
         Log.d("AuthViewModel", "Memulai sign-in dengan Google, ID Token: $idToken")
 
         authUseCase.signInWithGoogle(idToken).onEach { resource ->
-            Log.d("AuthViewModel", "Hasil Sign-In: $resource")
             _authState.value = resource
 
             if (resource is Resource.Success) {
                 val user = authUseCase.getCurrentUser()
-                Log.d("AuthViewModel", "User setelah login: $user")
 
                 user?.let {
-                    Log.d(
-                        "AuthViewModel",
-                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}, ${it.isPremium}"
-                    )
-                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email, it.isPremium)
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname, it.email, it.isPremium)
                 }
             }
         }.launchIn(viewModelScope)
@@ -58,14 +52,9 @@ class AuthViewModel(
 
             if (resource is Resource.Success) {
                 val user = authUseCase.getCurrentUser()
-                Log.d("AuthViewModel", "User setelah login: $user")
 
                 user?.let {
-                    Log.d(
-                        "AuthViewModel",
-                        "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}, ${it.isPremium}"
-                    )
-                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email, it.isPremium)
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname, it.email, it.isPremium)
                 }
             }
         }.launchIn(viewModelScope)
@@ -76,8 +65,6 @@ class AuthViewModel(
             _resetPasswordState.value = resource
         }.launchIn(viewModelScope)
     }
-
-    fun getUser() = userPreferencesUseCase.getUser()
 
     fun signOut() {
         authUseCase.signOut().onEach { resource ->

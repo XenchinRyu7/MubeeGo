@@ -9,14 +9,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.FragmentHomeBinding
-import com.saefulrdevs.mubeego.ui.movies.MoviesAdapter
-import com.saefulrdevs.mubeego.ui.movies.MoviesViewModel
+import com.saefulrdevs.mubeego.ui.main.movies.MoviesAdapter
+import com.saefulrdevs.mubeego.ui.main.movies.MoviesViewModel
 import com.saefulrdevs.mubeego.ui.common.PopularAdapter
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.seemore.SeeMoreFragment
-import com.saefulrdevs.mubeego.ui.tvshows.TvShowsAdapter
-import com.saefulrdevs.mubeego.ui.tvshows.TvSeriesViewModel
+import com.saefulrdevs.mubeego.ui.main.tvshows.TvShowsAdapter
+import com.saefulrdevs.mubeego.ui.main.tvshows.TvSeriesViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class HomeFragment : Fragment() {

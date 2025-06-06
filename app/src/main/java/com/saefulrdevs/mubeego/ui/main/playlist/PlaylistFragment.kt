@@ -18,13 +18,13 @@ import kotlinx.coroutines.launch
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class PlaylistFragment : Fragment() {
 
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: PlaylistViewModel by viewModel()
+    private val viewModel: PlaylistViewModel by activityViewModel()
     private lateinit var playlistAdapter: PlaylistAdapter
     private val userPreferencesUseCase: UserPreferencesUseCase by inject()
 
@@ -130,7 +130,6 @@ class PlaylistFragment : Fragment() {
                                         isUpdatingVisibility = false
                                         playlistAdapter.submitList(backendList)
                                     }
-                                    // else: tunggu sampai backend sync
                                 } else {
                                     playlistAdapter.submitList(result.data)
                                 }
