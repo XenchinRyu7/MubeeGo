@@ -30,12 +30,6 @@ class ProfileFragment : Fragment() {
     private val userPreferencesUseCase: UserPreferencesUseCase by inject()
     private val authViewModel: AuthViewModel by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,9 +53,7 @@ class ProfileFragment : Fragment() {
             if (uid != null) {
                 lifecycleScope.launch {
                     val userData = fetchUserDataFromFirestore(uid)
-                    Log.d("ProfileFragment", "Fetched userData: $userData")
                     val isPremium = userData?.isPremium == true
-                    Log.d("ProfileFragment", "isPremium: $isPremium (raw: ${userData?.isPremium}})")
                     val dialogMsg = if (isPremium) "You are premium!" else "You are not premium."
                     val builder = AlertDialog.Builder(requireContext())
                         .setTitle("Subscription Status")
@@ -109,6 +101,17 @@ class ProfileFragment : Fragment() {
             }
             builder.show()
         }
+
+        binding.llHelp.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = "https://mubee-go-about.vercel.app/".toUri()
+            startActivity(intent)
+        }
+        binding.llAbout.setOnClickListener {
+            val intent = Intent(Intent.ACTION_VIEW)
+            intent.data = "https://mubee-go-about.vercel.app/".toUri()
+            startActivity(intent)
+        }
     }
 
     private fun signOutGoogle(context: Context) {
@@ -129,3 +132,4 @@ class ProfileFragment : Fragment() {
         _binding = null
     }
 }
+

@@ -63,6 +63,14 @@
                         android:layout_height="28dp"
                         android:contentDescription="Favorite"
                         android:src="@drawable/ic_baseline_favorite_border_24" />
+
+                    <ImageView
+                        android:id="@+id/ivOptions"
+                        android:layout_width="28dp"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="More Options"
+                        android:src="@drawable/ic_options_24dp" />
                 </LinearLayout>
 
                 <LinearLayout

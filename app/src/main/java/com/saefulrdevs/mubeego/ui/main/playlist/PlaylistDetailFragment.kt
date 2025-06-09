@@ -15,16 +15,16 @@ import kotlinx.coroutines.flow.collectLatest
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.data.Resource
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 import com.saefulrdevs.mubeego.ui.main.detail.movie.MovieDetailFragment
 import com.saefulrdevs.mubeego.ui.main.detail.tvseries.TvSeriesDetailFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistDetailFragment : Fragment() {
     private var _binding: FragmentPlaylistDetailBinding? = null
     private val binding get() = _binding!!
-    private val viewModel: PlaylistViewModel by activityViewModel()
+    private val viewModel: PlaylistViewModel by viewModel()
 
     private lateinit var adapter: PopularAdapter
     private var playlistId: String? = null
@@ -65,7 +65,6 @@ class PlaylistDetailFragment : Fragment() {
 
         if (playlistId != null && userId != null) {
             viewModel.getPlaylistDetails(userId!!, playlistId!!)
-        } else {
         }
 
         lifecycleScope.launch {

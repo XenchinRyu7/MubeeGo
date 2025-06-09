@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -20,15 +21,17 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.WatchProvidersRe
 import com.saefulrdevs.mubeego.core.domain.model.Season
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentTvSeriesDetailBinding
+import com.saefulrdevs.mubeego.ui.main.detail.movie.AddToPlaylistDialog
 import com.saefulrdevs.mubeego.ui.main.detail.movie.CastAdapter
 import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteViewModel
+import com.saefulrdevs.mubeego.ui.common.NotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class TvSeriesDetailFragment : Fragment() {
 
-    private var _binding : FragmentTvSeriesDetailBinding? = null
+    private var _binding: FragmentTvSeriesDetailBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var seasonAdapter: SeasonsAdapter
@@ -56,7 +59,12 @@ class TvSeriesDetailFragment : Fragment() {
         with(binding.rvSeasons) {
             layoutManager = LinearLayoutManager(context)
             setHasFixedSize(true)
-            addItemDecoration(DividerItemDecoration(requireContext(), DividerItemDecoration.VERTICAL))
+            addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
             adapter = seasonAdapter
         }
         castAdapter = null
@@ -72,9 +80,14 @@ class TvSeriesDetailFragment : Fragment() {
                 // Tampilkan toast hanya jika state berubah karena aksi user
                 if (lastFavoriteState != null && isFav != lastFavoriteState) {
                     if (isFav == true) {
-                        Toast.makeText(requireContext(), "Added to favorite", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(requireContext(), "Added to favorite", Toast.LENGTH_SHORT)
+                            .show()
                     } else if (isFav == false) {
-                        Toast.makeText(requireContext(), "Removed from favorite", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            requireContext(),
+                            "Removed from favorite",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
                 lastFavoriteState = isFav
@@ -126,6 +139,65 @@ class TvSeriesDetailFragment : Fragment() {
                 }
             }
         }
+        NotificationHelper.createNotificationChannel(requireContext())
+        binding.ivOptions.setOnClickListener {
+            val popup = PopupMenu(requireContext(), binding.ivOptions)
+            popup.menuInflater.inflate(R.menu.menu_movie_options, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_add_to_playlist -> {
+                        val showId = arguments?.getInt(EXTRA_TV_SHOW) ?: 0
+                        if (showId != 0) {
+                            AddToPlaylistDialog(
+                                itemId = showId,
+                                itemType = "tv"
+                            ).show(parentFragmentManager, "AddToPlaylistDialog")
+                        }
+                        true
+                    }
+                    R.id.action_set_notifications -> {
+                        val now = java.util.Calendar.getInstance()
+                        android.app.DatePickerDialog(
+                            requireContext(),
+                            { _, year, month, dayOfMonth ->
+                                android.app.TimePickerDialog(
+                                    requireContext(),
+                                    { _, hour, minute ->
+                                        val cal = java.util.Calendar.getInstance()
+                                        cal.set(year, month, dayOfMonth, hour, minute, 0)
+                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+                                            val alarmManager =
+                                                requireContext().getSystemService(android.content.Context.ALARM_SERVICE) as android.app.AlarmManager
+                                            if (!alarmManager.canScheduleExactAlarms()) {
+                                                val intent =
+                                                    android.content.Intent(android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
+                                                startActivity(intent)
+                                                return@TimePickerDialog
+                                            }
+                                        }
+                                        NotificationHelper.scheduleNotification(
+                                            requireContext(),
+                                            cal.timeInMillis,
+                                            title = "TV Series Reminder",
+                                            message = "It's time to watch your TV series!"
+                                        )
+                                    },
+                                    now.get(java.util.Calendar.HOUR_OF_DAY),
+                                    now.get(java.util.Calendar.MINUTE),
+                                    true
+                                ).show()
+                            },
+                            now.get(java.util.Calendar.YEAR),
+                            now.get(java.util.Calendar.MONTH),
+                            now.get(java.util.Calendar.DAY_OF_MONTH)
+                        ).show()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
         return binding.root
     }
 
@@ -146,18 +218,26 @@ class TvSeriesDetailFragment : Fragment() {
             tvShowSinopsis.text = detail.overview ?: "-"
             tvFirstAirDate.text = detail.firstAirDate ?: "-"
             tvShowRating.text = detail.voteAverage?.toString() ?: "-"
-            tvLength.text = detail.episodeRunTime?.firstOrNull()?.let { Utils.changeMinuteToDurationFormat(it) } ?: "-"
+            tvLength.text =
+                detail.episodeRunTime?.firstOrNull()?.let { Utils.changeMinuteToDurationFormat(it) }
+                    ?: "-"
             val flatrate = providers?.results?.get("ID")?.flatrate
             if (!flatrate.isNullOrEmpty()) {
                 val names = flatrate.joinToString(", ") { p -> p.providerName ?: "" }
                 tvPlatform.text = "Platform \n$names"
             }
-            val castList = credits?.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
+            val castList =
+                credits?.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
             castAdapter = CastAdapter(castList)
             rvCast.adapter = castAdapter
-            btnSeeMoreCast.visibility = if ((credits?.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
+            btnSeeMoreCast.visibility =
+                if ((credits?.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
             btnSeeMoreCast.setOnClickListener {
-                Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "See more cast not implemented",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
             val remoteSeasons = detail.seasons?.map {
                 Season(
@@ -168,13 +248,15 @@ class TvSeriesDetailFragment : Fragment() {
                     airDate = it.airDate ?: "",
                     seasonNumber = it.seasonNumber ?: 0,
                     episodeCount = it.episodeCount ?: 0,
-                    posterPath = it.posterPath?.let { p -> if (p.startsWith("http")) p else "https://image.tmdb.org/t/p/w185$p" } ?: ""
+                    posterPath = it.posterPath?.let { p -> if (p.startsWith("http")) p else "https://image.tmdb.org/t/p/w185$p" }
+                        ?: ""
                 )
             } ?: emptyList()
             seasonAdapter.submitList(remoteSeasons)
         }
         Glide.with(this)
-            .load(detail.backdropPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "")
+            .load(detail.backdropPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" }
+                ?: "")
             .transform(RoundedCorners(16))
             .apply(RequestOptions.placeholderOf(R.drawable.ic_loading).error(R.drawable.placholder))
             .into(binding.tvShowPoster)

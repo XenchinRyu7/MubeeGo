@@ -53,9 +53,11 @@
             android:name=".ui.authentication.AuthActivity"
             android:exported="false" />
 
-        <receiver android:name=".ui.common.ReminderReceiver" />
+        <activity
+            android:name=".ui.common.ExactAlarmPermissionActivity"
+            android:exported="false" />
 
-        <service android:name="androidx.core.app.JobIntentService" />
+        <receiver android:name=".ui.common.ReminderReceiver" android:exported="true" />
     </application>
 
 </manifest>

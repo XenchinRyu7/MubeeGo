@@ -42,7 +42,6 @@ class PlaylistViewModel(
     val playlistSearchItems: StateFlow<Resource<List<SearchItem>>> = _playlistSearchItems
 
     init {
-        // Observe playlistItems and update playlistSearchItems when changed
         viewModelScope.launch {
             playlistItems.collect { result ->
                 Log.d(TAG, "playlistItems changed: $result")

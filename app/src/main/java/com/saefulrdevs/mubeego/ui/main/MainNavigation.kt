@@ -1,5 +1,7 @@
 package com.saefulrdevs.mubeego.ui.main
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -15,6 +17,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.ActivityMainNavigationBinding
+import androidx.core.content.edit
 
 class MainNavigation : AppCompatActivity() {
 
@@ -95,6 +98,17 @@ class MainNavigation : AppCompatActivity() {
         bottomNavigationView.setOnItemSelectedListener { item ->
             navController.navigate(item.itemId)
             true
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val prefs = getSharedPreferences("mubeego_prefs", MODE_PRIVATE)
+            val alreadyAsked = prefs.getBoolean("notification_permission_requested", false)
+            if (!alreadyAsked) {
+                if (checkSelfPermission(android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                    requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
+                }
+                prefs.edit { putBoolean("notification_permission_requested", true) }
+            }
         }
     }
 

@@ -64,8 +64,8 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
                 .document()
 
             val itemData = hashMapOf(
-                "itemId" to item.itemId,
-                "itemType" to item.itemType.name,
+                "id" to item.itemId,
+                "type" to item.itemType.name,
                 "addedAt" to Timestamp.now()
             )
 

@@ -2,8 +2,6 @@ package com.saefulrdevs.mubeego.ui.main.detail.movie
 
 import android.app.AlarmManager
 import android.app.DatePickerDialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
 import android.content.Context
@@ -16,7 +14,9 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -28,7 +28,9 @@ import com.saefulrdevs.mubeego.core.data.source.remote.response.MovieDetailRespo
 import com.saefulrdevs.mubeego.core.util.Utils
 import com.saefulrdevs.mubeego.databinding.FragmentMovieDetailBinding
 import com.saefulrdevs.mubeego.ui.main.favorite.FavoriteViewModel
+import com.saefulrdevs.mubeego.ui.common.NotificationHelper
 import com.saefulrdevs.mubeego.ui.common.ReminderReceiver
+import com.saefulrdevs.mubeego.ui.common.ExactAlarmPermissionActivity
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import java.util.Calendar
 
@@ -44,13 +46,39 @@ class MovieDetailFragment : Fragment() {
 
     private var lastFavoriteState: Boolean? = null
 
+    private var pendingNotificationTime: Long? = null
+    private var pendingNotificationTitle: String? = null
+    private var pendingNotificationMessage: String? = null
+
+    private val exactAlarmPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S || alarmManager.canScheduleExactAlarms()) {
+            // Lanjutkan schedule notification jika sudah dapat izin
+            pendingNotificationTime?.let { time ->
+                NotificationHelper.scheduleNotification(
+                    requireContext(),
+                    time,
+                    title = pendingNotificationTitle ?: "Movie Reminder",
+                    message = pendingNotificationMessage ?: "It's time to watch your movie!"
+                )
+            }
+        } else {
+            Toast.makeText(requireContext(), "Permission not granted!", Toast.LENGTH_SHORT).show()
+        }
+        pendingNotificationTime = null
+        pendingNotificationTitle = null
+        pendingNotificationMessage = null
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMovieDetailBinding.inflate(inflater, container, false)
 
-        createNotificationChannel()
+        NotificationHelper.createNotificationChannel(requireContext())
 
         val args = arguments
         var movieId: Int? = null
@@ -180,59 +208,59 @@ class MovieDetailFragment : Fragment() {
 
 
         binding.ivOptions.setOnClickListener {
-            val now = Calendar.getInstance()
-            DatePickerDialog(
-                requireContext(),
-                { _, year, month, dayOfMonth ->
-                    TimePickerDialog(requireContext(), { _, hour, minute ->
-                        val cal = Calendar.getInstance()
-                        cal.set(year, month, dayOfMonth, hour, minute, 0)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                            val alarmManager =
-                                requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-                            if (!alarmManager.canScheduleExactAlarms()) {
-                                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM)
-                                startActivity(intent)
-                                return@TimePickerDialog
-                            }
+            val popup = PopupMenu(requireContext(), binding.ivOptions)
+            popup.menuInflater.inflate(R.menu.menu_movie_options, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_add_to_playlist -> {
+                        movieId?.let { id ->
+                            AddToPlaylistDialog(id).show(parentFragmentManager, "AddToPlaylistDialog")
                         }
-                        scheduleNotification(cal.timeInMillis)
-                    }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show()
-                },
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)
-            ).show()
+                        true
+                    }
+                    R.id.action_set_notifications -> {
+                        val now = Calendar.getInstance()
+                        DatePickerDialog(
+                            requireContext(),
+                            { _, year, month, dayOfMonth ->
+                                TimePickerDialog(requireContext(), { _, hour, minute ->
+                                    val cal = Calendar.getInstance()
+                                    cal.set(year, month, dayOfMonth, hour, minute, 0)
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                        val alarmManager =
+                                            requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                                        if (!alarmManager.canScheduleExactAlarms()) {
+                                            // Simpan data pending
+                                            pendingNotificationTime = cal.timeInMillis
+                                            pendingNotificationTitle = "Movie Reminder"
+                                            pendingNotificationMessage = "It's time to watch your movie!"
+                                            // Launch permission activity
+                                            val intent = Intent(requireContext(), ExactAlarmPermissionActivity::class.java)
+                                            exactAlarmPermissionLauncher.launch(intent)
+                                            return@TimePickerDialog
+                                        }
+                                    }
+                                    NotificationHelper.scheduleNotification(
+                                        requireContext(),
+                                        cal.timeInMillis,
+                                        title = "Movie Reminder",
+                                        message = "It's time to watch your movie!"
+                                    )
+                                }, now.get(Calendar.HOUR_OF_DAY), now.get(Calendar.MINUTE), true).show()
+                            },
+                            now.get(Calendar.YEAR),
+                            now.get(Calendar.MONTH),
+                            now.get(Calendar.DAY_OF_MONTH)
+                        ).show()
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
         }
 
         return binding.root
-    }
-
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = "Reminder Channel"
-            val descriptionText = "Channel for movie reminders"
-            val importance = NotificationManager.IMPORTANCE_HIGH
-            val channel = NotificationChannel("reminder_channel", name, importance).apply {
-                description = descriptionText
-            }
-            val notificationManager =
-                requireContext().getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
-
-    private fun scheduleNotification(timeInMillis: Long) {
-        val intent = Intent(requireContext(), ReminderReceiver::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(
-            requireContext(),
-            0,
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
-        Toast.makeText(requireContext(), "Reminder set!", Toast.LENGTH_SHORT).show()
     }
 
     private fun showRemoteDetailMovie(movieDetail: MovieDetailResponse, genres: List<GenreResponse>) {

@@ -1,21 +1,12 @@
 package com.saefulrdevs.mubeego.ui.main.settings
 
-import android.Manifest
-import android.content.Intent
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.CompoundButton
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
@@ -27,16 +18,6 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
     private val userPreferencesUseCase: UserPreferencesUseCase by inject()
 
-    private val requestNotificationPermission =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-            if (!isGranted) {
-                // Jika tidak diizinkan, arahkan ke pengaturan aplikasi
-                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                    data = Uri.fromParts("package", requireContext().packageName, null)
-                }
-                startActivity(intent)
-            }
-        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,7 +29,6 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // Setup theme spinner
         val spinner = binding.spinnerTheme
         val themeOptions = resources.getStringArray(R.array.theme_options)
         val adapter =
@@ -67,23 +47,6 @@ class SettingsFragment : Fragment() {
                 }
             }
             override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
-        // Enable notification switch
-        binding.switchNotification.isChecked = userPreferencesUseCase.isNotificationEnabled()
-        binding.switchNotification.setOnCheckedChangeListener { _: CompoundButton, isChecked: Boolean ->
-            if (isChecked) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-                        requestNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-                    } else {
-                        userPreferencesUseCase.setNotificationEnabled(true)
-                    }
-                } else {
-                    userPreferencesUseCase.setNotificationEnabled(true)
-                }
-            } else {
-                userPreferencesUseCase.setNotificationEnabled(false)
-            }
         }
     }
 
