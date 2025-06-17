@@ -8,6 +8,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.userProfileChangeRequest
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.saefulrdevs.mubeego.core.domain.model.UserData
 import com.saefulrdevs.mubeego.core.domain.model.toMap
@@ -32,15 +33,7 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
                     displayName = fullname
                 }
                 user.updateProfile(profileUpdates).await()
-
-                val userData = UserData(
-                    uid = user.uid,
-                    fullname = fullname,
-                    email = email,
-                    isPremium = false,
-                    createdAt = System.currentTimeMillis()
-                )
-                firestore.collection("users").document(user.uid).set(userData.toMap()).await()
+                user.sendEmailVerification().await()
                 emit(Resource.Success(true))
             } ?: emit(Resource.Error("User creation failed"))
         } catch (e: FirebaseAuthInvalidCredentialsException) {
@@ -66,14 +59,14 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
                 // Cek apakah data user sudah ada di Firestore
                 val userDoc = firestore.collection("users").document(user.uid).get().await()
                 if (!userDoc.exists()) {
-                    val userData = UserData(
-                        uid = user.uid,
-                        fullname = user.displayName ?: "No Name",
-                        email = user.email ?: "",
-                        isPremium = false,
-                        createdAt = System.currentTimeMillis()
+                    val userMap = mapOf(
+                        "uid" to user.uid,
+                        "fullname" to (user.displayName ?: "No Name"),
+                        "email" to (user.email ?: ""),
+                        "isPremium" to false,
+                        "createdAt" to FieldValue.serverTimestamp()
                     )
-                    firestore.collection("users").document(user.uid).set(userData.toMap()).await()
+                    firestore.collection("users").document(user.uid).set(userMap).await()
                 }
                 emit(Resource.Success(true))
             } else {
@@ -83,8 +76,8 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
             Log.e("FirebaseAuth", "Invalid Google credential: ${e.message}")
             emit(Resource.Error("Token Google tidak valid!"))
         } catch (e: FirebaseAuthUserCollisionException) {
-            Log.e("FirebaseAuth", "Google account already linked: ${e.message}")
-            emit(Resource.Error("Akun Google sudah terhubung dengan akun lain!"))
+            Log.e("FirebaseAuth", "Google account already linked: ", e)
+            emit(Resource.Error("collision:${e.email ?: ""}"))
         } catch (e: FirebaseAuthException) {
             Log.e("FirebaseAuth", "Firebase error: ${e.message}")
             emit(Resource.Error("Terjadi kesalahan autentikasi Firebase"))
@@ -104,14 +97,14 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
                 // Cek apakah user sudah punya dokumen di Firestore
                 val userDoc = firestore.collection("users").document(user.uid).get().await()
                 if (!userDoc.exists()) {
-                    val userData = UserData(
-                        uid = user.uid,
-                        fullname = user.displayName ?: "No Name",
-                        email = user.email ?: email,
-                        isPremium = false,
-                        createdAt = System.currentTimeMillis()
+                    val userMap = mapOf(
+                        "uid" to user.uid,
+                        "fullname" to (user.displayName ?: "No Name"),
+                        "email" to (user.email ?: email),
+                        "isPremium" to false,
+                        "createdAt" to FieldValue.serverTimestamp()
                     )
-                    firestore.collection("users").document(user.uid).set(userData.toMap()).await()
+                    firestore.collection("users").document(user.uid).set(userMap).await()
                 }
                 emit(Resource.Success(true))
             } else {
@@ -147,8 +140,6 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
 
     override fun getCurrentUser(): UserData? {
         return auth.currentUser?.let { user ->
-            // Ambil isPremium dari Firestore secara sinkron (blocking, karena getCurrentUser bukan suspend)
-            // Untuk production, sebaiknya gunakan flow/suspend, tapi untuk sekarang blocking saja
             var isPremium = false
             try {
                 val doc = firestore.collection("users").document(user.uid).get().getResult()
@@ -171,6 +162,27 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
         } catch (e: Exception) {
             Log.e("FirebaseAuth", "Error: ${e.message}")
             emit(Resource.Error("Terjadi kesalahan. Silakan coba lagi."))
+        }
+    }
+
+    override suspend fun createUserFirestoreAfterVerified(fullname: String): Resource<Boolean> {
+        val user = auth.currentUser
+        return if (user != null && user.isEmailVerified) {
+            val userMap = mapOf(
+                "uid" to user.uid,
+                "fullname" to fullname,
+                "email" to (user.email ?: ""),
+                "isPremium" to false,
+                "createdAt" to FieldValue.serverTimestamp()
+            )
+            return try {
+                firestore.collection("users").document(user.uid).set(userMap).await()
+                Resource.Success(true)
+            } catch (e: Exception) {
+                Resource.Error(e.localizedMessage ?: "Gagal menyimpan user ke Firestore")
+            }
+        } else {
+            Resource.Error("Email belum diverifikasi")
         }
     }
 }

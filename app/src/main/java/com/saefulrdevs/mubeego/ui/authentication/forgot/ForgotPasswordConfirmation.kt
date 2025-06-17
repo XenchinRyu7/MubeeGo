@@ -23,8 +23,20 @@ class ForgotPasswordConfirmation : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnBackToLogin.setOnClickListener {
-            findNavController().navigate(R.id.navigation_signin)
+        val isHostedInMainNav = try {
+            findNavController().graph.id == R.id.main_navigation
+        } catch (e: Exception) {
+            false
+        }
+        if (isHostedInMainNav) {
+            binding.btnBackToLogin.text = "Kembali ke Profil"
+            binding.btnBackToLogin.setOnClickListener {
+                findNavController().navigate(R.id.navigation_profile)
+            }
+        } else {
+            binding.btnBackToLogin.setOnClickListener {
+                findNavController().navigate(R.id.navigation_signin)
+            }
         }
     }
 

@@ -11,4 +11,5 @@ interface AuthUseCase {
     fun signOut(): Flow<Resource<Boolean>>
     fun getCurrentUser(): UserData?
     fun sendPasswordResetEmail(email: String): Flow<Resource<Boolean>>
+    suspend fun createUserFirestoreAfterVerified(fullname: String): Resource<Boolean>
 }

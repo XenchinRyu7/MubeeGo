@@ -32,4 +32,10 @@
         android:label="Forgot Password Confirmation"
         tools:layout="@layout/fragment_forgot_password_confirmation" />
 
+    <fragment
+        android:id="@+id/navigation_email_verification"
+        android:name="com.saefulrdevs.mubeego.ui.authentication.verification.EmailVerificationFragment"
+        android:label="Email Verification"
+        tools:layout="@layout/fragment_email_verification" />
+
 </navigation>

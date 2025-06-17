@@ -38,6 +38,15 @@ class ForgotPassword : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val isHostedInMainNav = try {
+            findNavController().graph.id == R.id.main_navigation
+        } catch (e: Exception) {
+            false
+        }
+        if (isHostedInMainNav) {
+            binding.btnBack.visibility = View.GONE
+            binding.tvLogin.visibility = View.GONE
+        }
         binding.btnSendEmail.setOnClickListener {
             val email = binding.etEmail.text.toString().trim()
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.contains(" ")) {

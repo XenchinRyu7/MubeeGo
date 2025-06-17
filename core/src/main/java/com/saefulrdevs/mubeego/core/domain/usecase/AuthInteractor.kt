@@ -1,5 +1,6 @@
 package com.saefulrdevs.mubeego.core.domain.usecase
 
+import com.saefulrdevs.mubeego.core.data.AuthRepository
 import com.saefulrdevs.mubeego.core.data.Resource
 import com.saefulrdevs.mubeego.core.domain.model.UserData
 import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
@@ -28,5 +29,9 @@ class AuthInteractor(private val authRepository: IAuthRepository) : AuthUseCase 
 
     override fun sendPasswordResetEmail(email: String): Flow<Resource<Boolean>> {
         return authRepository.sendPasswordResetEmail(email)
+    }
+
+    override suspend fun createUserFirestoreAfterVerified(fullname: String): Resource<Boolean> {
+        return (authRepository as AuthRepository).createUserFirestoreAfterVerified(fullname)
     }
 }

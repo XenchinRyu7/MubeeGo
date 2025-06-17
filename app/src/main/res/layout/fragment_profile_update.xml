@@ -19,12 +19,10 @@
 
             <ImageView
                 android:id="@+id/imgProfile"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:layout_gravity="center"
-                android:background="@drawable/bg_chip"
-                android:padding="16dp"
-                android:scaleType="centerInside"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_profile_24dp" />
 
             <TextView
@@ -90,26 +88,15 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
-                android:id="@+id/tv_password"
+                android:id="@+id/tvForgotPassword"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="Change Password"
-                android:textStyle="bold" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tf_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-
-                <com.saefulrdevs.mubeego.ui.components.CustomEditTextEmail
-                    android:id="@+id/etPassword"
-                    style="@style/BaseInputText"
-                    android:hint="Change Password"
-                    android:inputType="textPassword" />
-            </com.google.android.material.textfield.TextInputLayout>
+                android:text="Forgot Password?"
+                android:textStyle="bold"
+                android:clickable="true"
+                android:focusable="true"
+                android:layout_gravity="end" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnUpdate"
@@ -120,6 +107,14 @@
                 android:text="Update"
                 android:textStyle="bold"
                 android:theme="@style/BaseOutlinedButton" />
+
+            <Button
+                android:id="@+id/btnLinkGoogle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hubungkan dengan Google"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp" />
         </LinearLayout>
     </LinearLayout>
 

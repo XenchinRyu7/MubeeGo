@@ -40,7 +40,14 @@
         <activity
             android:name=".ui.main.MainNavigation"
             android:exported="true"
-            android:theme="@style/Base.Theme.MubeeGo" />
+            android:theme="@style/Base.Theme.MubeeGo">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="mubeego" android:host="playlist" />
+            </intent-filter>
+        </activity>
 
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"

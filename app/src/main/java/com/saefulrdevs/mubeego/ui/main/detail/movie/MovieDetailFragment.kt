@@ -118,10 +118,6 @@ class MovieDetailFragment : Fragment() {
                             adapter = castAdapter
                             setHasFixedSize(true)
                         }
-                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
-                        binding.btnSeeMoreCast.setOnClickListener {
-                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
-                        }
                     }
                 }
                 movieDetailViewModel.movieDetails.observe(viewLifecycleOwner) { map ->
@@ -137,10 +133,6 @@ class MovieDetailFragment : Fragment() {
                             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                             adapter = castAdapter
                             setHasFixedSize(true)
-                        }
-                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
-                        binding.btnSeeMoreCast.setOnClickListener {
-                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
@@ -158,10 +150,6 @@ class MovieDetailFragment : Fragment() {
                             adapter = castAdapter
                             setHasFixedSize(true)
                         }
-                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
-                        binding.btnSeeMoreCast.setOnClickListener {
-                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
-                        }
                     }
                 }
                 movieDetailViewModel.movieProviders.observe(viewLifecycleOwner) { map ->
@@ -177,10 +165,6 @@ class MovieDetailFragment : Fragment() {
                             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                             adapter = castAdapter
                             setHasFixedSize(true)
-                        }
-                        binding.btnSeeMoreCast.visibility = if ((credits.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
-                        binding.btnSeeMoreCast.setOnClickListener {
-                            Toast.makeText(requireContext(), "See more cast not implemented", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }

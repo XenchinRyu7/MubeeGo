@@ -55,6 +55,13 @@ class FavoriteFragment : Fragment() {
             mixedAdapter.submitList(null) // force clear to ensure diff util triggers
             mixedAdapter.submitList(items ?: emptyList())
             binding.progressCircular.visibility = if (items == null) View.VISIBLE else View.GONE
+            if (items.isNullOrEmpty()) {
+                binding.emptyState.visibility = View.VISIBLE
+                binding.rvFavorite.visibility = View.GONE
+            } else {
+                binding.emptyState.visibility = View.GONE
+                binding.rvFavorite.visibility = View.VISIBLE
+            }
         }
     }
 

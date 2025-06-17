@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val authUseCase: AuthUseCase,
@@ -73,5 +74,11 @@ class AuthViewModel(
                 userPreferencesUseCase.clearUser()
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun createUserFirestoreAfterVerified(fullname: String) = viewModelScope.launch {
+        _authState.value = Resource.Loading()
+        val result = authUseCase.createUserFirestoreAfterVerified(fullname)
+        _authState.value = result
     }
 }

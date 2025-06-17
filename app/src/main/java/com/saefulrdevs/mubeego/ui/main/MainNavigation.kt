@@ -38,7 +38,9 @@ class MainNavigation : AppCompatActivity() {
                     currentDest?.id == R.id.navigation_search ||
                     currentDest?.id == R.id.navigation_settings ||
                     currentDest?.id == R.id.profileUpdateFragment ||
-                    currentDest?.id == R.id.navigation_playlist_detail
+                    currentDest?.id == R.id.navigation_playlist_detail ||
+                    currentDest?.id == R.id.navigation_forgot_password ||
+                    currentDest?.id == R.id.navigation_forgot_password_confirmation
             v.setPadding(
                 systemBars.left,
                 systemBars.top,
@@ -75,7 +77,9 @@ class MainNavigation : AppCompatActivity() {
                 destination.id == R.id.navigation_search ||
                 destination.id == R.id.navigation_settings ||
                 destination.id == R.id.profileUpdateFragment ||
-                destination.id == R.id.navigation_playlist_detail
+                destination.id == R.id.navigation_playlist_detail ||
+                destination.id == R.id.navigation_forgot_password ||
+                destination.id == R.id.navigation_forgot_password_confirmation
             ) {
                 bottomNavigationView.visibility = View.GONE
             } else {
@@ -108,6 +112,23 @@ class MainNavigation : AppCompatActivity() {
                     requestPermissions(arrayOf(android.Manifest.permission.POST_NOTIFICATIONS), 1001)
                 }
                 prefs.edit { putBoolean("notification_permission_requested", true) }
+            }
+        }
+
+        intent?.data?.let { data ->
+            if (data.scheme == "mubeego" && data.host == "playlist") {
+                val segments = data.pathSegments
+                if (segments.size >= 2) {
+                    val userId = segments[0]
+                    val playlistId = segments[1]
+                    val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                    val navController = navHostFragment.navController
+                    val bundle = Bundle().apply {
+                        putString("userId", userId)
+                        putString("playlistId", playlistId)
+                    }
+                    navController.navigate(R.id.navigation_playlist_detail, bundle)
+                }
             }
         }
     }

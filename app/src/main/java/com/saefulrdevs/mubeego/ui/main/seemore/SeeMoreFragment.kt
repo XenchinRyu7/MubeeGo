@@ -107,33 +107,35 @@ class SeeMoreFragment : Fragment() {
                 homeViewModel.getNowPlaying().observe(viewLifecycleOwner, Observer { resource ->
                     resource.data?.let { movies ->
                         seeMoreAdapter.submitMovieList(movies)
+                        seeMoreAdapter.notifyDataSetChanged()
                     }
                 })
             }
-
             TYPE_POPULAR -> {
-                homeViewModel.popular.observe(viewLifecycleOwner) { popular ->
+                homeViewModel.popular.observe(viewLifecycleOwner, Observer { popular ->
                     if (popular != null) {
                         seeMoreAdapter.submitSearchItemList(popular)
+                        seeMoreAdapter.notifyDataSetChanged()
                     }
-                }
+                })
                 homeViewModel.fetchPopular()
             }
-
             TYPE_MOVIE -> {
                 moviesViewModel.getDiscoverMovies()
                     .observe(viewLifecycleOwner, Observer { resource ->
                         resource.data?.let { movies ->
                             seeMoreAdapter.submitMovieList(movies)
+                            seeMoreAdapter.notifyDataSetChanged()
                         }
                     })
+                moviesViewModel.clearMovies()
             }
-
             TYPE_TV_SERIES -> {
                 tvSeriesViewModel.getDiscoverTvShow()
                     .observe(viewLifecycleOwner, Observer { resource ->
                         resource.data?.let { tvShows ->
                             seeMoreAdapter.submitTvShowList(tvShows)
+                            seeMoreAdapter.notifyDataSetChanged()
                         }
                     })
             }

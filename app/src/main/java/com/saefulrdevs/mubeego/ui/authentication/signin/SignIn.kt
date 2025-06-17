@@ -1,6 +1,7 @@
 package com.saefulrdevs.mubeego.ui.authentication.signin
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -37,6 +38,8 @@ class SignIn : Fragment() {
             .requestEmail()
             .build()
     }
+
+    private var pendingGoogleIdToken: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,28 +99,39 @@ class SignIn : Fragment() {
                 when (resource) {
                     is Resource.Loading -> {
                     }
-
                     is Resource.Success -> {
                         binding.loading.visibility = View.GONE
                         Toast.makeText(requireContext(), "Login Berhasil!", Toast.LENGTH_SHORT)
                             .show()
-
                         val intent = Intent(requireActivity(), MainNavigation::class.java)
                         startActivity(intent)
                         requireActivity().finish()
                     }
-
                     is Resource.Error -> {
                         binding.loading.visibility = View.GONE
-                        Toast.makeText(
-                            requireContext(),
-                            "Error: ${resource.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        if (resource.message?.startsWith("collision:") == true) {
+                            // Handle link akun
+                            val email = resource.message?.removePrefix("collision:") ?: ""
+                            showLinkAccountDialog(email)
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Error: ${resource.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun showLinkAccountDialog(email: String) {
+        AlertDialog.Builder(requireContext())
+            .setTitle("Akun sudah terdaftar" + " (${email})")
+            .setMessage("Email ini sudah terdaftar. Ingin menghubungkan akun Google ke akun ini?\nSilakan login manual dulu, lalu klik tombol Google lagi.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 
     private fun signInWithGoogle() {
@@ -136,11 +150,10 @@ class SignIn : Fragment() {
                         "GoogleSignIn",
                         "Akun Google dipilih: ${account?.email}, ID Token: ${account?.idToken}"
                     )
-
                     account?.idToken?.let { idToken ->
+                        pendingGoogleIdToken = idToken
                         authViewModel.signInWithGoogle(idToken)
                     } ?: Log.e("GoogleSignIn", "ID Token kosong!")
-
                 } catch (e: ApiException) {
                     Log.e("GoogleSignIn", "Google Sign-In gagal", e)
                     Toast.makeText(
