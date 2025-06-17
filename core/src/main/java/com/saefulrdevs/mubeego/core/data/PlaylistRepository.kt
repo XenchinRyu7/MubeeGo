@@ -37,4 +37,8 @@ class PlaylistRepository(
     override fun updatePlaylistVisibility(userId: String, playlistId: String, isPublic: Boolean): Flow<Resource<Unit>> {
         return firestoreDataSource.updatePlaylistVisibility(userId, playlistId, isPublic)
     }
+
+    override fun updatePlaylistData(userId: String, playlistId: String, name: String, notes: String): Flow<Resource<Unit>> {
+        return firestoreDataSource.updatePlaylistData(userId, playlistId, name, notes)
+    }
 }

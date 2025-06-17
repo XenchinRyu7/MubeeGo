@@ -19,8 +19,8 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.saefulrdevs.mubeego.core.util.fetchUserDataFromFirestore
 import com.saefulrdevs.mubeego.databinding.FragmentProfileUpdateBinding
 import kotlinx.coroutines.launch
-import com.google.firebase.auth.UserProfileChangeRequest
 import com.saefulrdevs.mubeego.R
+import com.saefulrdevs.mubeego.core.util.updateUserFullnameInFirestore
 
 
 class ProfileUpdateFragment : Fragment() {
@@ -97,17 +97,14 @@ class ProfileUpdateFragment : Fragment() {
             }
             val user = FirebaseAuth.getInstance().currentUser
             if (user != null) {
-                val profileUpdates = UserProfileChangeRequest.Builder()
-                    .setDisplayName(newFullname)
-                    .build()
-                user.updateProfile(profileUpdates)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Toast.makeText(requireContext(), "Nama berhasil diubah", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(requireContext(), "Gagal mengubah nama", Toast.LENGTH_SHORT).show()
-                        }
+                lifecycleScope.launch {
+                    val success = updateUserFullnameInFirestore(user.uid, newFullname)
+                    if (success) {
+                        Toast.makeText(requireContext(), "Nama berhasil diubah", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(requireContext(), "Gagal mengubah nama", Toast.LENGTH_SHORT).show()
                     }
+                }
             }
         }
 

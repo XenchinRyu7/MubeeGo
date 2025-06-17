@@ -42,9 +42,16 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val user = userPreferencesUseCase.getUser()
-        user?.let {
-            binding.tvProfileUsername.text = it.fullname
-            binding.tvProfileEmail.text = it.email
+        val uid = user?.uid
+        if (uid != null) {
+            Log.d("ProfileFragment", "User ID: $uid")
+            lifecycleScope.launch {
+                val userData = fetchUserDataFromFirestore(uid)
+                userData?.let {
+                    binding.tvProfileUsername.text = it.fullname
+                    binding.tvProfileEmail.text = it.email
+                }
+            }
         }
 
         binding.llSubscription.setOnClickListener {

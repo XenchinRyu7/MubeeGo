@@ -179,13 +179,20 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
             emit(Resource.Loading())
             Log.d(TAG, "Getting playlist details: userId=$userId, playlistId=$playlistId")
             
-            val playlist = firestore.collection(USERS_COLLECTION)
+            val docSnap = firestore.collection(USERS_COLLECTION)
                 .document(userId)
                 .collection(PLAYLISTS_COLLECTION)
                 .document(playlistId)
                 .get()
                 .await()
-                .toObject(Playlist::class.java)
+            val data = docSnap.data
+            val isPublic = when (val value = data?.get("isPublic")) {
+                is Boolean -> value
+                is String -> value.toBoolean()
+                is Number -> value.toInt() != 0
+                else -> false
+            }
+            val playlist = docSnap.toObject(Playlist::class.java)?.copy(isPublic = isPublic)
                 ?: throw Exception("Playlist not found")
 
             Log.d(TAG, "Retrieved playlist: $playlist")
@@ -203,7 +210,7 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
                     doc.toObject(PlaylistItem::class.java)
                 }
 
-            Log.d(TAG, "Retrieved ${items.size} items for playlist")
+            Log.d(TAG, "Retrieved "+items.size+" items for playlist")
             emit(Resource.Success(playlist.copy(items = items)))
         } catch (e: Exception) {
             Log.e(TAG, "Error getting playlist details", e)
@@ -235,6 +242,30 @@ class PlaylistFirestoreDataSource(private val firestore: FirebaseFirestore) {
         } catch (e: Exception) {
             Log.e(TAG, "Error removing item from playlist", e)
             emit(Resource.Error(e.message ?: "Failed to remove item from playlist"))
+        }
+    }
+
+    fun updatePlaylistData(userId: String, playlistId: String, name: String, notes: String): Flow<Resource<Unit>> = flow {
+        try {
+            emit(Resource.Loading())
+            Log.d(TAG, "Updating playlist data: userId=$userId, playlistId=$playlistId, name=$name, notes=$notes")
+            firestore.collection(USERS_COLLECTION)
+                .document(userId)
+                .collection(PLAYLISTS_COLLECTION)
+                .document(playlistId)
+                .update(
+                    mapOf(
+                        "name" to name,
+                        "notes" to notes,
+                        "updatedAt" to Timestamp.now()
+                    )
+                )
+                .await()
+            Log.d(TAG, "Playlist data updated successfully")
+            emit(Resource.Success(Unit))
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating playlist data", e)
+            emit(Resource.Error(e.message ?: "Failed to update playlist data"))
         }
     }
 }

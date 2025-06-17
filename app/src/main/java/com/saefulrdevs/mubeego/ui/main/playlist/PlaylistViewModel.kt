@@ -197,7 +197,7 @@ class PlaylistViewModel(
         Log.d(TAG, "Getting playlist items: userId=$userId, playlistId=$playlistId")
         val playlist = _playlistDetail.value
         if (playlist is Resource.Success && playlist.data != null) {
-            _playlistItems.value = Resource.Success(playlist.data!!.items ?: emptyList())
+            _playlistItems.value = Resource.Success(playlist.data!!.items)
         } else {
             _playlistItems.value = Resource.Error("Playlist items not available")
         }
@@ -212,7 +212,8 @@ class PlaylistViewModel(
                         Log.d(TAG, "Visibility updated successfully")
                         // Refresh playlists after update
                         getUserPlaylists(userId)
-//                        getPublicPlaylists()
+                        // Tambahan: refresh detail playlist agar isPublic update di UI
+                        getPlaylistDetails(userId, playlistId)
                     }
                     is Resource.Error -> {
                         Log.e(TAG, "Error updating visibility: ${result.message}")
@@ -221,6 +222,18 @@ class PlaylistViewModel(
                         Log.d(TAG, "Updating visibility in progress...")
                     }
                 }
+            }
+        }
+    }
+
+    fun updatePlaylistData(userId: String, playlistId: String, name: String, notes: String, onResult: ((Resource<Unit>) -> Unit)? = null) {
+        Log.d(TAG, "Updating playlist data: userId=$userId, playlistId=$playlistId, name=$name, notes=$notes")
+        viewModelScope.launch {
+            playlistUseCase.updatePlaylistData(userId, playlistId, name, notes).collect { result ->
+                if (result is Resource.Success) {
+                    getPlaylistDetails(userId, playlistId)
+                }
+                onResult?.invoke(result)
             }
         }
     }

@@ -30,3 +30,18 @@ suspend fun fetchUserDataFromFirestore(uid: String): UserData? {
         null
     }
 }
+
+suspend fun updateUserFullnameInFirestore(uid: String, newFullname: String): Boolean {
+    return try {
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(uid)
+            .update("fullname", newFullname)
+            .await()
+        Log.d("FirestoreUtil", "Updated fullname for uid=$uid to $newFullname")
+        true
+    } catch (e: Exception) {
+        Log.e("FirestoreUtil", "Error updating fullname: $e")
+        false
+    }
+}

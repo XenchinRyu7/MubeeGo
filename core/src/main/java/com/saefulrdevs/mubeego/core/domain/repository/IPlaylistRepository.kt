@@ -13,4 +13,5 @@ interface IPlaylistRepository {
 //    fun getPublicPlaylists(): Flow<Resource<List<Playlist>>>
     fun getPlaylistDetails(userId: String, playlistId: String): Flow<Resource<Playlist>>
     fun updatePlaylistVisibility(userId: String, playlistId: String, isPublic: Boolean): Flow<Resource<Unit>>
+    fun updatePlaylistData(userId: String, playlistId: String, name: String, notes: String): Flow<Resource<Unit>>
 }

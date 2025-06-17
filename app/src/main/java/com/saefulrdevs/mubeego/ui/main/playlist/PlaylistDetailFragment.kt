@@ -1,10 +1,18 @@
 package com.saefulrdevs.mubeego.ui.main.playlist
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
@@ -52,7 +60,6 @@ class PlaylistDetailFragment : Fragment() {
                     putInt(MovieDetailFragment.EXTRA_MOVIE, id)
                 }
                 findNavController().navigate(R.id.navigation_detail_movie, bundle)
-
             } else if (type == "tv") {
                 val bundle = Bundle().apply {
                     putInt(TvSeriesDetailFragment.EXTRA_TV_SHOW, id)
@@ -114,6 +121,88 @@ class PlaylistDetailFragment : Fragment() {
                         adapter.submitList(result.data ?: emptyList())
                     }
                 }
+            }
+        }
+
+        binding.btnShare.setOnClickListener {
+            val playlistResource = viewModel.playlistDetail.value
+            if (playlistResource is Resource.Success && playlistResource.data != null) {
+                val playlist = playlistResource.data
+                Log.d("PlaylistDetailFragment", "Share clicked, playlist.isPublic=${playlist?.isPublic}, id=${playlist?.id}")
+                if (playlist?.isPublic != true) {
+                    android.app.AlertDialog.Builder(requireContext())
+                        .setTitle("Bagikan Playlist")
+                        .setMessage("Playlist harus public untuk bisa dibagikan.")
+                        .setPositiveButton("OK", null)
+                        .show()
+                } else {
+                    val url = "https://mubee-go-playlist.vercel.app/playlist/${playlist.ownerId}/${playlist.id}"
+                    val dialogView = layoutInflater.inflate(R.layout.dialog_share_playlist, null)
+                    val tvUrl = dialogView.findViewById<TextView>(R.id.tvShareUrl)
+                    val btnCopy = dialogView.findViewById<Button>(R.id.btnCopyUrl)
+                    val btnShare = dialogView.findViewById<Button>(R.id.btnShareIntent)
+                    tvUrl.text = url
+                    val dialog = android.app.AlertDialog.Builder(requireContext())
+                        .setTitle("Bagikan Playlist")
+                        .setView(dialogView)
+                        .setNegativeButton("Tutup", null)
+                        .create()
+                    btnCopy.setOnClickListener {
+                        val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Playlist URL", url)
+                        clipboard.setPrimaryClip(clip)
+                        Toast.makeText(requireContext(), "URL disalin", Toast.LENGTH_SHORT).show()
+                    }
+                    btnShare.setOnClickListener {
+                        val intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, url)
+                            type = "text/plain"
+                        }
+                        startActivity(Intent.createChooser(intent, "Bagikan ke..."))
+                    }
+                    dialog.show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Playlist tidak ditemukan", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.btnEdit.setOnClickListener {
+            val playlistResource = viewModel.playlistDetail.value
+            val playlist = (playlistResource as? Resource.Success)?.data
+            if (playlist != null) {
+                val dialogView = layoutInflater.inflate(R.layout.dialog_edit_playlist, null)
+                val etName = dialogView.findViewById<EditText>(R.id.etPlaylistName)
+                val etNotes = dialogView.findViewById<EditText>(R.id.etPlaylistNotes)
+                etName.setText(playlist.name)
+                etNotes.setText(playlist.notes)
+                val dialog = android.app.AlertDialog.Builder(requireContext())
+                    .setTitle("Edit Playlist")
+                    .setView(dialogView)
+                    .setPositiveButton("Simpan", null)
+                    .setNegativeButton("Batal", null)
+                    .create()
+                dialog.setOnShowListener {
+                    val btnSave = dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE)
+                    btnSave.setOnClickListener {
+                        val newName = etName.text.toString().trim()
+                        val newNotes = etNotes.text.toString().trim()
+                        if (newName.isEmpty()) {
+                            etName.error = "Nama playlist tidak boleh kosong"
+                            return@setOnClickListener
+                        }
+                        viewModel.updatePlaylistData(playlist.ownerId, playlist.id, newName, newNotes) { result ->
+                            if (result is Resource.Success) {
+                                Toast.makeText(requireContext(), "Playlist berhasil diupdate", Toast.LENGTH_SHORT).show()
+                                dialog.dismiss()
+                            } else if (result is Resource.Error) {
+                                Toast.makeText(requireContext(), result.message ?: "Gagal update playlist", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }
+                }
+                dialog.show()
             }
         }
     }
