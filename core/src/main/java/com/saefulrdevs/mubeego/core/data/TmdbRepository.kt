@@ -426,7 +426,7 @@ class TmdbRepository private constructor(
         return object : NetworkBoundResource<List<Genre>, List<GenreResponse>>() {
             override fun loadFromDB(): Flow<List<Genre>> {
                 return localDataSource.getGenres().map { list ->
-                    list.map { Genre(it.id, it.name) }
+                    list.map { Genre(it.id.toString(), it.name) }
                 }
             }
 

@@ -6,6 +6,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.saefulrdevs.mubeego.core.BuildConfig
 import com.saefulrdevs.mubeego.core.data.AuthRepository
+import com.saefulrdevs.mubeego.core.data.HonorableRepository
 import com.saefulrdevs.mubeego.core.data.PlaylistRepository
 import com.saefulrdevs.mubeego.core.data.TmdbRepository
 import com.saefulrdevs.mubeego.core.data.UserPreferencesRepository
@@ -18,6 +19,7 @@ import com.saefulrdevs.mubeego.core.data.source.remote.firestore.FavoriteFiresto
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiService
 import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
 import com.saefulrdevs.mubeego.core.domain.repository.IFavoriteFirestoreRepository
+import com.saefulrdevs.mubeego.core.domain.repository.IHonorableRepository
 import com.saefulrdevs.mubeego.core.domain.repository.IPlaylistRepository
 import com.saefulrdevs.mubeego.core.domain.repository.ITmdbRepository
 import com.saefulrdevs.mubeego.core.domain.repository.IUserPreferencesRepository
@@ -108,6 +110,9 @@ val repositoryModule = module {
     single { FavoriteFirestoreDataSource(get()) }
     single< IFavoriteFirestoreRepository> { FavoriteFirestoreRepository(get()) }
 
+    // Honorable mentions dependencies
+    single { HonorableRepository(get()) }
+    single<IHonorableRepository> { HonorableRepository(get()) }
 }
 
 suspend fun getCertificatePins(hostname: String): List<String> {

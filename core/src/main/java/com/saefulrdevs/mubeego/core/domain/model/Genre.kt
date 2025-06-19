@@ -1,6 +1,6 @@
 package com.saefulrdevs.mubeego.core.domain.model
 
 data class Genre(
-    val id: Int,
-    val name: String
+    val id: String = "",
+    val name: String = ""
 )

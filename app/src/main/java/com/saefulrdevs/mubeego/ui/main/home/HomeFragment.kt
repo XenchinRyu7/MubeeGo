@@ -30,6 +30,9 @@ class HomeFragment : Fragment() {
     private lateinit var popularAdapter: PopularAdapter
     private lateinit var moviesAdapter: MoviesAdapter
     private lateinit var tvSeriesAdapter: TvShowsAdapter
+    private lateinit var honorableAdapter: HonorableAdapter
+    private val honorableViewModel: HonorableViewModel by activityViewModel()
+    private val genreMap = mutableMapOf<String, String>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -75,6 +78,12 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.navigation_detail_tv_series, bundle)
         }
         tvSeriesAdapter.submitList(emptyList())
+        honorableAdapter = HonorableAdapter()
+        binding.rvTvHonorable.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = honorableAdapter
+            setHasFixedSize(true)
+        }
 
         binding.rvNowShowing.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
@@ -125,6 +134,15 @@ class HomeFragment : Fragment() {
             }
         }
 
+        honorableViewModel.honorableList.observe(viewLifecycleOwner) { list ->
+            val mappedList = list.map { item ->
+                val genreNames = item.genreIds.mapNotNull { genreMap[it] }
+                item.copy(overview = item.overview + if (genreNames.isNotEmpty()) "\nGenre: ${genreNames.joinToString(", ")}" else "")
+            }
+            honorableAdapter.submitList(mappedList.take(5))
+        }
+        honorableViewModel.fetchHonorableMentions()
+
         binding.btnSeeMoreNowShowing.setOnClickListener {
             val bundle = Bundle().apply {
                 putString(SeeMoreFragment.EXTRA_TYPE, SeeMoreFragment.TYPE_NOW_SHOWING)
@@ -148,6 +166,9 @@ class HomeFragment : Fragment() {
                 putString(SeeMoreFragment.EXTRA_TYPE, SeeMoreFragment.TYPE_TV_SERIES)
             }
             findNavController().navigate(R.id.action_navigation_home_to_seeMoreFragment, bundle)
+        }
+        binding.btnSeeMoreHonorable.setOnClickListener {
+            // TODO: Navigasi ke fragment/aktivitas list honorable (implementasi sesuai kebutuhan)
         }
 
         if (savedInstanceState != null) {
@@ -179,6 +200,7 @@ class HomeFragment : Fragment() {
         binding.rvPopular.adapter = null
         binding.rvMovies.adapter = null
         binding.rvTvSeries.adapter = null
+        binding.rvTvHonorable.adapter = null
         _binding = null
     }
 }
