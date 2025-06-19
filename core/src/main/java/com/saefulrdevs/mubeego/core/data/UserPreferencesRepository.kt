@@ -33,7 +33,19 @@ class UserPreferencesRepository(context: Context) : IUserPreferencesRepository {
 
     override fun clearUser() {
         Firebase.auth.signOut()
-        prefs.edit { clear() }
+        val onboardingShown = prefs.getBoolean("ONBOARDING_SHOWN", false)
+        val themeMode = prefs.getInt("THEME_MODE", 0)
+        prefs.edit {
+            remove("UID")
+            remove("FULLNAME")
+            remove("EMAIL")
+            remove("IS_PREMIUM")
+            
+        }
+        prefs.edit {
+            putBoolean("ONBOARDING_SHOWN", onboardingShown)
+            putInt("THEME_MODE", themeMode)
+        }
     }
 
     override fun setThemeMode(mode: Int) {
