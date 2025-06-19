@@ -77,7 +77,6 @@ class TvSeriesDetailFragment : Fragment() {
             tvSeriesDetailViewModel.fetchFavoriteStatus(showId)
             tvSeriesDetailViewModel.isFavorited.observe(viewLifecycleOwner) { isFav ->
                 setFabIcon(isFav == true)
-                // Tampilkan toast hanya jika state berubah karena aksi user
                 if (lastFavoriteState != null && isFav != lastFavoriteState) {
                     if (isFav == true) {
                         Toast.makeText(requireContext(), "Added to favorite", Toast.LENGTH_SHORT)
@@ -230,15 +229,6 @@ class TvSeriesDetailFragment : Fragment() {
                 credits?.cast?.sortedBy { it.order ?: Int.MAX_VALUE }?.take(10) ?: emptyList()
             castAdapter = CastAdapter(castList)
             rvCast.adapter = castAdapter
-            btnSeeMoreCast.visibility =
-                if ((credits?.cast?.size ?: 0) > 10) View.VISIBLE else View.GONE
-            btnSeeMoreCast.setOnClickListener {
-                Toast.makeText(
-                    requireContext(),
-                    "See more cast not implemented",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
             val remoteSeasons = detail.seasons?.map {
                 Season(
                     seasonId = it.id,

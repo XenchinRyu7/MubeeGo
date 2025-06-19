@@ -89,9 +89,11 @@ class SignUp : Fragment() {
                     }
                     is Resource.Success -> {
                         binding.loading.visibility = View.GONE
-                        Toast.makeText(requireContext(), "Registrasi berhasil!", Toast.LENGTH_SHORT)
+                        Toast.makeText(requireContext(), "Registrasi berhasil! Silakan cek email untuk verifikasi.", Toast.LENGTH_SHORT)
                             .show()
-                        findNavController().navigate(R.id.navigation_signin)
+                        val fullName = binding.edInputFullName.text.toString().trim()
+                        val bundle = Bundle().apply { putString("fullname", fullName) }
+                        findNavController().navigate(R.id.navigation_email_verification, bundle)
                     }
                     is Resource.Error -> {
                         binding.loading.visibility = View.GONE

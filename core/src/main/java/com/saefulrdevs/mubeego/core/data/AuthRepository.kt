@@ -94,6 +94,10 @@ class AuthRepository(private val auth: FirebaseAuth, private val firestore: Fire
             val user = result.user
 
             if (user != null) {
+                if (!user.isEmailVerified) {
+                    emit(Resource.Error("Silakan verifikasi email Anda terlebih dahulu."))
+                    return@flow
+                }
                 // Cek apakah user sudah punya dokumen di Firestore
                 val userDoc = firestore.collection("users").document(user.uid).get().await()
                 if (!userDoc.exists()) {
