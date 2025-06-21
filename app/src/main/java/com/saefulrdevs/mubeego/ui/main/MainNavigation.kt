@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -18,10 +19,16 @@ import androidx.navigation.ui.setupWithNavController
 import com.saefulrdevs.mubeego.R
 import com.saefulrdevs.mubeego.databinding.ActivityMainNavigationBinding
 import androidx.core.content.edit
+import com.saefulrdevs.mubeego.core.domain.usecase.UserPreferencesUseCase
+import com.saefulrdevs.mubeego.core.util.fetchUserDataFromFirestore
+import com.saefulrdevs.mubeego.ui.common.AdDialogFragment
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 class MainNavigation : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainNavigationBinding
+    private val userPreferencesUseCase: UserPreferencesUseCase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -128,6 +135,21 @@ class MainNavigation : AppCompatActivity() {
                         putString("playlistId", playlistId)
                     }
                     navController.navigate(R.id.navigation_playlist_detail, bundle)
+                }
+            }
+        }
+
+        val user = userPreferencesUseCase.getUser()
+        val uid = user?.uid
+        if (uid != null) {
+            lifecycleScope.launch {
+                val userData = fetchUserDataFromFirestore(uid)
+                if (userData != null && !userData.isPremium) {
+                    // Prevent multiple AdDialogFragment instances
+                    val existing = supportFragmentManager.findFragmentByTag("ad_dialog")
+                    if (existing == null) {
+                        AdDialogFragment().show(supportFragmentManager, "ad_dialog")
+                    }
                 }
             }
         }
