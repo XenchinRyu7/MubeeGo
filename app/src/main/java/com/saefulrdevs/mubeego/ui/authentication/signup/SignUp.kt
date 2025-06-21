@@ -3,6 +3,7 @@ package com.saefulrdevs.mubeego.ui.authentication.signup
 import android.app.Activity
 import android.os.Bundle
 import android.util.Log
+import android.util.Patterns
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -23,7 +24,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SignUp : Fragment() {
 
-    private lateinit var binding: FragmentSignUpBinding
+    private var _binding: FragmentSignUpBinding? = null
+    private val binding get() = _binding!!
 
     private val authViewModel: AuthViewModel by viewModel()
 
@@ -34,11 +36,13 @@ class SignUp : Fragment() {
             .build()
     }
 
+    private var pendingGoogleIdToken: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
 
         setupUI()
         observeViewModel()
@@ -53,15 +57,27 @@ class SignUp : Fragment() {
             val password = binding.edInputSetPassword.text.toString().trim()
 
             if (fullName.isEmpty() || email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(requireContext(), "Semua kolom harus diisi!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Semua kolom harus diisi!", Toast.LENGTH_SHORT)
+                    .show()
                 return@setOnClickListener
             }
 
-            authViewModel.signUpWithEmail(email, password, fullName)
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches() || email.contains(" ")) {
+                Toast.makeText(requireContext(), "Format email tidak valid!", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
+
+            authViewModel.signUpWithEmail(fullname = fullName, email = email, password = password)
         }
 
-        binding.googleLogin.setOnClickListener {
-            signInWithGoogle()
+        binding.apply {
+            googleLogin.setOnClickListener {
+                signInWithGoogle()
+            }
+            backButton.setOnClickListener {
+                findNavController().navigate(R.id.navigation_signin)
+            }
         }
     }
 
@@ -70,46 +86,80 @@ class SignUp : Fragment() {
             authViewModel.authState.collect { resource ->
                 when (resource) {
                     is Resource.Loading -> {
-//                        binding.loading.visibility = View.VISIBLE
                     }
                     is Resource.Success -> {
                         binding.loading.visibility = View.GONE
-                        Toast.makeText(requireContext(), "Registrasi berhasil!", Toast.LENGTH_SHORT).show()
-//                        findNavController().navigate(R.id.action_signUpFragment_to_homeFragment)
+                        Toast.makeText(requireContext(), "Registrasi berhasil! Silakan cek email untuk verifikasi.", Toast.LENGTH_SHORT)
+                            .show()
+                        val fullName = binding.edInputFullName.text.toString().trim()
+                        val bundle = Bundle().apply { putString("fullname", fullName) }
+                        findNavController().navigate(R.id.navigation_email_verification, bundle)
                     }
                     is Resource.Error -> {
                         binding.loading.visibility = View.GONE
-                        Toast.makeText(requireContext(), "Error: ${resource.message}", Toast.LENGTH_SHORT).show()
+                        if (resource.message?.startsWith("collision:") == true) {
+                            val email = resource.message?.removePrefix("collision:") ?: ""
+                            showLinkAccountDialog(email)
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Error: ${resource.message}",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
             }
         }
     }
 
+    private fun showLinkAccountDialog(email: String) {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Akun sudah terdaftar")
+            .setMessage("Email ini sudah terdaftar. Ingin menghubungkan akun Google ke akun ini?\nSilakan login manual dulu, lalu klik tombol Google lagi.")
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
     private fun signInWithGoogle() {
-        val signInIntent = GoogleSignIn.getClient(requireActivity(), googleSignInOptions).signInIntent
+        val signInIntent =
+            GoogleSignIn.getClient(requireActivity(), googleSignInOptions).signInIntent
         googleSignInLauncher.launch(signInIntent)
     }
 
-    private val googleSignInLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
-            try {
-                val account = task.getResult(ApiException::class.java)
-                Log.d("GoogleSignIn", "Akun Google dipilih: ${account?.email}, ID Token: ${account?.idToken}")
-
-                account?.idToken?.let { idToken ->
-                    authViewModel.signInWithGoogle(idToken)
-                } ?: Log.e("GoogleSignIn", "ID Token kosong!")
-
-            } catch (e: ApiException) {
-                Log.e("GoogleSignIn", "Google Sign-In gagal", e)
-                Toast.makeText(requireContext(), "Google Sign-In gagal: ${e.message}", Toast.LENGTH_SHORT).show()
+    private val googleSignInLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.getResult(ApiException::class.java)
+                    Log.d(
+                        "GoogleSignIn",
+                        "Akun Google dipilih: ${account?.email}, ID Token: ${account?.idToken}"
+                    )
+                    account?.idToken?.let { idToken ->
+                        pendingGoogleIdToken = idToken
+                        authViewModel.signInWithGoogle(idToken)
+                    } ?: Log.e("GoogleSignIn", "ID Token kosong!")
+                } catch (e: ApiException) {
+                    Log.e("GoogleSignIn", "Google Sign-In gagal", e)
+                    Toast.makeText(
+                        requireContext(),
+                        "Google Sign-In gagal: ${e.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            } else {
+                Log.e(
+                    "GoogleSignIn",
+                    "Google Sign-In gagal dengan resultCode: ${result.resultCode}"
+                )
             }
-        } else {
-            Log.e("GoogleSignIn", "Google Sign-In dibatalkan atau gagal")
-            Log.e("GoogleSignIn", "Google Sign-In gagal dengan resultCode: ${result.resultCode}")
         }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

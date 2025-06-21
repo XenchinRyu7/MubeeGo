@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val authUseCase: AuthUseCase,
@@ -19,9 +20,12 @@ class AuthViewModel(
     private val _authState = MutableStateFlow<Resource<Boolean>>(Resource.Loading())
     val authState: StateFlow<Resource<Boolean>> = _authState
 
+    private val _resetPasswordState = MutableStateFlow<Resource<Boolean>?>(null)
+    val resetPasswordState: StateFlow<Resource<Boolean>?> = _resetPasswordState
+
     fun signUpWithEmail(fullname: String, email: String, password: String) {
         authUseCase.signUpWithEmail(
-            fullname, email, password
+            fullname = fullname, email = email, password = password
         ).onEach { resource ->
             _authState.value = resource
         }.launchIn(viewModelScope)
@@ -31,16 +35,13 @@ class AuthViewModel(
         Log.d("AuthViewModel", "Memulai sign-in dengan Google, ID Token: $idToken")
 
         authUseCase.signInWithGoogle(idToken).onEach { resource ->
-            Log.d("AuthViewModel", "Hasil Sign-In: $resource")
             _authState.value = resource
 
             if (resource is Resource.Success) {
                 val user = authUseCase.getCurrentUser()
-                Log.d("AuthViewModel", "User setelah login: $user")
 
                 user?.let {
-                    Log.d("AuthViewModel", "Menyimpan user ke preferences: ${it.uid}, ${it.fullname}, ${it.email}")
-                    userPreferencesUseCase.saveUser(it.uid, it.fullname ?: "", it.email)
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname, it.email, it.isPremium)
                 }
             }
         }.launchIn(viewModelScope)
@@ -49,10 +50,22 @@ class AuthViewModel(
     fun signInWithEmail(email: String, password: String) {
         authUseCase.signInWithEmail(email, password).onEach { resource ->
             _authState.value = resource
+
+            if (resource is Resource.Success) {
+                val user = authUseCase.getCurrentUser()
+
+                user?.let {
+                    userPreferencesUseCase.saveUser(it.uid, it.fullname, it.email, it.isPremium)
+                }
+            }
         }.launchIn(viewModelScope)
     }
 
-    fun getUser() = userPreferencesUseCase.getUser()
+    fun sendPasswordResetEmail(email: String) {
+        authUseCase.sendPasswordResetEmail(email).onEach { resource ->
+            _resetPasswordState.value = resource
+        }.launchIn(viewModelScope)
+    }
 
     fun signOut() {
         authUseCase.signOut().onEach { resource ->
@@ -61,5 +74,11 @@ class AuthViewModel(
                 userPreferencesUseCase.clearUser()
             }
         }.launchIn(viewModelScope)
+    }
+
+    fun createUserFirestoreAfterVerified(fullname: String) = viewModelScope.launch {
+        _authState.value = Resource.Loading()
+        val result = authUseCase.createUserFirestoreAfterVerified(fullname)
+        _authState.value = result
     }
 }

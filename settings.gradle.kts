@@ -24,4 +24,3 @@ dependencyResolutionManagement {
 rootProject.name = "MubeeGo"
 include(":app")
 include(":core")
-include(":favorite")

@@ -25,7 +25,9 @@ object DataMapper {
         return "$IMAGE_BASE_URL$this"
     }
 
+    // DEBUG: log genreIds saat mapping ResultsItemMovie ke MovieEntity
     fun ResultsItemMovie.toEntity(): MovieEntity {
+        android.util.Log.d("DataMapper", "toEntity genreIds: $genreIds for movieId: $id")
         return MovieEntity(
             movieId = id,
             title = title,
@@ -34,7 +36,11 @@ object DataMapper {
             backdropPath = backdropPath.toImageUrl(),
             releaseDate = releaseDate,
             voteAverage = voteAverage,
-            voteCount = voteCount
+            voteCount = voteCount,
+            runtime = 0,
+            genres = JSONArray(genreIds).toString(), // <-- Simpan genreIds sebagai JSON array
+            youtubeTrailerId = "",
+            originalLanguage = originalLanguage
         )
     }
 
@@ -51,7 +57,7 @@ object DataMapper {
             runtime = runtime,
             genres = genres,
             youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            originalLanguage = originalLanguage
         )
     }
 
@@ -68,16 +74,16 @@ object DataMapper {
             runtime = runtime,
             genres = genres,
             youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            originalLanguage = originalLanguage
         )
     }
 
     fun MovieDetailResponse.toEntity() : MovieEntity {
-        val listOfGenre = ArrayList<String>()
+        val listOfGenreId = ArrayList<Int>()
         if (genres != null) {
             for (genre in (genres)) {
-                if (genre != null) {
-                    genre.name?.let { listOfGenre.add(it) }
+                if (genre != null && genre.id != null) {
+                    listOfGenreId.add(genre.id)
                 }
             }
         }
@@ -92,8 +98,9 @@ object DataMapper {
             voteAverage = voteAverage ?: 0.0,
             voteCount = voteCount ?: 0,
             runtime = runtime ?: 0,
-            genres = JSONArray(listOfGenre).toString(),
-            youtubeTrailerId = videos?.getYoutubeTrailerId() ?: ""
+            genres = JSONArray(listOfGenreId).toString(), // <-- Simpan genre id
+            youtubeTrailerId = videos?.getYoutubeTrailerId() ?: "",
+            originalLanguage = originalLanguage ?: ""
         )
     }
 
@@ -109,8 +116,7 @@ object DataMapper {
             firstAirDate = firstAirDate,
             genres = genres,
             runtime = runtime,
-            youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            youtubeTrailerId = youtubeTrailerId
         )
     }
 
@@ -131,9 +137,7 @@ object DataMapper {
         val listOfGenre = ArrayList<String>()
         if (genres != null) {
             for (genre in (genres)) {
-                if (genre != null) {
-                    genre.name?.let { listOfGenre.add(it) }
-                }
+                genre?.name?.let { listOfGenre.add(it) }
             }
         }
 
@@ -164,8 +168,7 @@ object DataMapper {
             firstAirDate = firstAirDate,
             genres = genres,
             runtime = runtime,
-            youtubeTrailerId = youtubeTrailerId,
-            favorited = favorited
+            youtubeTrailerId = youtubeTrailerId
         )
     }
 
@@ -251,6 +254,34 @@ object DataMapper {
         )
     }
 
+    fun movieToSearchItem(movie: Movie): SearchItem {
+        return SearchItem(
+            id = movie.movieId,
+            name = movie.title,
+            posterPath = movie.posterPath,
+            backdropPath = movie.backdropPath,
+            mediaType = "movie",
+            overview = movie.overview,
+            voteCount = movie.voteCount,
+            voteAverage = movie.voteAverage,
+            releaseOrAirDate = movie.releaseDate
+        )
+    }
+
+    fun tvShowToSearchItem(tvShow: TvShow): SearchItem {
+        return SearchItem(
+            id = tvShow.tvShowId,
+            name = tvShow.name,
+            posterPath = tvShow.posterPath,
+            backdropPath = tvShow.backdropPath,
+            mediaType = "tv",
+            overview = tvShow.overview,
+            voteCount = tvShow.voteCount,
+            voteAverage = tvShow.voteAverage,
+            releaseOrAirDate = tvShow.firstAirDate
+        )
+    }
+
     private fun VideoResults.getYoutubeTrailerId(): String? {
         val ytTrailer = this.results?.filter { it.site == "YouTube" && it.type == "Trailer" }
         if (!ytTrailer.isNullOrEmpty()) {
@@ -261,5 +292,33 @@ object DataMapper {
             return ytVideo[0].key
         }
         return null
+    }
+
+    fun movieDetailResponseToSearchItem(detail: MovieDetailResponse): SearchItem {
+        return SearchItem(
+            id = detail.id,
+            name = detail.title ?: "",
+            posterPath = detail.posterPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            backdropPath = detail.backdropPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            mediaType = "movie",
+            overview = detail.overview ?: "",
+            voteCount = detail.voteCount ?: 0,
+            voteAverage = detail.voteAverage ?: 0.0,
+            releaseOrAirDate = detail.releaseDate ?: ""
+        )
+    }
+
+    fun tvShowDetailResponseToSearchItem(detail: TvShowDetailResponse): SearchItem {
+        return SearchItem(
+            id = detail.id,
+            name = detail.name ?: "",
+            posterPath = detail.posterPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            backdropPath = detail.backdropPath?.let { if (it.startsWith("http")) it else "https://image.tmdb.org/t/p/w500$it" } ?: "",
+            mediaType = "tv",
+            overview = detail.overview ?: "",
+            voteCount = detail.voteCount ?: 0,
+            voteAverage = detail.voteAverage ?: 0.0,
+            releaseOrAirDate = detail.firstAirDate ?: ""
+        )
     }
 }

@@ -15,6 +15,5 @@ data class TvShow(
     val firstAirDate: String = "",
     val genres: String = "",
     val runtime: Int = 0,
-    val youtubeTrailerId: String = "",
-    var favorited: Boolean = false
+    val youtubeTrailerId: String = ""
 ) : Parcelable

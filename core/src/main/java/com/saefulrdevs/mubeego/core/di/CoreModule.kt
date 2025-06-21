@@ -3,15 +3,24 @@ package com.saefulrdevs.mubeego.core.di
 import android.util.Base64
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.saefulrdevs.core.BuildConfig
+import com.google.firebase.firestore.FirebaseFirestore
+import com.saefulrdevs.mubeego.core.BuildConfig
 import com.saefulrdevs.mubeego.core.data.AuthRepository
+import com.saefulrdevs.mubeego.core.data.HonorableRepository
+import com.saefulrdevs.mubeego.core.data.PlaylistRepository
 import com.saefulrdevs.mubeego.core.data.TmdbRepository
 import com.saefulrdevs.mubeego.core.data.UserPreferencesRepository
+import com.saefulrdevs.mubeego.core.data.repository.FavoriteFirestoreRepository
+import com.saefulrdevs.mubeego.core.data.source.firebase.PlaylistFirestoreDataSource
 import com.saefulrdevs.mubeego.core.data.source.local.LocalDataSource
 import com.saefulrdevs.mubeego.core.data.source.local.room.TmdbDatabase
 import com.saefulrdevs.mubeego.core.data.source.remote.RemoteDataSource
+import com.saefulrdevs.mubeego.core.data.source.remote.firestore.FavoriteFirestoreDataSource
 import com.saefulrdevs.mubeego.core.data.source.remote.network.ApiService
 import com.saefulrdevs.mubeego.core.domain.repository.IAuthRepository
+import com.saefulrdevs.mubeego.core.domain.repository.IFavoriteFirestoreRepository
+import com.saefulrdevs.mubeego.core.domain.repository.IHonorableRepository
+import com.saefulrdevs.mubeego.core.domain.repository.IPlaylistRepository
 import com.saefulrdevs.mubeego.core.domain.repository.ITmdbRepository
 import com.saefulrdevs.mubeego.core.domain.repository.IUserPreferencesRepository
 import com.saefulrdevs.mubeego.core.util.AppExecutors
@@ -80,6 +89,8 @@ val repositoryModule = module {
         TmdbRepository.getInstance(
             get(),
             get(),
+            get(),
+            get(),
             get()
         )
     }
@@ -87,8 +98,21 @@ val repositoryModule = module {
         FirebaseApp.initializeApp(androidContext()) ?: throw IllegalStateException("FirebaseApp initialization failed")
         FirebaseAuth.getInstance()
     }
-    single<IAuthRepository> { AuthRepository(get()) }
-    single<IUserPreferencesRepository> { UserPreferencesRepository(get()) }
+    single<FirebaseFirestore> { FirebaseFirestore.getInstance() }
+    single<IAuthRepository> { AuthRepository(get(), get()) }
+    single<IUserPreferencesRepository> { UserPreferencesRepository(androidContext()) }
+
+    // Playlist dependencies
+    single { PlaylistFirestoreDataSource(get()) }
+    single<IPlaylistRepository> { PlaylistRepository(get()) }
+
+    // favorite dependencies
+    single { FavoriteFirestoreDataSource(get()) }
+    single< IFavoriteFirestoreRepository> { FavoriteFirestoreRepository(get()) }
+
+    // Honorable mentions dependencies
+    single { HonorableRepository(get()) }
+    single<IHonorableRepository> { HonorableRepository(get()) }
 }
 
 suspend fun getCertificatePins(hostname: String): List<String> {

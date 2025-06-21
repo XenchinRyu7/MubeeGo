@@ -19,7 +19,7 @@ fun getApiKey(): String {
 }
 
 android {
-    namespace = "com.saefulrdevs.core"
+    namespace = "com.saefulrdevs.mubeego.core"
     compileSdk = 35
 
 
@@ -35,7 +35,7 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -102,6 +102,10 @@ dependencies {
     implementation(libs.materialsearchbar)
 
     // firebase
-    implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.play.services.auth)
+    implementation(libs.play.services.ads)
 }

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    alias(libs.plugins.ksp)
 }
 
 fun getSigningProperty(propertyName: String): String {
@@ -49,14 +50,14 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
         debug {
-            isMinifyEnabled = true
+            isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -74,7 +75,6 @@ android {
         viewBinding = true
         buildConfig = true
     }
-    dynamicFeatures += setOf(":favorite")
 }
 
 dependencies {
@@ -94,6 +94,13 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     debugImplementation(libs.leakcanary.android)
-    implementation("com.google.firebase:firebase-auth-ktx:23.2.0")
-    implementation("com.google.android.gms:play-services-auth:21.3.0")
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.play.services.auth)
+    implementation(libs.play.services.ads)
+
+
+    implementation(libs.androidx.core.splashscreen)
 }

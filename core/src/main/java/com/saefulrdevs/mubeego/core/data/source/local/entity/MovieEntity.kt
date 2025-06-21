@@ -40,6 +40,6 @@ data class MovieEntity(
     @ColumnInfo(name = "youtubeTrailerId")
     val youtubeTrailerId: String = "",
 
-    @ColumnInfo(name = "favorited")
-    var favorited: Boolean = false
+    @ColumnInfo(name = "originalLanguage")
+    val originalLanguage: String = ""
 )
